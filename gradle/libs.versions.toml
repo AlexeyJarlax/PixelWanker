@@ -72,7 +72,7 @@ firebaseStorageKtx = "21.0.0"
 runtimeLivedataVersion = "1.7.1"
 foundationAndroidVersion = "1.7.2"
 material3 = "1.4.0"
-haze = "0.5.0"
+haze = "1.7.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }

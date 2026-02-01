@@ -140,7 +140,7 @@ dependencies {
 //    implementation ("androidx.compose.material:material-icons-extended:1.4.3")
 
     // haze blur
-    implementation(libs.haze)
+    implementation(libs.haze) // блюр, эфект размытости для нижней навигации
 
     // корутин
     implementation(libs.kotlinx.coroutines.android)

@@ -58,11 +58,11 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.LocalHazeState
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeEffect
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
