@@ -75,7 +75,7 @@ fun AppsPage(
                         placeholderText = stringResource(R.string.search_apps_placeholder)
                     )
                     Text(
-                        text = "Список всех приложений устройства. Открыв карточку приложения, вы сможете запустить приложение вместе с сеткой",
+                        text = stringResource(R.string.apps_page_description),
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth().padding(dp8)
