@@ -10,10 +10,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,6 +20,8 @@ import android.provider.Settings
 import android.content.Intent
 import android.net.Uri
 import android.app.Activity
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
@@ -33,6 +33,8 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppListIt
 import kotlinx.coroutines.launch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexSearchTextField
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.MatrixBackground
@@ -43,6 +45,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp40
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.SpacerHeight
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerProgress
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
@@ -172,7 +175,8 @@ private fun PixelWankerPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(dp16),
+            .padding(dp16)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -181,12 +185,24 @@ private fun PixelWankerPage() {
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
-        Spacer(modifier = Modifier.height(dp8))
+        SpacerHeight()
 
         Text(
-            text = "Don’t be a wanker — stop guessing, start measuring",
-            style = MaterialTheme.typography.bodyMedium
+            text = "Don’t be a wanker — stop guessing,\nstart measuring",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
+        SpacerHeight()
+        Text(
+            text = "Pixel wanker for Android dev is a utility for Android developers and designers who want a fast way to check UI spacing, alignment, and visual rhythm directly on the device. The app generates a customizable on-screen grid and lets you overlay it on top of any app",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+
+
 
         Spacer(modifier = Modifier.height(dp16))
 
@@ -209,12 +225,16 @@ private fun PixelWankerPage() {
             )
         }
 
-        Spacer(modifier = Modifier.height(dp12))
+        SpacerHeight()
 
         Box {
-            Button(onClick = { sizeMenuExpanded = true }) {
-                Text(text = "Размер: $selectedSize $unit")
-            }
+            AlexIconButton(
+                text = "Размер: $selectedSize $unit",
+                isFillMaxWidth = false,
+                outlined = true,
+                onClick = { sizeMenuExpanded = true },
+            )
+            SpacerHeight()
             DropdownMenu(
                 expanded = sizeMenuExpanded,
                 onDismissRequest = { sizeMenuExpanded = false }
