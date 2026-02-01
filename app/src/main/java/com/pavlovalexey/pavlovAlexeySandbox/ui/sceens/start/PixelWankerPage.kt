@@ -6,6 +6,8 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,21 +32,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.Cookie
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.MatrixBackground
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.Pie
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.SpacerHeight
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
-import com.pavlovalexey.pavlovAlexeySandbox.R
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -53,17 +58,20 @@ fun PixelWankerPage() {
     val context = LocalContext.current
     val activity = context as? Activity
     val sizes = remember { listOf(12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60) }
-    val saved = remember {
-        GridSettingsStore.loadOrDefault(context)
-    }
+    val saved = remember { GridSettingsStore.loadOrDefault(context) }
 
     var unit by remember { mutableStateOf(saved.unit) }
     var selectedSize by remember { mutableStateOf(saved.cellValue) }
     var baseColor by remember { mutableStateOf(saved.baseColor) }
+    var extraColor by remember { mutableStateOf(saved.extraColor) } // ✅ NEW
     var sizeMenuExpanded by remember { mutableStateOf(false) }
     var pendingStart by remember { mutableStateOf(false) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    var isCookieVisible1 by remember { mutableStateOf(true) }
+    var isCookieVisible2 by remember { mutableStateOf(true) }
+    var isPieVisible1 by remember { mutableStateOf(true) }
+    var isPieVisible2 by remember { mutableStateOf(true) }
 
     fun saveNow() {
         GridSettingsStore.save(
@@ -71,7 +79,8 @@ fun PixelWankerPage() {
             settings = GridUserSettings(
                 cellValue = selectedSize,
                 unit = unit,
-                baseColor = baseColor
+                baseColor = baseColor,
+                extraColor = extraColor // ✅ NEW
             )
         )
     }
@@ -84,7 +93,8 @@ fun PixelWankerPage() {
                 context = context,
                 cellValue = selectedSize,
                 unit = unit,
-                baseColor = baseColor
+                baseColor = baseColor,
+                extraColor = extraColor // ✅ NEW
             )
             activity?.finish()
             pendingStart = false
@@ -107,7 +117,8 @@ fun PixelWankerPage() {
                 context = context,
                 cellValue = selectedSize,
                 unit = unit,
-                baseColor = baseColor
+                baseColor = baseColor,
+                extraColor = extraColor // ✅ NEW
             )
             activity?.finish()
         } else {
@@ -150,9 +161,6 @@ fun PixelWankerPage() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-
-
-
 
             Spacer(modifier = Modifier.height(dp16))
 
@@ -235,15 +243,160 @@ fun PixelWankerPage() {
                 )
             }
 
-            Spacer(modifier = Modifier.height(dp16))
+            SpacerHeight()
 
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
                 outlined = true,
-                onClick = {
-                    runWithFirstLaunchDialog { startOverlayOrRequestPermission() }
-                },
+                onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
             )
+            SpacerHeight(60)
+
+            if (isCookieVisible1) {
+                Cookie(onClose = { isCookieVisible1 = false })
+                SpacerHeight(60)
+            }
+
+            if (isPieVisible1) {
+                Pie(onClose = { isPieVisible1 = false })
+                SpacerHeight(60)
+            }
+
+            Text(
+                text = "Если вы хотите отблагодарить автора приложения, можете сделать это одним из следующих способов:",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            SpacerHeight(60)
+
+            Row() {
+                Text(
+                    text = "Установить и зарегистрироваться в моем приложении для художников PleinAir",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().weight(2f)
+                )
+                Image(
+                    painter = painterResource(R.drawable.ic_google),
+                    modifier = Modifier.weight(1f),
+                    contentDescription = "googlePlay"
+                ) // https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share
+            }
+            Text(
+                text = "PleinAir - это прекрасный проект, который я всеми силами хочу развить во что-то больше и еще более прекрасное!",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+            SpacerHeight(60)
+
+            Text(
+                text = "Отправить мне чаевые:",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Image(
+                painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
+                contentDescription = "tips",
+                modifier = Modifier.fillMaxWidth(),
+            )  // https://pay.cloudtips.ru/p/da048bc5
+            SpacerHeight(60)
+
+
+            if (isCookieVisible2) {
+            Text(
+                text = "Если вы отблагодарили автора, то возьмите печеньку!",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+                Cookie(onClose = { isCookieVisible2 = false })
+                SpacerHeight(60)
+            }
+
+            if (isPieVisible2) {
+                Text(text = "И пирожок с полки!")
+                Pie(onClose = { isPieVisible2 = false })
+                Text(text = "______________")
+                SpacerHeight(60)
+            }
+
+            Text(
+                text = "Кажется вы дошли до самого конца... и разблокировали дополнительный цвет для сетки! " +
+                        "Да, с двумя цветами на контрасте она будет заметнее в сложных дизайнах.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            SpacerHeight()
+
+            FilterChip(
+                selected = extraColor == null,
+                onClick = {
+                    extraColor = null
+                    saveNow()
+                },
+                label = { Text("Без второго цвета") }
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(dp8)
+            ) {
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.WHITE,
+                    onClick = {
+                        extraColor = android.graphics.Color.WHITE
+                        saveNow()
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = { Text(stringResource(R.string.color_white)) }
+                )
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.BLACK,
+                    onClick = {
+                        extraColor = android.graphics.Color.BLACK
+                        saveNow()
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = { Text(stringResource(R.string.color_black)) }
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(dp8)
+            ) {
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.RED,
+                    onClick = {
+                        extraColor = android.graphics.Color.RED
+                        saveNow()
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = { Text(stringResource(R.string.color_red)) }
+                )
+
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.YELLOW,
+                    onClick = {
+                        extraColor = android.graphics.Color.YELLOW
+                        saveNow()
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = { Text("Жёлтый") }
+                )
+
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.BLUE,
+                    onClick = {
+                        extraColor = android.graphics.Color.BLUE
+                        saveNow()
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = { Text("Синий") }
+                )
+            }
+            SpacerHeight(60)
         }
 
         if (showFirstLaunchDialog) {

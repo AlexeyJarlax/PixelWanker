@@ -37,7 +37,10 @@ class PixelWankerOverlayService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val density = resources.displayMetrics.density
         config = GridConfig.fromIntent(intent, density)
-        gridView?.update(config.spacingPx, config.lineColorArgb)
+
+        // ✅ update с учётом extra
+        gridView?.update(config.spacingPx, config.lineColorArgb, config.extraLineColorArgb)
+
         if (controlsOverlayView == null) {
             gridOverlayView = createGridOverlayView(config)
             controlsOverlayView = createControlsOverlayView()
@@ -78,7 +81,8 @@ class PixelWankerOverlayService : Service() {
         val view = GridView(
             context = this,
             spacingPx = config.spacingPx,
-            lineColorArgb = config.lineColorArgb
+            lineColorArgb = config.lineColorArgb,
+            extraLineColorArgb = config.extraLineColorArgb
         )
         gridView = view
 
@@ -271,6 +275,7 @@ class PixelWankerOverlayService : Service() {
         context: Context,
         spacingPx: Float,
         lineColorArgb: Int,
+        extraLineColorArgb: Int?,
     ) : View(context) {
 
         private var spacing: Float = spacingPx
@@ -280,26 +285,60 @@ class PixelWankerOverlayService : Service() {
             strokeWidth = 1f
         }
 
-        fun update(spacingPx: Float, lineColorArgb: Int) {
+        private val extraPaint: Paint? = extraLineColorArgb?.let { c ->
+            Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = c
+                strokeWidth = 1f
+            }
+        }
+
+        fun update(spacingPx: Float, lineColorArgb: Int, extraLineColorArgb: Int?) {
             spacing = spacingPx
             paint.color = lineColorArgb
+
+            // пересоздаём extraPaint через поля (проще и надёжнее, чем мутировать null/non-null)
+            _extraColor = extraLineColorArgb
             invalidate()
         }
+
+        // держим отдельное поле, чтобы в onDraw понимать, надо ли рисовать двойную линию
+        private var _extraColor: Int? = extraLineColorArgb
 
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
 
             val step = spacing.coerceAtLeast(2f)
+            val extraColor = _extraColor
+            val extra = if (extraColor != null) {
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = extraColor
+                    strokeWidth = 1f
+                }
+            } else {
+                null
+            }
 
             var x = 0f
             while (x <= width) {
-                canvas.drawLine(x, 0f, x, height.toFloat(), paint)
+                if (extra == null) {
+                    canvas.drawLine(x, 0f, x, height.toFloat(), paint)
+                } else {
+                    // ✅ двойная вертикальная полоса “впритык”
+                    canvas.drawLine(x, 0f, x, height.toFloat(), paint)
+                    canvas.drawLine(x + 1f, 0f, x + 1f, height.toFloat(), extra)
+                }
                 x += step
             }
 
             var y = 0f
             while (y <= height) {
-                canvas.drawLine(0f, y, width.toFloat(), y, paint)
+                if (extra == null) {
+                    canvas.drawLine(0f, y, width.toFloat(), y, paint)
+                } else {
+                    // ✅ двойная горизонтальная полоса “впритык”
+                    canvas.drawLine(0f, y, width.toFloat(), y, paint)
+                    canvas.drawLine(0f, y + 1f, width.toFloat(), y + 1f, extra)
+                }
                 y += step
             }
         }
@@ -308,16 +347,22 @@ class PixelWankerOverlayService : Service() {
     private data class GridConfig(
         val spacingPx: Float,
         val lineColorArgb: Int,
+        val extraLineColorArgb: Int?, // ✅ NEW
     ) {
         companion object {
             private const val EXTRA_CELL_VALUE = "extra_cell_value"
             private const val EXTRA_CELL_UNIT = "extra_cell_unit"
             private const val EXTRA_COLOR = "extra_color"
 
+            // ✅ NEW
+            private const val EXTRA_HAS_EXTRA_COLOR = "extra_has_extra_color"
+            private const val EXTRA_EXTRA_COLOR = "extra_extra_color"
+
             fun default(): GridConfig {
                 return GridConfig(
                     spacingPx = 20f,
-                    lineColorArgb = applyAlpha(Color.BLACK, 80)
+                    lineColorArgb = applyAlpha(Color.BLACK, 80),
+                    extraLineColorArgb = null
                 )
             }
 
@@ -328,10 +373,14 @@ class PixelWankerOverlayService : Service() {
                 val unit = intent.getStringExtra(EXTRA_CELL_UNIT) ?: "px"
                 val baseColor = intent.getIntExtra(EXTRA_COLOR, Color.BLACK)
 
+                val hasExtra = intent.getBooleanExtra(EXTRA_HAS_EXTRA_COLOR, false)
+                val extraColor = if (hasExtra) intent.getIntExtra(EXTRA_EXTRA_COLOR, Color.YELLOW) else null
+
                 val spacingPx = if (unit == "dp") value * density else value.toFloat()
                 return GridConfig(
                     spacingPx = spacingPx,
-                    lineColorArgb = applyAlpha(baseColor, 80)
+                    lineColorArgb = applyAlpha(baseColor, 80),
+                    extraLineColorArgb = extraColor?.let { applyAlpha(it, 80) }
                 )
             }
 
@@ -343,12 +392,18 @@ class PixelWankerOverlayService : Service() {
                 context: Context,
                 cellValue: Int,
                 unit: String,
-                baseColor: Int
+                baseColor: Int,
+                extraColor: Int?, // ✅ NEW
             ): Intent {
                 return Intent(context, PixelWankerOverlayService::class.java).apply {
                     putExtra(EXTRA_CELL_VALUE, cellValue)
                     putExtra(EXTRA_CELL_UNIT, unit)
                     putExtra(EXTRA_COLOR, baseColor)
+
+                    putExtra(EXTRA_HAS_EXTRA_COLOR, extraColor != null)
+                    if (extraColor != null) {
+                        putExtra(EXTRA_EXTRA_COLOR, extraColor)
+                    }
                 }
             }
         }
@@ -359,9 +414,10 @@ class PixelWankerOverlayService : Service() {
             context: Context,
             cellValue: Int,
             unit: String,
-            baseColor: Int
+            baseColor: Int,
+            extraColor: Int?,
         ) {
-            val intent = GridConfig.buildStartIntent(context, cellValue, unit, baseColor)
+            val intent = GridConfig.buildStartIntent(context, cellValue, unit, baseColor, extraColor)
             context.startService(intent)
         }
     }
