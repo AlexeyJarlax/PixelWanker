@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavBackStackEntry
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
@@ -39,16 +39,24 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerProgress
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepositoryImpl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDetailScreen(
     navController: NavHostController,
-    viewModel: AppDetailViewModel = hiltViewModel(),
+    backStackEntry: NavBackStackEntry,
+    viewModel: AppDetailViewModel? = null,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val details by viewModel.details.collectAsState()
     val context = LocalContext.current
+    val repository = remember(context) { InstalledAppsRepositoryImpl(context.applicationContext) }
+    val factory = remember(backStackEntry, repository) {
+        AppDetailViewModelFactory(repository, backStackEntry, backStackEntry.arguments)
+    }
+    val resolvedViewModel = viewModel ?: viewModel(owner = backStackEntry, factory = factory)
+    val uiState by resolvedViewModel.uiState.collectAsState()
+    val details by resolvedViewModel.details.collectAsState()
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }

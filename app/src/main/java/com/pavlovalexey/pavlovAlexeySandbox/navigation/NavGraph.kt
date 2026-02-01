@@ -34,8 +34,11 @@ fun NavGraph(
                     type = androidx.navigation.NavType.StringType
                 }
             )
-        ) {
-            AppDetailScreen(navController = navController)
+        ) { backStackEntry ->
+            AppDetailScreen(
+                navController = navController,
+                backStackEntry = backStackEntry
+            )
         }
     }
 }
