@@ -88,8 +88,10 @@ fun PixelWankerPage() {
     var isPieVisible2 by remember { mutableStateOf(true) }
     var showTelegramStarsDialog by remember { mutableStateOf(false) }
 
-    val telegramChannelUrl = "https://t.me/PixelWanker"
-    val telegramChannelTitle = "PixelWanker for Android dev"
+    val telegramChannelUrl = stringResource(R.string.telegram_channel_url)
+    val telegramChannelTitle = stringResource(R.string.telegram_channel_title)
+    val cloudtipsUrl = stringResource(R.string.cloudtips_url)
+    val pleinairPlayUrl = stringResource(R.string.pleinair_play_url)
 
     val tipEligibleCountries = remember {
         setOf("RU", "BY", "TJ", "UZ", "TM", "KZ")
@@ -308,7 +310,7 @@ fun PixelWankerPage() {
             SpacerHeight(60)
 
             Text(
-                text = "Донаты через Telegram ⭐️",
+                text = stringResource(R.string.telegram_donations_title),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -316,15 +318,14 @@ fun PixelWankerPage() {
             SpacerHeight()
 
             Text(
-                text =
-                    "Самый простой способ поддержать проект — поставить ⭐️ платную реакцию в Telegram.\n",
+                text = stringResource(R.string.telegram_donations_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
 
             AlexIconButton(
-                text = "Открыть канал @PixelWanker",
+                text = stringResource(R.string.telegram_open_channel_button),
                 outlined = true,
                 isFillMaxWidth = false,
                 onClick = { showTelegramStarsDialog = true },
@@ -344,7 +345,7 @@ fun PixelWankerPage() {
                         .width(156.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.LightGray.copy(alpha = 0.5f))
-                        .clickable { openUrl("https://pay.cloudtips.ru/p/da048bc5") }
+                        .clickable { openUrl(cloudtipsUrl) }
                 ) {
                     Image(
                         painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
@@ -362,7 +363,7 @@ fun PixelWankerPage() {
                 modifier = Modifier
                     .size(dp40)
                     .clickable {
-                        openUrl("https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share")
+                        openUrl(pleinairPlayUrl)
                     },
                 contentDescription = stringResource(R.string.google_play_content_description)
             )
@@ -518,16 +519,13 @@ fun PixelWankerPage() {
 
         if (showTelegramStarsDialog) {
             WankerConfirmationDialog(
-                title = "Telegram Stars ⭐️",
-                dialogText =
-                    "Oткроется канал \"$telegramChannelTitle\".\n\n" +
-                            "Дальше:\n" +
-                            "• открой любой пост\n" +
-                            "• нажми ⭐️ (платная реакция)\n" +
-                            "• выбери количество Stars и подтверди.\n\n" +
-                            "Оплата проходит внутри Telegram. Приложение PixelWanker не собирает и не хранит данные об оплатах.",
-                confirmText = "Открыть канал",
-                dismissText = "Отмена",
+                title = stringResource(R.string.telegram_stars_dialog_title),
+                dialogText = stringResource(
+                    R.string.telegram_stars_dialog_text,
+                    telegramChannelTitle
+                ),
+                confirmText = stringResource(R.string.telegram_stars_confirm),
+                dismissText = stringResource(R.string.telegram_stars_dismiss),
                 onDismiss = { showTelegramStarsDialog = false },
                 onConfirm = {
                     showTelegramStarsDialog = false

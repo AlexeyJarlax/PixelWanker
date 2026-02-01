@@ -99,8 +99,8 @@ fun StartScreen(
             onDismiss = { showAboutDialog = false },
             dialogText = stringResource(R.string.about_app_text),
             onConfirm = { showAboutDialog = false },
-            confirmText = "No more wanking",
-            dismissText = "Back to wanking",
+            confirmText = stringResource(R.string.about_dialog_confirm),
+            dismissText = stringResource(R.string.about_dialog_dismiss),
         )
     }
 }
