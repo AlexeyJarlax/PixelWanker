@@ -37,6 +37,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import kotlinx.coroutines.launch
 import com.pavlovalexey.pavlovAlexeySandbox.R
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -102,15 +103,12 @@ fun StartScreen(
     }
 
     if (showAboutDialog) {
-        AlertDialog(
-            onDismissRequest = { showAboutDialog = false },
-            title = { Text(text = stringResource(R.string.about_title)) },
-            text = { Text(text = stringResource(R.string.about_app_text)) },
-            confirmButton = {
-                TextButton(onClick = { showAboutDialog = false }) {
-                    Text(text = stringResource(R.string.about_ok))
-                }
-            }
+        WankerConfirmationDialog(
+            onDismiss = { showAboutDialog = false },
+            dialogText = stringResource(R.string.about_app_text),
+            onConfirm = { showAboutDialog = false },
+            confirmText = "No more wanking",
+            dismissText = "Back to wanking",
         )
     }
 }
