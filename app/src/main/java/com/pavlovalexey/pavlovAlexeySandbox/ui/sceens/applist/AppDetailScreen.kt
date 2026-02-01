@@ -129,7 +129,7 @@ fun AppDetailScreen(
                                     },
                                     isFillMaxWidth = false,
                                     outlined = true,
-                                    text = "Открыть приложение"
+                                    text = "Открыть\nприложение"
                                 )
 
                                 AlexIconButton(
@@ -154,7 +154,7 @@ fun AppDetailScreen(
                                     },
                                     isFillMaxWidth = false,
                                     outlined = true,
-                                    text = "Открыть с сеткой"
+                                    text = "Открыть\nс сеткой"
                                 )
                             }
                         }
