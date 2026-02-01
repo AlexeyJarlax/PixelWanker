@@ -161,11 +161,11 @@ private fun BottomSectionSwitcher(
             tint = HazeTint(surfaceColor.copy(alpha = 0.32f)),
             blurRadius = dp20,
             noiseFactor = 0.10f,
-            fallbackTint = HazeTint(surfaceColor.copy(alpha = 0.90f))
+            fallbackTint = HazeTint(surfaceColor.copy(alpha = 0.72f))
         )
     }
     val selectedColor = MaterialTheme.colorScheme.onSurface
-    val unselectedColor = selectedColor.copy(alpha = 0.72f)
+    val unselectedColor = selectedColor.copy(alpha = 0.88f)
     val items = listOf(
         BottomNavItem(
             title = "Сетка",
@@ -189,14 +189,11 @@ private fun BottomSectionSwitcher(
         )
     )
 
-    Box(
-//        modifier = modifier
-//            .heightIn(min = dp48)
-    ) {
+    Box(modifier = modifier) {
         NavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
-//                .heightIn(min = dp48)
+                .heightIn(min = dp56)
                 .then(
                     if (hazeState != null) {
                         Modifier.hazeEffect(state = hazeState, style = glassStyle)
@@ -207,7 +204,7 @@ private fun BottomSectionSwitcher(
             containerColor = if (hazeState != null) {
                 Color.Transparent
             } else {
-                surfaceColor.copy(alpha = 0.92f)
+                surfaceColor.copy(alpha = 0.72f)
             },
             tonalElevation = dp0
         ) {
@@ -216,16 +213,23 @@ private fun BottomSectionSwitcher(
                     selected = item.selected,
                     onClick = item.onClick,
                     icon = {
+                        Spacer(modifier = Modifier.size(dp0))
+                    },
+                    label = {
                         Text(
                             text = item.title,
-                            style = MaterialTheme.typography.labelLarge
+                            style = MaterialTheme.typography.labelLarge,
+                            textAlign = TextAlign.Center
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = selectedColor,
                         unselectedIconColor = unselectedColor,
+                        selectedTextColor = selectedColor,
+                        unselectedTextColor = unselectedColor,
                         indicatorColor = Color.Transparent
-                    )
+                    ),
+                    alwaysShowLabel = true
                 )
             }
         }
