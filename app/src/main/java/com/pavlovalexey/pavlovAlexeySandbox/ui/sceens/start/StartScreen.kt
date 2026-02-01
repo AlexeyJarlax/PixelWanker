@@ -45,6 +45,8 @@ import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerProgress
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
+import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -109,6 +111,8 @@ private fun PixelWankerPage() {
     var baseColor by remember { mutableStateOf(saved.baseColor) }
     var sizeMenuExpanded by remember { mutableStateOf(false) }
     var pendingStart by remember { mutableStateOf(false) }
+    var showFirstLaunchDialog by remember { mutableStateOf(false) }
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     fun saveNow() {
         GridSettingsStore.save(
@@ -133,6 +137,35 @@ private fun PixelWankerPage() {
             )
             activity?.finish()
             pendingStart = false
+        }
+    }
+
+    fun runWithFirstLaunchDialog(action: () -> Unit) {
+        if (FirstLaunchDialogPrefs.shouldShow(context)) {
+            pendingAction = action
+            showFirstLaunchDialog = true
+        } else {
+            action()
+        }
+    }
+
+    fun startOverlayOrRequestPermission() {
+        saveNow()
+        if (Settings.canDrawOverlays(context)) {
+            PixelWankerOverlayService.start(
+                context = context,
+                cellValue = selectedSize,
+                unit = unit,
+                baseColor = baseColor
+            )
+            activity?.finish()
+        } else {
+            pendingStart = true
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:${context.packageName}")
+            )
+            permissionLauncher.launch(intent)
         }
     }
 
@@ -234,30 +267,24 @@ private fun PixelWankerPage() {
             text = "Запустить сетку",
             outlined = true,
             onClick = {
-                saveNow()
-                if (Settings.canDrawOverlays(context)) {
-                    PixelWankerOverlayService.start(
-                        context = context,
-                        cellValue = selectedSize,
-                        unit = unit,
-                        baseColor = baseColor
-                    )
-                    activity?.finish()
-                } else {
-                    pendingStart = true
-                    val intent = Intent(
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:${context.packageName}")
-                    )
-                    permissionLauncher.launch(intent)
-                }
+                runWithFirstLaunchDialog { startOverlayOrRequestPermission() }
             },
         )
+    }
 
-        Spacer(modifier = Modifier.height(dp8))
-        Text(
-            text = "После первого запуска система спросит о выдаче разрешения Поверх других приложений. Найдите в списке PixelWanker и выставите тумблер в активный режим",
-            style = MaterialTheme.typography.bodySmall
+    if (showFirstLaunchDialog) {
+        WankerConfirmationDialog(
+            dialogText = FirstLaunchDialogPrefs.DIALOG_TEXT,
+            onDismiss = {
+                showFirstLaunchDialog = false
+                pendingAction = null
+            },
+            onConfirm = {
+                FirstLaunchDialogPrefs.markShown(context)
+                showFirstLaunchDialog = false
+                pendingAction?.invoke()
+                pendingAction = null
+            }
         )
     }
 }

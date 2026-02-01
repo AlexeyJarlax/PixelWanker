@@ -34,9 +34,11 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.MatrixBackground
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.VSpacer
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerProgress
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
+import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +50,8 @@ fun AppDetailScreen(
     val details by viewModel.details.collectAsState()
     val context = LocalContext.current
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
+    var showFirstLaunchDialog by remember { mutableStateOf(false) }
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
     val gridSettings = GridSettingsStore.loadOrDefault(context)
     val overlayPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -66,6 +70,37 @@ fun AppDetailScreen(
             }
         }
         pendingGridPackage = null
+    }
+
+    fun runWithFirstLaunchDialog(action: () -> Unit) {
+        if (FirstLaunchDialogPrefs.shouldShow(context)) {
+            pendingAction = action
+            showFirstLaunchDialog = true
+        } else {
+            action()
+        }
+    }
+
+    fun openAppWithGrid(appPackageName: String) {
+        if (Settings.canDrawOverlays(context)) {
+            PixelWankerOverlayService.start(
+                context = context,
+                cellValue = gridSettings.cellValue,
+                unit = gridSettings.unit,
+                baseColor = gridSettings.baseColor
+            )
+            val intent = context.packageManager.getLaunchIntentForPackage(appPackageName)
+            if (intent != null) {
+                context.startActivity(intent)
+            }
+        } else {
+            pendingGridPackage = appPackageName
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:${context.packageName}")
+            )
+            overlayPermissionLauncher.launch(intent)
+        }
     }
 
     Scaffold(
@@ -142,27 +177,8 @@ fun AppDetailScreen(
 
                                 AlexIconButton(
                                     onClick = {
-                                        if (Settings.canDrawOverlays(context)) {
-                                            PixelWankerOverlayService.start(
-                                                context = context,
-                                                cellValue = gridSettings.cellValue,
-                                                unit = gridSettings.unit,
-                                                baseColor = gridSettings.baseColor
-                                            )
-                                            val intent =
-                                                context.packageManager.getLaunchIntentForPackage(
-                                                    app.packageName
-                                                )
-                                            if (intent != null) {
-                                                context.startActivity(intent)
-                                            }
-                                        } else {
-                                            pendingGridPackage = app.packageName
-                                            val intent = Intent(
-                                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                                Uri.parse("package:${context.packageName}")
-                                            )
-                                            overlayPermissionLauncher.launch(intent)
+                                        runWithFirstLaunchDialog {
+                                            openAppWithGrid(app.packageName)
                                         }
                                     },
                                     isFillMaxWidth = false,
@@ -175,5 +191,21 @@ fun AppDetailScreen(
                 }
             }
         }
+    }
+
+    if (showFirstLaunchDialog) {
+        WankerConfirmationDialog(
+            dialogText = FirstLaunchDialogPrefs.DIALOG_TEXT,
+            onDismiss = {
+                showFirstLaunchDialog = false
+                pendingAction = null
+            },
+            onConfirm = {
+                FirstLaunchDialogPrefs.markShown(context)
+                showFirstLaunchDialog = false
+                pendingAction?.invoke()
+                pendingAction = null
+            }
+        )
     }
 }
