@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.savedstate.SavedStateRegistryOwner
+import com.pavlovalexey.pavlovAlexeySandbox.R
 
 class AppDetailViewModel(
     private val repository: InstalledAppsRepository,
@@ -36,8 +37,7 @@ class AppDetailViewModel(
                 _details.value = repository.getAppDetails(packageName)
                 _uiState.value = UiState.Success()
             } catch (e: Exception) {
-                _uiState.value =
-                    UiState.Error(e.message ?: "Не удалось загрузить информацию")
+                _uiState.value = UiState.Error(R.string.error_load_app_info)
             }
         }
     }

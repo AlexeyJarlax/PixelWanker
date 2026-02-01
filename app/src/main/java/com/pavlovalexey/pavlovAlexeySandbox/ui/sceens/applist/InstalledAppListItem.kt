@@ -10,7 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
+import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 
@@ -33,7 +35,7 @@ fun InstalledAppListItem(
         )
         app.versionName?.let {
             Text(
-                text = "Версия: $it",
+                text = stringResource(R.string.installed_app_version, it),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

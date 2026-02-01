@@ -111,7 +111,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         val hintTextView = TextView(this).apply {
-            text = "Кликните #, чтобы скрыть сетку и вернуть контроль над рабочей областью"
+            text = getString(R.string.overlay_hint_hide_grid)
             setTextColor(Color.WHITE)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             maxLines = 3
@@ -129,7 +129,7 @@ class PixelWankerOverlayService : Service() {
 
         val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
             setOnClickListener { openAppHomeAndCloseOverlay() }
-            contentDescription = "Возврат"
+            contentDescription = getString(R.string.overlay_back)
         }
 
         val toggleButton = createControlButton(
@@ -138,13 +138,15 @@ class PixelWankerOverlayService : Service() {
 
         val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
             setOnClickListener { stopSelf() }
-            contentDescription = "Закрыть"
+            contentDescription = getString(R.string.overlay_close)
         }
 
         fun updateToggleIcon() {
             val iconRes = if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
             toggleButton.setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes))
-            toggleButton.contentDescription = if (isGridVisible) "Скрыть сетку" else "Показать сетку"
+            toggleButton.contentDescription = getString(
+                if (isGridVisible) R.string.overlay_hide_grid else R.string.overlay_show_grid
+            )
         }
 
         toggleButton.setOnClickListener {

@@ -13,10 +13,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.layout.size
@@ -30,6 +30,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
+import com.pavlovalexey.pavlovAlexeySandbox.R
 
 @Composable
 fun StartBottomBar(
@@ -58,14 +59,18 @@ fun StartBottomBar(
 
     val shape = RoundedCornerShape(topStart = dp16, topEnd = dp16)
 
-    val items = remember(currentPage) {
-        listOf(
-            BottomNavItem("Сетка", currentPage == 0) { onSelectPage(0) },
-            BottomNavItem("Apps", currentPage == 1) { onSelectPage(1) },
-            BottomNavItem("About", false, onShowAbout),
-            BottomNavItem("Exit", false, onExit),
-        )
-    }
+    val items = listOf(
+        BottomNavItem(
+            stringResource(R.string.bottom_nav_grid),
+            currentPage == 0
+        ) { onSelectPage(0) },
+        BottomNavItem(
+            stringResource(R.string.bottom_nav_apps),
+            currentPage == 1
+        ) { onSelectPage(1) },
+        BottomNavItem(stringResource(R.string.bottom_nav_about), false, onShowAbout),
+        BottomNavItem(stringResource(R.string.bottom_nav_exit), false, onExit),
+    )
 
     val fallback = surface.copy(alpha = 0.78f)
 

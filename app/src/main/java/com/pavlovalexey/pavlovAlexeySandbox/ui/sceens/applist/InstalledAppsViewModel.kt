@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModelProvider
+import com.pavlovalexey.pavlovAlexeySandbox.R
 
 class InstalledAppsViewModel(
     private val repository: InstalledAppsRepository
@@ -33,8 +34,7 @@ class InstalledAppsViewModel(
                 _apps.value = repository.getInstalledApps()
                 _uiState.value = UiState.Success()
             } catch (e: Exception) {
-                _uiState.value =
-                    UiState.Error(e.message ?: "Не удалось загрузить список приложений")
+                _uiState.value = UiState.Error(R.string.error_load_app_list)
             }
         }
     }
