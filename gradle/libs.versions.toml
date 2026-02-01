@@ -71,6 +71,7 @@ uiToolingVersion = "1.7.5"
 firebaseStorageKtx = "21.0.0"
 runtimeLivedataVersion = "1.7.1"
 foundationAndroidVersion = "1.7.2"
+material3 = "1.4.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
@@ -155,6 +156,7 @@ runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedat
 snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyamlVersion" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroidVersion" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

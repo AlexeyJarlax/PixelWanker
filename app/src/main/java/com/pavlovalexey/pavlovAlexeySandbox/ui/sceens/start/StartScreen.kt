@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +23,8 @@ import android.provider.Settings
 import android.content.Intent
 import android.net.Uri
 import android.app.Activity
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
@@ -32,19 +33,24 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppsViewM
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppListItem
 import kotlinx.coroutines.launch
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexSearchTextField
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.MatrixBackground
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.VSpacer
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp40
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
+import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
+import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun StartScreen(
     onAppClick: (String) -> Unit,
-    appsViewModel: InstalledAppsViewModel = hiltViewModel()
+    appsViewModel: InstalledAppsViewModel = hiltViewModel(),
 ) {
     val appsUiState by appsViewModel.uiState.collectAsState()
     val apps by appsViewModel.apps.collectAsState()
@@ -83,7 +89,7 @@ fun StartScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = dp16, vertical = dp8)
+                    .padding(horizontal = dp0, vertical = dp8)
             )
         }
     }
@@ -93,12 +99,38 @@ fun StartScreen(
 private fun PixelWankerPage() {
     val context = LocalContext.current
     val activity = context as? Activity
+    val sizes = remember { listOf(12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60) }
+    val saved = remember {
+        GridSettingsStore.loadOrDefault(context)
+    }
+
+    var unit by remember { mutableStateOf(saved.unit) }
+    var selectedSize by remember { mutableStateOf(saved.cellValue) }
+    var baseColor by remember { mutableStateOf(saved.baseColor) }
+    var sizeMenuExpanded by remember { mutableStateOf(false) }
     var pendingStart by remember { mutableStateOf(false) }
+
+    fun saveNow() {
+        GridSettingsStore.save(
+            context = context,
+            settings = GridUserSettings(
+                cellValue = selectedSize,
+                unit = unit,
+                baseColor = baseColor
+            )
+        )
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
         if (pendingStart && Settings.canDrawOverlays(context)) {
-            PixelWankerOverlayService.start(context)
+            PixelWankerOverlayService.start(
+                context = context,
+                cellValue = selectedSize,
+                unit = unit,
+                baseColor = baseColor
+            )
             activity?.finish()
             pendingStart = false
         }
@@ -112,21 +144,104 @@ private fun PixelWankerPage() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Сетка (PixelWanker)",
+            text = "PixelWanker",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(dp8))
+
         Text(
-            text = "Запускает поверх других приложений сетку с шагом 20 пикселей. " +
-                    "В центре появляется кнопка с крестиком для закрытия.",
+            text = "Don’t be a wanker — stop guessing, start measuring",
             style = MaterialTheme.typography.bodyMedium
         )
+
         Spacer(modifier = Modifier.height(dp16))
-        Button(
+
+        Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
+            FilterChip(
+                selected = unit == "px",
+                onClick = {
+                    unit = "px"
+                    saveNow()
+                },
+                label = { Text("px") }
+            )
+            FilterChip(
+                selected = unit == "dp",
+                onClick = {
+                    unit = "dp"
+                    saveNow()
+                },
+                label = { Text("dp") }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dp12))
+
+        Box {
+            Button(onClick = { sizeMenuExpanded = true }) {
+                Text(text = "Размер: $selectedSize $unit")
+            }
+            DropdownMenu(
+                expanded = sizeMenuExpanded,
+                onDismissRequest = { sizeMenuExpanded = false }
+            ) {
+                sizes.forEach { v ->
+                    DropdownMenuItem(
+                        text = { Text("$v $unit") },
+                        onClick = {
+                            selectedSize = v
+                            sizeMenuExpanded = false
+                            saveNow()
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(dp12))
+
+        Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
+            FilterChip(
+                selected = baseColor == android.graphics.Color.WHITE,
+                onClick = {
+                    baseColor = android.graphics.Color.WHITE
+                    saveNow()
+                },
+                label = { Text("Белый") }
+            )
+            FilterChip(
+                selected = baseColor == android.graphics.Color.BLACK,
+                onClick = {
+                    baseColor = android.graphics.Color.BLACK
+                    saveNow()
+                },
+                label = { Text("Черный") }
+            )
+            FilterChip(
+                selected = baseColor == android.graphics.Color.RED,
+                onClick = {
+                    baseColor = android.graphics.Color.RED
+                    saveNow()
+                },
+                label = { Text("Красный") }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dp16))
+
+        AlexIconButton(
+            text = "Запустить сетку",
+            outlined = true,
             onClick = {
+                saveNow()
                 if (Settings.canDrawOverlays(context)) {
-                    PixelWankerOverlayService.start(context)
+                    PixelWankerOverlayService.start(
+                        context = context,
+                        cellValue = selectedSize,
+                        unit = unit,
+                        baseColor = baseColor
+                    )
                     activity?.finish()
                 } else {
                     pendingStart = true
@@ -136,13 +251,12 @@ private fun PixelWankerPage() {
                     )
                     permissionLauncher.launch(intent)
                 }
-            }
-        ) {
-            Text(text = "Показать сетку поверх всего")
-        }
+            },
+        )
+
         Spacer(modifier = Modifier.height(dp8))
         Text(
-            text = "После запуска приложение свернётся, а сетка останется поверх других экранов.",
+            text = "После первого запуска система спросит о выдаче разрешения Поверх других приложений. Найдите в списке PixelWanker и выставите тумблер в активный режим",
             style = MaterialTheme.typography.bodySmall
         )
     }
@@ -152,7 +266,7 @@ private fun PixelWankerPage() {
 private fun AppsPage(
     uiState: UiState,
     apps: List<InstalledApp>,
-    onAppClick: (String) -> Unit
+    onAppClick: (String) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
         MatrixBackground(100)
@@ -160,6 +274,7 @@ private fun AppsPage(
             is UiState.Loading -> {
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
+
             is UiState.Error -> {
                 Text(
                     text = uiState.message,
@@ -167,6 +282,7 @@ private fun AppsPage(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+
             is UiState.Success -> {
                 var searchAppsQuery by remember { mutableStateOf("") }
 
@@ -210,7 +326,7 @@ private fun AppsPage(
 private fun BottomSectionSwitcher(
     currentPage: Int,
     onSelectPage: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

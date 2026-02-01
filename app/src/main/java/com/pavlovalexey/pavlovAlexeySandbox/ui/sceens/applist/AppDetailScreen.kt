@@ -28,6 +28,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
@@ -46,12 +47,18 @@ fun AppDetailScreen(
     val details by viewModel.details.collectAsState()
     val context = LocalContext.current
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
+    val gridSettings = GridSettingsStore.loadOrDefault(context)
     val overlayPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
         val packageName = pendingGridPackage
         if (packageName != null && Settings.canDrawOverlays(context)) {
-            PixelWankerOverlayService.start(context)
+            PixelWankerOverlayService.start(
+                context = context,
+                cellValue = gridSettings.cellValue,
+                unit = gridSettings.unit,
+                baseColor = gridSettings.baseColor
+            )
             val intent = context.packageManager.getLaunchIntentForPackage(packageName)
             if (intent != null) {
                 context.startActivity(intent)
@@ -135,7 +142,12 @@ fun AppDetailScreen(
                                 AlexIconButton(
                                     onClick = {
                                         if (Settings.canDrawOverlays(context)) {
-                                            PixelWankerOverlayService.start(context)
+                                            PixelWankerOverlayService.start(
+                                                context = context,
+                                                cellValue = gridSettings.cellValue,
+                                                unit = gridSettings.unit,
+                                                baseColor = gridSettings.baseColor
+                                            )
                                             val intent =
                                                 context.packageManager.getLaunchIntentForPackage(
                                                     app.packageName

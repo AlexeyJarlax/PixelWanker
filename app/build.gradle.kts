@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.material3)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
 
     // HTTP-клиент
