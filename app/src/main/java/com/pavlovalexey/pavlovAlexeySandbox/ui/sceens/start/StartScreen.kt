@@ -1,21 +1,31 @@
 package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.Canvas
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.FilterChip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.model.Workout
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
@@ -51,7 +61,7 @@ fun StartScreen(
     var searchWorkoutsQuery by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<String?>(null) }
 
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
@@ -67,12 +77,13 @@ fun StartScreen(
                     .fillMaxWidth()
             ) { page ->
                 when (page) {
-                    0 -> AppsPage(
+                    0 -> PixelWankerPage()
+                    1 -> AppsPage(
                         uiState = appsUiState,
                         apps = apps,
                         onAppClick = onAppClick
                     )
-                    1 -> WorkoutsPage(
+                    2 -> WorkoutsPage(
                         uiState = workoutsUiState,
                         workouts = workouts,
                         searchQuery = searchWorkoutsQuery,
@@ -96,6 +107,101 @@ fun StartScreen(
                     .padding(horizontal = dp16, vertical = dp8)
             )
         }
+    }
+}
+
+@Composable
+private fun PixelWankerPage() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        PixelWankerGridOverlay(
+            modifier = Modifier.fillMaxSize()
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(dp16)
+        ) {
+            Text(
+                text = "Сетка (PixelWanker)",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(dp8))
+            Text(
+                text = "Экран показывает поверх всего интерфейса сетку с шагом 20 пикселей. " +
+                        "В центре расположена ячейка с крестиком для закрытия и скрытия сетки.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Composable
+private fun PixelWankerGridOverlay(
+    modifier: Modifier = Modifier,
+    spacingPx: Float = 20f
+) {
+    val lineColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
+    val cellBackground = MaterialTheme.colorScheme.background.copy(alpha = 0.85f)
+    val density = LocalDensity.current
+    val cellSize = with(density) { spacingPx.toDp() }
+
+    Box(modifier = modifier) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawGrid(
+                spacingPx = spacingPx,
+                lineColor = lineColor
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .size(cellSize)
+                .align(Alignment.Center)
+                .background(
+                    color = cellBackground,
+                    shape = RoundedCornerShape(6.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = lineColor,
+                    shape = RoundedCornerShape(6.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Закрыть сетку",
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+private fun DrawScope.drawGrid(
+    spacingPx: Float,
+    lineColor: Color
+) {
+    var x = 0f
+    while (x <= size.width) {
+        drawLine(
+            color = lineColor,
+            start = androidx.compose.ui.geometry.Offset(x, 0f),
+            end = androidx.compose.ui.geometry.Offset(x, size.height)
+        )
+        x += spacingPx
+    }
+
+    var y = 0f
+    while (y <= size.height) {
+        drawLine(
+            color = lineColor,
+            start = androidx.compose.ui.geometry.Offset(0f, y),
+            end = androidx.compose.ui.geometry.Offset(size.width, y)
+        )
+        y += spacingPx
     }
 }
 
@@ -257,11 +363,19 @@ private fun BottomSectionSwitcher(
             modifier = Modifier
                 .weight(1f)
                 .height(dp40),
-            text = "Приложения"
+            text = "Сетка"
         )
 
         AlexIconButton(
             onClick = { onSelectPage(1) },
+            modifier = Modifier
+                .weight(1f)
+                .height(dp40),
+            text = "Приложения"
+        )
+
+        AlexIconButton(
+            onClick = { onSelectPage(2) },
             modifier = Modifier
                 .weight(1f)
                 .height(dp40),
