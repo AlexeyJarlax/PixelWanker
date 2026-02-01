@@ -11,7 +11,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,13 +26,10 @@ import android.net.Uri
 import android.app.Activity
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pavlovalexey.pavlovAlexeySandbox.model.Workout
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppsViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppListItem
-import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.eventlist.SliderPagerIndicator
-import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.eventlist.WorkoutListItem
 import kotlinx.coroutines.launch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
@@ -47,21 +43,13 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun StartScreen(
-    onWorkoutClick: (Int) -> Unit,
     onAppClick: (String) -> Unit,
-    workoutsViewModel: StartScreenViewModel = hiltViewModel(),
     appsViewModel: InstalledAppsViewModel = hiltViewModel()
 ) {
-    val workoutsUiState by workoutsViewModel.uiState.collectAsState()
-    val workouts by workoutsViewModel.workouts.collectAsState()
-
     val appsUiState by appsViewModel.uiState.collectAsState()
     val apps by appsViewModel.apps.collectAsState()
 
-    var searchWorkoutsQuery by remember { mutableStateOf("") }
-    var selectedType by remember { mutableStateOf<String?>(null) }
-
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
@@ -82,15 +70,6 @@ fun StartScreen(
                         uiState = appsUiState,
                         apps = apps,
                         onAppClick = onAppClick
-                    )
-                    2 -> WorkoutsPage(
-                        uiState = workoutsUiState,
-                        workouts = workouts,
-                        searchQuery = searchWorkoutsQuery,
-                        onSearchChange = { searchWorkoutsQuery = it },
-                        selectedType = selectedType,
-                        onSelectType = { selectedType = it },
-                        onWorkoutClick = onWorkoutClick
                     )
                 }
             }
@@ -228,90 +207,6 @@ private fun AppsPage(
 }
 
 @Composable
-private fun WorkoutsPage(
-    uiState: UiState,
-    workouts: List<Workout>,
-    searchQuery: String,
-    onSearchChange: (String) -> Unit,
-    selectedType: String?,
-    onSelectType: (String?) -> Unit,
-    onWorkoutClick: (Int) -> Unit
-) {
-    Box(Modifier.fillMaxSize()) {
-        when (uiState) {
-            is UiState.Loading -> {
-                CircularProgressIndicator(Modifier.align(Alignment.Center))
-            }
-            is UiState.Error -> {
-                Text(
-                    text = uiState.message,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            is UiState.Success -> {
-                val types = workouts.map { it.type }.distinct()
-                val filtered = workouts.filter { w ->
-                    (searchQuery.isBlank() || w.title.contains(searchQuery, ignoreCase = true)) &&
-                            (selectedType == null || w.type == selectedType)
-                }
-
-                Column {
-                    VSpacer()
-                    if (workouts.isNotEmpty()) {
-                        SliderPagerIndicator(
-                            workouts = workouts,
-                            onItemClick = onWorkoutClick,
-                            modifier = Modifier.padding(vertical = dp8)
-                        )
-                    }
-
-                    AlexSearchTextField(
-                        value = searchQuery,
-                        onValueChange = onSearchChange,
-                        placeholderText = "Поиск тренировок"
-                    )
-
-                    if (types.isNotEmpty()) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = dp16, vertical = dp8),
-                            horizontalArrangement = Arrangement.spacedBy(dp8)
-                        ) {
-                            FilterChip(
-                                selected = selectedType == null,
-                                onClick = { onSelectType(null) },
-                                label = { Text("Все") }
-                            )
-                            types.forEach { type ->
-                                FilterChip(
-                                    selected = selectedType == type,
-                                    onClick = { onSelectType(type) },
-                                    label = { Text(type) }
-                                )
-                            }
-                        }
-                    }
-
-                    LazyColumn(
-                        contentPadding = PaddingValues(vertical = dp8)
-                    ) {
-                        items(filtered) { w ->
-                            WorkoutListItem(
-                                item = w,
-                                onClick = { onWorkoutClick(w.id) }
-                            )
-                            HorizontalDivider()
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun BottomSectionSwitcher(
     currentPage: Int,
     onSelectPage: (Int) -> Unit,
@@ -336,14 +231,6 @@ private fun BottomSectionSwitcher(
                 .weight(1f)
                 .height(dp40),
             text = "Приложения"
-        )
-
-        AlexIconButton(
-            onClick = { onSelectPage(2) },
-            modifier = Modifier
-                .weight(1f)
-                .height(dp40),
-            text = "Тренировки"
         )
     }
 }
