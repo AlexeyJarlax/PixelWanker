@@ -10,11 +10,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
@@ -94,11 +99,27 @@ private fun PixelWankerPage() {
     val context = LocalContext.current
     val activity = context as? Activity
     var pendingStart by remember { mutableStateOf(false) }
+    val availableSizes = remember { listOf(12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60) }
+    var selectedSize by remember { mutableStateOf(PixelWankerOverlayService.DEFAULT_GRID_SIZE) }
+    var selectedUnit by remember { mutableStateOf(PixelWankerOverlayService.GridUnit.PX) }
+    val colorOptions = remember {
+        listOf(
+            GridColorOption("Черный", Color.Black, PixelWankerOverlayService.GridColor.BLACK),
+            GridColorOption("Белый", Color.White, PixelWankerOverlayService.GridColor.WHITE),
+            GridColorOption("Красный", Color.Red, PixelWankerOverlayService.GridColor.RED)
+        )
+    }
+    var selectedColor by remember { mutableStateOf(colorOptions[1]) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
         if (pendingStart && Settings.canDrawOverlays(context)) {
-            PixelWankerOverlayService.start(context)
+            PixelWankerOverlayService.start(
+                context = context,
+                gridSize = selectedSize,
+                gridUnit = selectedUnit,
+                gridColor = selectedColor.value
+            )
             activity?.finish()
             pendingStart = false
         }
@@ -118,15 +139,45 @@ private fun PixelWankerPage() {
         )
         Spacer(modifier = Modifier.height(dp8))
         Text(
-            text = "Запускает поверх других приложений сетку с шагом 20 пикселей. " +
-                    "В центре появляется кнопка с крестиком для закрытия.",
+            text = "Запускает поверх других приложений сетку с выбранным шагом и цветом. " +
+                "В центре появляется кнопка с крестиком для закрытия.",
             style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(dp16))
+        Text(
+            text = "Параметры сетки",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.height(dp8))
+        UnitSelector(
+            selectedUnit = selectedUnit,
+            onUnitSelected = { selectedUnit = it }
+        )
+        Spacer(modifier = Modifier.height(dp8))
+        SizeSelector(
+            label = "Размер ячейки",
+            selectedValue = selectedSize,
+            options = availableSizes,
+            unitLabel = if (selectedUnit == PixelWankerOverlayService.GridUnit.PX) "px" else "dp",
+            onSelected = { selectedSize = it }
+        )
+        Spacer(modifier = Modifier.height(dp8))
+        ColorSelector(
+            options = colorOptions,
+            selectedOption = selectedColor,
+            onSelected = { selectedColor = it }
         )
         Spacer(modifier = Modifier.height(dp16))
         Button(
             onClick = {
                 if (Settings.canDrawOverlays(context)) {
-                    PixelWankerOverlayService.start(context)
+                    PixelWankerOverlayService.start(
+                        context = context,
+                        gridSize = selectedSize,
+                        gridUnit = selectedUnit,
+                        gridColor = selectedColor.value
+                    )
                     activity?.finish()
                 } else {
                     pendingStart = true
@@ -147,6 +198,122 @@ private fun PixelWankerPage() {
         )
     }
 }
+
+@Composable
+private fun UnitSelector(
+    selectedUnit: PixelWankerOverlayService.GridUnit,
+    onUnitSelected: (PixelWankerOverlayService.GridUnit) -> Unit
+) {
+    Text(text = "Единицы измерения")
+    Spacer(modifier = Modifier.height(dp8))
+    Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
+        UnitButton(
+            label = "px",
+            isSelected = selectedUnit == PixelWankerOverlayService.GridUnit.PX,
+            onClick = { onUnitSelected(PixelWankerOverlayService.GridUnit.PX) }
+        )
+        UnitButton(
+            label = "dp",
+            isSelected = selectedUnit == PixelWankerOverlayService.GridUnit.DP,
+            onClick = { onUnitSelected(PixelWankerOverlayService.GridUnit.DP) }
+        )
+    }
+}
+
+@Composable
+private fun UnitButton(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    if (isSelected) {
+        Button(onClick = onClick) {
+            Text(text = label)
+        }
+    } else {
+        OutlinedButton(onClick = onClick) {
+            Text(text = label)
+        }
+    }
+}
+
+@Composable
+private fun SizeSelector(
+    label: String,
+    selectedValue: Int,
+    options: List<Int>,
+    unitLabel: String,
+    onSelected: (Int) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Text(text = label)
+    Spacer(modifier = Modifier.height(dp8))
+    Box {
+        OutlinedButton(onClick = { expanded = true }) {
+            Text(text = "$selectedValue $unitLabel")
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(text = "$option $unitLabel") },
+                    onClick = {
+                        onSelected(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ColorSelector(
+    options: List<GridColorOption>,
+    selectedOption: GridColorOption,
+    onSelected: (GridColorOption) -> Unit
+) {
+    Text(text = "Цвет линий")
+    Spacer(modifier = Modifier.height(dp8))
+    Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
+        options.forEach { option ->
+            val isSelected = option == selectedOption
+            val buttonColors = if (isSelected) {
+                ButtonDefaults.buttonColors(containerColor = option.previewColor)
+            } else {
+                ButtonDefaults.outlinedButtonColors()
+            }
+            val contentColor = if (option.previewColor == Color.White) {
+                Color.Black
+            } else {
+                Color.White
+            }
+            if (isSelected) {
+                Button(
+                    onClick = { onSelected(option) },
+                    colors = buttonColors
+                ) {
+                    Text(text = option.label, color = contentColor)
+                }
+            } else {
+                OutlinedButton(
+                    onClick = { onSelected(option) },
+                    colors = buttonColors
+                ) {
+                    Text(text = option.label)
+                }
+            }
+        }
+    }
+}
+
+private data class GridColorOption(
+    val label: String,
+    val previewColor: Color,
+    val value: PixelWankerOverlayService.GridColor
+)
 
 @Composable
 private fun AppsPage(

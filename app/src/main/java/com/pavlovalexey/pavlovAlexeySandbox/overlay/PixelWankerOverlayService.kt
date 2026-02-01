@@ -16,6 +16,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.pavlovalexey.pavlovAlexeySandbox.R
 
 class PixelWankerOverlayService : Service() {
 
@@ -23,29 +24,43 @@ class PixelWankerOverlayService : Service() {
     private var gridOverlayView: FrameLayout? = null
     private var controlsOverlayView: FrameLayout? = null
     private var isGridVisible = true
+    private var gridSpacingPx = DEFAULT_GRID_SIZE.toFloat()
+    private var gridColor = applyAlpha(GridColor.WHITE.argb)
 
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        gridOverlayView = createGridOverlayView()
-        controlsOverlayView = createControlsOverlayView()
+    }
 
-        val gridParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        applySettingsFromIntent(intent)
+
+        if (isGridVisible) {
+            gridOverlayView?.let { view ->
+                windowManager?.removeView(view)
+            }
+            gridOverlayView = createGridOverlayView()
+            val gridParams = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.TRANSLUCENT
+            ).apply {
+                gravity = Gravity.TOP or Gravity.START
+            }
+            windowManager?.addView(gridOverlayView, gridParams)
         }
 
-        val controlsParams = createControlsLayoutParams()
+        if (controlsOverlayView == null) {
+            controlsOverlayView = createControlsOverlayView()
+            val controlsParams = createControlsLayoutParams()
+            windowManager?.addView(controlsOverlayView, controlsParams)
+        }
 
-        windowManager?.addView(gridOverlayView, gridParams)
-        windowManager?.addView(controlsOverlayView, controlsParams)
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
@@ -63,10 +78,21 @@ class PixelWankerOverlayService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    private fun applySettingsFromIntent(intent: Intent?) {
+        val size = intent?.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE) ?: DEFAULT_GRID_SIZE
+        val unitName = intent?.getStringExtra(EXTRA_GRID_UNIT) ?: GridUnit.PX.name
+        val unit = GridUnit.entries.firstOrNull { it.name == unitName } ?: GridUnit.PX
+        val colorName = intent?.getStringExtra(EXTRA_GRID_COLOR) ?: GridColor.WHITE.name
+        val color = GridColor.entries.firstOrNull { it.name == colorName } ?: GridColor.WHITE
+        val density = resources.displayMetrics.density
+        gridSpacingPx = if (unit == GridUnit.DP) size * density else size.toFloat()
+        gridColor = applyAlpha(color.argb)
+    }
+
     private fun createGridOverlayView(): FrameLayout {
         val root = FrameLayout(this)
 
-        val gridView = GridView(this)
+        val gridView = GridView(this, gridSpacingPx, gridColor)
         root.addView(
             gridView,
             FrameLayout.LayoutParams(
@@ -118,9 +144,9 @@ class PixelWankerOverlayService : Service() {
 
         fun updateToggleIcon() {
             val iconRes = if (isGridVisible) {
-                android.R.drawable.presence_invisible
+                R.drawable.grid_off_30dp
             } else {
-                android.R.drawable.button_onoff_indicator_off
+                R.drawable.grid_30dp
             }
             toggleButton.setImageDrawable(
                 ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes)
@@ -165,9 +191,7 @@ class PixelWankerOverlayService : Service() {
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            gravity = Gravity.TOP or Gravity.END
-            topMargin = dpToPx(12)
-            marginEnd = dpToPx(12)
+            gravity = Gravity.CENTER
         }
         root.addView(controlsContainer, controlsParams)
 
@@ -216,36 +240,72 @@ class PixelWankerOverlayService : Service() {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
         ).apply {
-            gravity = Gravity.TOP or Gravity.END
+            gravity = Gravity.CENTER
         }
 
-    private class GridView(context: Context) : View(context) {
+    private class GridView(
+        context: Context,
+        private val spacingPx: Float,
+        color: Int
+    ) : View(context) {
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.argb(80, 255, 255, 255)
+            this.color = color
             strokeWidth = 1f
         }
 
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
-            val spacing = 20f
             var x = 0f
             while (x <= width) {
                 canvas.drawLine(x, 0f, x, height.toFloat(), paint)
-                x += spacing
+                x += spacingPx
             }
 
             var y = 0f
             while (y <= height) {
                 canvas.drawLine(0f, y, width.toFloat(), y, paint)
-                y += spacing
+                y += spacingPx
             }
         }
     }
 
     companion object {
-        fun start(context: Context) {
+        const val DEFAULT_GRID_SIZE = 20
+        private const val EXTRA_GRID_SIZE = "extra_grid_size"
+        private const val EXTRA_GRID_UNIT = "extra_grid_unit"
+        private const val EXTRA_GRID_COLOR = "extra_grid_color"
+        private const val GRID_ALPHA = 120
+
+        enum class GridUnit {
+            PX,
+            DP
+        }
+
+        enum class GridColor(val argb: Int) {
+            BLACK(Color.BLACK),
+            WHITE(Color.WHITE),
+            RED(Color.RED)
+        }
+
+        fun start(
+            context: Context,
+            gridSize: Int = DEFAULT_GRID_SIZE,
+            gridUnit: GridUnit = GridUnit.PX,
+            gridColor: GridColor = GridColor.WHITE
+        ) {
             val intent = Intent(context, PixelWankerOverlayService::class.java)
+                .putExtra(EXTRA_GRID_SIZE, gridSize)
+                .putExtra(EXTRA_GRID_UNIT, gridUnit.name)
+                .putExtra(EXTRA_GRID_COLOR, gridColor.name)
             context.startService(intent)
         }
+
+        private fun applyAlpha(color: Int): Int =
+            Color.argb(
+                GRID_ALPHA,
+                Color.red(color),
+                Color.green(color),
+                Color.blue(color)
+            )
     }
 }
