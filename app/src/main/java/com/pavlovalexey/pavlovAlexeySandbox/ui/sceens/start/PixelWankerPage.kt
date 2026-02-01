@@ -87,7 +87,8 @@ fun PixelWankerPage() {
     var isPieVisible1 by remember { mutableStateOf(true) }
     var isPieVisible2 by remember { mutableStateOf(true) }
     var showTelegramStarsDialog by remember { mutableStateOf(false) }
-
+    val cloudtipsUrl = stringResource(R.string.cloudtips_url)
+    val pleinairPlayUrl = stringResource(R.string.pleinair_play_url)
     val telegramChannelUrl = stringResource(R.string.telegram_channel_url)
     val telegramChannelTitle = stringResource(R.string.telegram_channel_title)
 
@@ -161,7 +162,7 @@ fun PixelWankerPage() {
     }
 
     Box(Modifier.fillMaxSize()) {
-        MatrixBackground(100)
+//        MatrixBackground(100)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -321,7 +322,7 @@ fun PixelWankerPage() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-
+            SpacerHeight(8)
             AlexIconButton(
                 text = stringResource(R.string.telegram_open_channel_button),
                 outlined = true,
@@ -343,7 +344,7 @@ fun PixelWankerPage() {
                         .width(156.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.LightGray.copy(alpha = 0.5f))
-                        .clickable { openUrl(stringResource(R.string.cloudtips_url)) }
+                        .clickable { openUrl(cloudtipsUrl) }
                 ) {
                     Image(
                         painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
@@ -361,7 +362,7 @@ fun PixelWankerPage() {
                 modifier = Modifier
                     .size(dp40)
                     .clickable {
-                        openUrl(stringResource(R.string.pleinair_play_url))
+                        openUrl(pleinairPlayUrl)
                     },
                 contentDescription = stringResource(R.string.google_play_content_description)
             )

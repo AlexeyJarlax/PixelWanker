@@ -41,8 +41,8 @@
     <string name="start_grid">Запустить сетку</string>
     <string name="first_launch_dialog_text">После первого запуска система спросит о разрешении отображаться поверх других приложений. Найдите PixelWanker в списке и включите тумблер.</string>
     <string name="thanks_prompt">Если вы хотите отблагодарить автора приложения, можете сделать это одним из следующих способов:</string>
-    <string name="pleinair_install_prompt">Или установить и зарегистрироваться в моем приложении для художников Пленэр.</string>
-    <string name="pleinair_description">Пленэр — это прекрасный проект, который я всеми силами хочу развить во что-то большее и еще более прекрасное!</string>
+    <string name="pleinair_install_prompt">Или установить и попробовать моё приложение для художественных встреч Пленэр.</string>
+    <string name="pleinair_description">Пленэр — это прекрасный проект, который позволяет увлеченным живописью встречаться и рисовать вместе.</string>
     <string name="tips_prompt">Или отправить чаевые через cloudTips:</string>
     <string name="cookie_reward_text">Если вы отблагодарили автора, то возьмите печеньку!</string>
     <string name="pie_reward_text">И пирожок!</string>

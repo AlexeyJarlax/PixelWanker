@@ -41,8 +41,8 @@
     <string name="start_grid">Start grid</string>
     <string name="first_launch_dialog_text">After the first launch the system will ask for permission to draw over other apps. Find PixelWanker in the list and turn the toggle on.</string>
     <string name="thanks_prompt">If you want to thank the app author, you can do it in one of the following ways:</string>
-    <string name="pleinair_install_prompt">Or install and sign up for my artist app PleinAir.</string>
-    <string name="pleinair_description">PleinAir is a wonderful project that I want to grow into something bigger and even more beautiful!</string>
+    <string name="pleinair_install_prompt">Or install and try my app for Plein-air art meetings.</string>
+    <string name="pleinair_description">Plein air is a wonderful project that allows those who are passionate about painting to meet and paint together.</string>
     <string name="tips_prompt">Or send a tip via CloudTips:</string>
     <string name="cookie_reward_text">If you thanked the author, take a cookie!</string>
     <string name="pie_reward_text">And a pie!</string>
