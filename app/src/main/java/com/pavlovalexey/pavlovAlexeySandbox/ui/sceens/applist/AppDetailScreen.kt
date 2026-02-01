@@ -58,12 +58,17 @@ fun AppDetailScreen(
     }
     val resolvedViewModel =
         viewModel ?: viewModel(viewModelStoreOwner = backStackEntry, factory = factory)
+
     val uiState by resolvedViewModel.uiState.collectAsState()
     val details by resolvedViewModel.details.collectAsState()
+
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+
+    // ✅ Берём сохранённые настройки (включая extraColor)
     val gridSettings = GridSettingsStore.loadOrDefault(context)
+
     val overlayPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -73,7 +78,8 @@ fun AppDetailScreen(
                 context = context,
                 cellValue = gridSettings.cellValue,
                 unit = gridSettings.unit,
-                baseColor = gridSettings.baseColor
+                baseColor = gridSettings.baseColor,
+                extraColor = gridSettings.extraColor // ✅ NEW
             )
             val intent = context.packageManager.getLaunchIntentForPackage(packageName)
             if (intent != null) {
@@ -98,7 +104,8 @@ fun AppDetailScreen(
                 context = context,
                 cellValue = gridSettings.cellValue,
                 unit = gridSettings.unit,
-                baseColor = gridSettings.baseColor
+                baseColor = gridSettings.baseColor,
+                extraColor = gridSettings.extraColor // ✅ NEW
             )
             val intent = context.packageManager.getLaunchIntentForPackage(appPackageName)
             if (intent != null) {
