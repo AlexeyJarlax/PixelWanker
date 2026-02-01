@@ -54,7 +54,8 @@ fun AppDetailScreen(
     val factory = remember(backStackEntry, repository) {
         AppDetailViewModelFactory(repository, backStackEntry, backStackEntry.arguments)
     }
-    val resolvedViewModel = viewModel ?: viewModel(owner = backStackEntry, factory = factory)
+    val resolvedViewModel =
+        viewModel ?: viewModel(viewModelStoreOwner = backStackEntry, factory = factory)
     val uiState by resolvedViewModel.uiState.collectAsState()
     val details by resolvedViewModel.details.collectAsState()
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
