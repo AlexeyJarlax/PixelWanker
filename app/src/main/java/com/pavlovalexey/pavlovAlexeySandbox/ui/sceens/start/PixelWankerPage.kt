@@ -7,7 +7,8 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -48,8 +52,14 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.SpacerHeight
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp40
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
+import java.util.Locale
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -59,7 +69,6 @@ fun PixelWankerPage() {
     val activity = context as? Activity
     val sizes = remember { listOf(12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60) }
     val saved = remember { GridSettingsStore.loadOrDefault(context) }
-
     var unit by remember { mutableStateOf(saved.unit) }
     var selectedSize by remember { mutableStateOf(saved.cellValue) }
     var baseColor by remember { mutableStateOf(saved.baseColor) }
@@ -72,6 +81,16 @@ fun PixelWankerPage() {
     var isCookieVisible2 by remember { mutableStateOf(true) }
     var isPieVisible1 by remember { mutableStateOf(true) }
     var isPieVisible2 by remember { mutableStateOf(true) }
+    var showTelegramStarsDialog by remember { mutableStateOf(false) }
+
+    val telegramChannelUrl = "https://t.me/PixelWanker"
+    val telegramChannelTitle = "PixelWanker for Android dev"
+
+    val tipEligibleCountries = remember {
+        setOf("RU", "BY", "TJ", "UZ", "TM", "KZ")
+    }
+    val showRussianTipsBlock =
+        Locale.getDefault().country.uppercase(Locale.ROOT) in tipEligibleCountries
 
     fun saveNow() {
         GridSettingsStore.save(
@@ -80,7 +99,7 @@ fun PixelWankerPage() {
                 cellValue = selectedSize,
                 unit = unit,
                 baseColor = baseColor,
-                extraColor = extraColor // ✅ NEW
+                extraColor = extraColor
             )
         )
     }
@@ -94,7 +113,7 @@ fun PixelWankerPage() {
                 cellValue = selectedSize,
                 unit = unit,
                 baseColor = baseColor,
-                extraColor = extraColor // ✅ NEW
+                extraColor = extraColor
             )
             activity?.finish()
             pendingStart = false
@@ -118,7 +137,7 @@ fun PixelWankerPage() {
                 cellValue = selectedSize,
                 unit = unit,
                 baseColor = baseColor,
-                extraColor = extraColor // ✅ NEW
+                extraColor = extraColor
             )
             activity?.finish()
         } else {
@@ -129,6 +148,11 @@ fun PixelWankerPage() {
             )
             permissionLauncher.launch(intent)
         }
+    }
+
+    fun openUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -148,13 +172,6 @@ fun PixelWankerPage() {
             )
             SpacerHeight()
 
-            Text(
-                text = stringResource(R.string.pixelwanker_tagline),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            SpacerHeight()
             Text(
                 text = stringResource(R.string.pixelwanker_description),
                 style = MaterialTheme.typography.bodyMedium,
@@ -223,7 +240,17 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.WHITE
                         saveNow()
                     },
+                    colors = chipColorsFor(android.graphics.Color.WHITE),
                     label = { Text(stringResource(R.string.color_white)) }
+                )
+                FilterChip(
+                    selected = baseColor == android.graphics.Color.GREEN,
+                    onClick = {
+                        baseColor = android.graphics.Color.GREEN
+                        saveNow()
+                    },
+                    colors = chipColorsFor(android.graphics.Color.GREEN),
+                    label = { Text(stringResource(R.string.color_green)) }
                 )
                 FilterChip(
                     selected = baseColor == android.graphics.Color.BLACK,
@@ -231,6 +258,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.BLACK
                         saveNow()
                     },
+                    colors = chipColorsFor(android.graphics.Color.BLACK),
                     label = { Text(stringResource(R.string.color_black)) }
                 )
                 FilterChip(
@@ -239,6 +267,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.RED
                         saveNow()
                     },
+                    colors = chipColorsFor(android.graphics.Color.RED),
                     label = { Text(stringResource(R.string.color_red)) }
                 )
             }
@@ -247,6 +276,7 @@ fun PixelWankerPage() {
 
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
+                isFillMaxWidth = false,
                 outlined = true,
                 onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
             )
@@ -263,68 +293,107 @@ fun PixelWankerPage() {
             }
 
             Text(
-                text = "Если вы хотите отблагодарить автора приложения, можете сделать это одним из следующих способов:",
+                text = stringResource(R.string.thanks_prompt),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
             SpacerHeight(60)
 
-            Row() {
+            Text(
+                text = "Донаты через Telegram ⭐️",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            SpacerHeight()
+
+            Text(
+                text =
+                    "Самый простой способ поддержать проект — поставить ⭐️ платную реакцию в Telegram.\n",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            AlexIconButton(
+                text = "Открыть канал @PixelWanker",
+                outlined = true,
+                isFillMaxWidth = false,
+                onClick = { showTelegramStarsDialog = true },
+            )
+            SpacerHeight(60)
+
+            if (showRussianTipsBlock) {
                 Text(
-                    text = "Установить и зарегистрироваться в моем приложении для художников PleinAir",
+                    text = stringResource(R.string.tips_prompt),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().weight(2f)
+                    modifier = Modifier.fillMaxWidth()
                 )
-                Image(
-                    painter = painterResource(R.drawable.ic_google),
-                    modifier = Modifier.weight(1f),
-                    contentDescription = "googlePlay"
-                ) // https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share
+                SpacerHeight(8)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(dp12))
+                        .background(Color.LightGray.copy(alpha = 0.3f))
+                        .clickable { openUrl("https://pay.cloudtips.ru/p/da048bc5") }
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
+                        contentDescription = stringResource(R.string.tips_content_description),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(dp8),
+                    )
+                }
+                SpacerHeight(60)
             }
+
+            Image(
+                painter = painterResource(R.drawable.ic_google),
+                modifier = Modifier
+                    .size(dp40)
+                    .clickable {
+                        openUrl("https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share")
+                    },
+                contentDescription = stringResource(R.string.google_play_content_description)
+            )
+            SpacerHeight(8)
             Text(
-                text = "PleinAir - это прекрасный проект, который я всеми силами хочу развить во что-то больше и еще более прекрасное!",
+                text = stringResource(R.string.pleinair_install_prompt),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(Alignment.CenterVertically)
+            )
+            Text(
+                text = stringResource(R.string.pleinair_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
             SpacerHeight(60)
 
-            Text(
-                text = "Отправить мне чаевые:",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Image(
-                painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
-                contentDescription = "tips",
-                modifier = Modifier.fillMaxWidth(),
-            )  // https://pay.cloudtips.ru/p/da048bc5
-            SpacerHeight(60)
-
 
             if (isCookieVisible2) {
-            Text(
-                text = "Если вы отблагодарили автора, то возьмите печеньку!",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+                Text(
+                    text = stringResource(R.string.cookie_reward_text),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Cookie(onClose = { isCookieVisible2 = false })
                 SpacerHeight(60)
             }
 
             if (isPieVisible2) {
-                Text(text = "И пирожок с полки!")
+                Text(text = stringResource(R.string.pie_reward_text))
                 Pie(onClose = { isPieVisible2 = false })
-                Text(text = "______________")
                 SpacerHeight(60)
             }
 
             Text(
-                text = "Кажется вы дошли до самого конца... и разблокировали дополнительный цвет для сетки! " +
-                        "Да, с двумя цветами на контрасте она будет заметнее в сложных дизайнах.",
+                text = stringResource(R.string.extra_color_unlock_text),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -337,7 +406,7 @@ fun PixelWankerPage() {
                     extraColor = null
                     saveNow()
                 },
-                label = { Text("Без второго цвета") }
+                label = { Text(stringResource(R.string.no_second_color)) }
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -350,8 +419,10 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    colors = chipColorsFor(android.graphics.Color.WHITE),
                     label = { Text(stringResource(R.string.color_white)) }
                 )
+
                 FilterChip(
                     selected = extraColor == android.graphics.Color.BLACK,
                     onClick = {
@@ -359,13 +430,10 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    colors = chipColorsFor(android.graphics.Color.BLACK),
                     label = { Text(stringResource(R.string.color_black)) }
                 )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(dp8)
-            ) {
+
                 FilterChip(
                     selected = extraColor == android.graphics.Color.RED,
                     onClick = {
@@ -373,9 +441,24 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    colors = chipColorsFor(android.graphics.Color.RED),
                     label = { Text(stringResource(R.string.color_red)) }
                 )
-
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(dp8)
+            ) {
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.GREEN,
+                    onClick = {
+                        extraColor = android.graphics.Color.GREEN
+                        saveNow()
+                    },
+                    modifier = Modifier.weight(1f),
+                    colors = chipColorsFor(android.graphics.Color.GREEN),
+                    label = { Text(stringResource(R.string.color_green)) }
+                )
                 FilterChip(
                     selected = extraColor == android.graphics.Color.YELLOW,
                     onClick = {
@@ -383,7 +466,8 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Жёлтый") }
+                    colors = chipColorsFor(android.graphics.Color.YELLOW),
+                    label = { Text(stringResource(R.string.color_yellow)) }
                 )
 
                 FilterChip(
@@ -393,9 +477,18 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Синий") }
+                    colors = chipColorsFor(android.graphics.Color.BLUE),
+                    label = { Text(stringResource(R.string.color_blue)) }
                 )
             }
+            SpacerHeight()
+
+            AlexIconButton(
+                text = stringResource(R.string.start_grid),
+                isFillMaxWidth = false,
+                outlined = true,
+                onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
+            )
             SpacerHeight(60)
         }
 
@@ -414,5 +507,41 @@ fun PixelWankerPage() {
                 }
             )
         }
+
+        if (showTelegramStarsDialog) {
+            WankerConfirmationDialog(
+                title = "Telegram Stars ⭐️",
+                dialogText =
+                    "Сейчас откроется канал \"$telegramChannelTitle\".\n\n" +
+                            "Дальше:\n" +
+                            "• открой любой пост\n" +
+                            "• нажми ⭐️ (платная реакция)\n" +
+                            "• выбери количество Stars и подтверди оплату\n\n" +
+                            "Оплата проходит внутри Telegram. Приложение PixelWanker не собирает и не хранит данные об оплатах.",
+                confirmText = "Открыть канал",
+                dismissText = "Отмена",
+                onDismiss = { showTelegramStarsDialog = false },
+                onConfirm = {
+                    showTelegramStarsDialog = false
+                    openUrl(telegramChannelUrl)
+                }
+            )
+        }
     }
+}
+
+@Composable
+private fun chipColorsFor(colorInt: Int) = run {
+    val base = Color(colorInt)
+    val content = if (base.luminance() < 0.45f) Color.White else Color.Black
+
+    FilterChipDefaults.filterChipColors(
+        // когда НЕ выбрано
+        containerColor = base.copy(alpha = 0.22f),
+        labelColor = content,
+
+        // когда ВЫБРАНО
+        selectedContainerColor = base,
+        selectedLabelColor = content
+    )
 }

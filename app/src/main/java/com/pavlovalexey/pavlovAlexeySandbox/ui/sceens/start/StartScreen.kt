@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -34,10 +31,10 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.LocalHazeState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
 import kotlinx.coroutines.launch
 import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
+import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -49,18 +46,13 @@ fun StartScreen(
     val repository = remember(context) { InstalledAppsRepositoryImpl(context.applicationContext) }
     val factory = remember(repository) { InstalledAppsViewModelFactory(repository) }
     val resolvedViewModel = appsViewModel ?: viewModel(factory = factory)
-
     val appsUiState by resolvedViewModel.uiState.collectAsState()
     val apps by resolvedViewModel.apps.collectAsState()
-
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
     val activity = context as? Activity
-
     val hazeState = remember { HazeState() }
     var showAboutDialog by remember { mutableStateOf(false) }
-
-    // Высота нижней навигации — строго полоска
     val bottomBarHeight = 60.dp
     val bottomBarOuterPadding = dp8
 
@@ -68,10 +60,8 @@ fun StartScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                // haze ставим на контейнер, который рисует фон/контент (то, что будет блюриться)
-                .haze(hazeState)
+                .hazeSource(hazeState)
         ) {
-            // Контент рисуется "под" нижней панелью, чтобы blur было что блюрить
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
