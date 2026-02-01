@@ -26,7 +26,7 @@
     <string name="search_apps_placeholder">Search apps</string>
     <string name="about_title">About</string>
     <string name="about_body">Pavlov Alexey Sandbox</string>
-    <string name="about_app_text">PixelWanker helps you check spacing and alignment faster with a clean grid overlay.\n\n👉 the details 👌\n\nPixelWanker is a utility for Android developers and designers who want a fast way to check UI spacing, alignment, and visual rhythm directly on the device.\n\nThe app generates a customizable on-screen grid and lets you overlay it on top of any app, so you can instantly evaluate:\n\n- padding and margins between elements;\n\n- spacing inside lists, cards, and screens;\n\n- alignment consistency;\n\n- grid-based layout and overall UI rhythm;\n\nAlso useful for web developers shipping mobile experiences (responsive websites, PWAs, WebView-based apps).\n\nOpen your site on a phone and use the grid overlay to quickly spot real-device spacing issues that are easy to miss in DevTools:\n\n- inconsistent spacing across breakpoints;\n\n- uneven vertical rhythm (8 / 12 / 16 px systems);\n\n- misaligned icons and text baselines;\n\n- tap-target spacing and layout “drift” on small screens;\n\nKey features:\n\n- Grid overlay on top of any app (overlay).\n\n- Adjustable cell size for the level of precision you need  (px / dp).\n\n- Custom grid color for visibility on any background.\n\n- Quick UI checks without taking screenshots or using external editors.\n\nFor pixel-perfect enthusiasts, Pixel wanker for Android dev helps you lock in spacing quickly and reduce back-and-forth iterations — whether you’re polishing a native Android UI or fine-tuning a mobile web layout on a real device.</string>
+    <string name="about_app_text">PixelWanker overlays a measurement grid on top of any app. You can pick the grid cell size from 12 to 60 px/dp and choose line colors (white, black, green, red, plus optional contrast colors: yellow or blue). The grid is built from vertical and horizontal stripes, and the number of stripes depends on the selected cell size. You can also open the installed apps list, tap an app card, and launch it together with the grid.</string>
     <string name="about_ok">OK</string>
     <string name="pixelwanker_tagline">Don’t be a wanker — stop guessing,\nstart measuring</string>
     <string name="pixelwanker_description">PixelWanker is a utility for Android developers and designers who want a fast way to check UI spacing, alignment, and visual rhythm directly on the device. The app generates a customizable on-screen grid and lets you overlay it on top of any app</string>
@@ -61,4 +61,18 @@
     <string name="search">Search</string>
     <string name="confirm">Go!</string>
     <string name="dismiss">Back</string>
+    <string name="about_dialog_confirm">No more wanking</string>
+    <string name="about_dialog_dismiss">Back to wanking</string>
+    <string name="apps_page_description">All installed apps on the device. Open an app card to launch it together with the grid.</string>
+    <string name="telegram_donations_title">Donations via Telegram ⭐️</string>
+    <string name="telegram_donations_description">The easiest way to support the project is to leave a paid ⭐️ reaction in Telegram.</string>
+    <string name="telegram_open_channel_button">Open channel @PixelWanker</string>
+    <string name="telegram_stars_dialog_title">Telegram Stars ⭐️</string>
+    <string name="telegram_stars_dialog_text">The channel “%1$s” will open.\n\nNext:\n• open any post\n• tap ⭐️ (paid reaction)\n• choose the number of Stars and confirm.\n\nPayment happens inside Telegram. PixelWanker does not collect or store payment data.</string>
+    <string name="telegram_stars_confirm">Open channel</string>
+    <string name="telegram_stars_dismiss">Cancel</string>
+    <string name="telegram_channel_title">PixelWanker for Android dev</string>
+    <string name="telegram_channel_url">https://t.me/PixelWanker</string>
+    <string name="cloudtips_url">https://pay.cloudtips.ru/p/da048bc5</string>
+    <string name="pleinair_play_url">https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&amp;pcampaignid=web_share</string>
 </resources>

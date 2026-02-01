@@ -26,7 +26,7 @@
     <string name="search_apps_placeholder">Поиск приложений</string>
     <string name="about_title">О приложении</string>
     <string name="about_body">Pavlov Alexey Sandbox</string>
-    <string name="about_app_text">PixelWanker помогает быстрее проверять отступы и выравнивание с помощью аккуратной сетки-оверлея.\n\n👉 подробности 👌\n\PixelWanker — утилита для Android-разработчиков и дизайнеров, которым нужен быстрый способ проверять отступы, выравнивание и визуальный ритм интерфейса прямо на устройстве.\n\nПриложение генерирует настраиваемую экранную сетку и позволяет накладывать её поверх любого приложения, чтобы мгновенно оценить:\n\n- внутренние отступы (padding) и внешние поля (margin) между элементами;\n\n- расстояния внутри списков, карточек и экранов;\n\n- стабильность выравнивания;\n\n- работу по сетке и общий ритм интерфейса;\n\nТакже полезно веб-разработчикам, которые делают мобильные интерфейсы (адаптивные сайты, PWA, приложения на WebView). Откройте сайт на телефоне и используйте сетку, чтобы быстро заметить проблемы с отступами на реальном устройстве, которые легко пропустить в DevTools:\n\n- непоследовательные отступы на разных брейкпоинтах;\n\n- неровный вертикальный ритм (системы 8/12/16 px);\n\n- несовпадение базовых линий иконок/текста;\n\n- расстояния для tap-target и «дрейф» раскладки на маленьких экранах.\n\nКлючевые возможности:\n\n- Сетка поверх любого приложения (overlay).\n\n- Регулируемый размер ячейки под нужную точность (px / dp).\n\n- Настраиваемый цвет сетки для видимости на любом фоне.\n\n- Быстрые проверки без скриншотов и внешних редакторов.\n\nДля любителей pixel-perfect: Pixel wanker for Android dev помогает быстро зафиксировать идеальные отступы и сократить число итераций — будь то полировка нативного Android UI или тонкая настройка мобильной веб-раскладки на реальном устройстве.</string>
+    <string name="about_app_text">PixelWanker накладывает измерительную сетку поверх любого приложения. Можно выбрать размер ячейки от 12 до 60 px/dp и цвет линий (белый, черный, зелёный, красный, а также дополнительный контрастный цвет: жёлтый или синий). Сетка состоит из вертикальных и горизонтальных полос, их количество зависит от выбранного размера ячейки. Также доступен список установленных приложений — откройте карточку и запустите приложение вместе с сеткой.</string>
     <string name="about_ok">ОК</string>
     <string name="pixelwanker_tagline">Не будь wanker — хватит гадать,\nначни измерять</string>
     <string name="pixelwanker_description">PixelWanker — утилита для разработчиков и дизайнеров, которым нужен быстрый способ проверять отступы, выравнивание и визуальный ритм прямо на устройстве. Приложение создаёт настраиваемую сетку и позволяет накладывать её поверх любого приложения</string>
@@ -61,4 +61,18 @@
     <string name="search">Поиск</string>
     <string name="confirm">Вперёд!</string>
     <string name="dismiss">Назад</string>
+    <string name="about_dialog_confirm">Больше никаких wanking</string>
+    <string name="about_dialog_dismiss">Назад к wanking</string>
+    <string name="apps_page_description">Список всех приложений устройства. Открыв карточку приложения, вы сможете запустить приложение вместе с сеткой.</string>
+    <string name="telegram_donations_title">Донаты через Telegram ⭐️</string>
+    <string name="telegram_donations_description">Самый простой способ поддержать проект — поставить ⭐️ платную реакцию в Telegram.</string>
+    <string name="telegram_open_channel_button">Открыть канал @PixelWanker</string>
+    <string name="telegram_stars_dialog_title">Telegram Stars ⭐️</string>
+    <string name="telegram_stars_dialog_text">Oткроется канал «%1$s».\n\nДальше:\n• открой любой пост\n• нажми ⭐️ (платная реакция)\n• выбери количество Stars и подтверди.\n\nОплата проходит внутри Telegram. Приложение PixelWanker не собирает и не хранит данные об оплатах.</string>
+    <string name="telegram_stars_confirm">Открыть канал</string>
+    <string name="telegram_stars_dismiss">Отмена</string>
+    <string name="telegram_channel_title">PixelWanker for Android dev</string>
+    <string name="telegram_channel_url">https://t.me/PixelWanker</string>
+    <string name="cloudtips_url">https://pay.cloudtips.ru/p/da048bc5</string>
+    <string name="pleinair_play_url">https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&amp;pcampaignid=web_share</string>
 </resources>
