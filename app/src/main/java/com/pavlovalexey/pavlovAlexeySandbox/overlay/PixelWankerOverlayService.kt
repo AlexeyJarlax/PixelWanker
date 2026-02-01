@@ -81,9 +81,9 @@ class PixelWankerOverlayService : Service() {
     private fun applySettingsFromIntent(intent: Intent?) {
         val size = intent?.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE) ?: DEFAULT_GRID_SIZE
         val unitName = intent?.getStringExtra(EXTRA_GRID_UNIT) ?: GridUnit.PX.name
-        val unit = GridUnit.entries.firstOrNull { it.name == unitName } ?: GridUnit.PX
+        val unit = GridUnit.values().firstOrNull { it.name == unitName } ?: GridUnit.PX
         val colorName = intent?.getStringExtra(EXTRA_GRID_COLOR) ?: GridColor.WHITE.name
-        val color = GridColor.entries.firstOrNull { it.name == colorName } ?: GridColor.WHITE
+        val color = GridColor.values().firstOrNull { it.name == colorName } ?: GridColor.WHITE
         val density = resources.displayMetrics.density
         gridSpacingPx = if (unit == GridUnit.DP) size * density else size.toFloat()
         gridColor = applyAlpha(color.argb)
