@@ -17,8 +17,8 @@ android {
         resourceConfigurations += setOf("ru", "en")
         minSdk = 24 //Android 7
         targetSdk = 36
-        versionCode = 14
-        versionName = "0.14"
+        versionCode = 16
+        versionName = "0.16"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -117,5 +117,4 @@ dependencies {
 
     // Обфускатор R8
     implementation(libs.bcprov.jdk15on)
-    implementation(libs.conscrypt.android)
 }
