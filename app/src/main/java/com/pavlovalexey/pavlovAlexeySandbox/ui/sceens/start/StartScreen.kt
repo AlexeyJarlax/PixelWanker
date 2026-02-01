@@ -53,26 +53,28 @@ fun StartScreen(
     val activity = context as? Activity
     val hazeState = remember { HazeState() }
     var showAboutDialog by remember { mutableStateOf(false) }
-    val bottomBarHeight = 60.dp
+    val bottomBarHeight = 48.dp
     val bottomBarOuterPadding = dp8
 
     CompositionLocalProvider(LocalHazeState provides hazeState) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(hazeState)
-        ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxSize()
-            ) { page ->
-                when (page) {
-                    0 -> PixelWankerPage()
-                    1 -> AppsPage(
-                        uiState = appsUiState,
-                        apps = apps,
-                        onAppClick = onAppClick
-                    )
+        Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hazeSource(hazeState)
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    when (page) {
+                        0 -> PixelWankerPage()
+                        1 -> AppsPage(
+                            uiState = appsUiState,
+                            apps = apps,
+                            onAppClick = onAppClick
+                        )
+                    }
                 }
             }
 
