@@ -56,7 +56,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
-        languageVersion = "1.9"
+        languageVersion = "2.2"
     }
 
     buildFeatures {
@@ -64,10 +64,6 @@ android {
         viewBinding = true
         dataBinding = true
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
     }
 
     packaging {
