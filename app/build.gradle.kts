@@ -3,10 +3,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -22,7 +19,7 @@ android {
         targetSdk = 36
         versionCode = 13
         versionName = "0.13"
-        testInstrumentationRunner = "com.pavlovalexey.pavlovAlexeySandbox.HiltTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -56,7 +53,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
-        languageVersion = "1.9"
+        languageVersion = "2.2"
     }
 
     buildFeatures {
@@ -66,24 +63,12 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
-
     packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
         }
     }
 
-    hilt {
-        enableAggregatingTask = true
-    }
-
-    kapt {
-        correctErrorTypes = true
-        includeCompileClasspath = false
-    }
 }
 
 composeCompiler {
@@ -106,12 +91,6 @@ dependencies {
     // mailto: URI
 //    implementation(libs.email.intent.builder)
     implementation(libs.snakeyaml)
-
-    // Dagger Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.hilt.navigation.compose.v100)
 
     // Jetpack Compose
     implementation(libs.androidx.ui)
@@ -139,6 +118,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 //    implementation ("androidx.compose.material:material-icons-extended:1.4.3")
 
+    // haze blur
+    implementation(libs.haze) // блюр, эфект размытости для нижней навигации
+
     // корутин
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.peko)
@@ -158,9 +140,8 @@ dependencies {
     implementation (libs.accompanist.permissions)
 
     // Room
-    implementation (libs.androidx.room.runtime)
-    ksp (libs.androidx.room.compiler)
-    implementation (libs.androidx.room.ktx)
+//    implementation (libs.androidx.room.runtime)
+//    implementation (libs.androidx.room.ktx)
 
     // работа со временем
 //    implementation (libs.androidx.datastore.preferences)

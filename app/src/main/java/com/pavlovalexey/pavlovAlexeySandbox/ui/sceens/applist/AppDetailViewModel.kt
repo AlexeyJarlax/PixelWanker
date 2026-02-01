@@ -8,14 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pavlovAlexeySandbox.model.AppDetails
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepository
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.savedstate.SavedStateRegistryOwner
 
-@HiltViewModel
-class AppDetailViewModel @Inject constructor(
+class AppDetailViewModel(
     private val repository: InstalledAppsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -41,5 +40,23 @@ class AppDetailViewModel @Inject constructor(
                     UiState.Error(e.message ?: "Не удалось загрузить информацию")
             }
         }
+    }
+}
+
+class AppDetailViewModelFactory(
+    private val repository: InstalledAppsRepository,
+    owner: SavedStateRegistryOwner,
+    defaultArgs: android.os.Bundle? = null
+) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    override fun <T : ViewModel> create(
+        key: String,
+        modelClass: Class<T>,
+        handle: SavedStateHandle
+    ): T {
+        if (modelClass.isAssignableFrom(AppDetailViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return AppDetailViewModel(repository, handle) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }
