@@ -34,6 +34,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.MatrixBackground
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.VSpacer
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerProgress
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 
@@ -88,7 +89,7 @@ fun AppDetailScreen(
             MatrixBackground(100)
             when (uiState) {
                 is UiState.Loading -> {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                    WankerProgress()
                 }
 
                 is UiState.Error -> {
