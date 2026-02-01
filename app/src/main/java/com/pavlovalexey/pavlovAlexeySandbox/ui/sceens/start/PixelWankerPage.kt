@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
@@ -64,6 +65,7 @@ fun PixelWankerPage() {
     var pendingStart by remember { mutableStateOf(false) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    var isPieVisible by remember { mutableStateOf(true) }
 
     fun saveNow() {
         GridSettingsStore.save(
@@ -243,6 +245,69 @@ fun PixelWankerPage() {
                 onClick = {
                     runWithFirstLaunchDialog { startOverlayOrRequestPermission() }
                 },
+            )
+
+            Spacer(modifier = Modifier.height(dp16))
+
+            Text(
+                text = "Если вы хотите отблагодарить автора приложения, можете сделать это следующим способом:",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(dp12))
+
+            Text(
+                text = "Установить и зарегистрироваться в моем приложении для художников. " +
+                    "PleinAir - это прекрасный проект, который я всеми силами хочу развить во что-то больше и еще более прекрасное! " +
+                    "https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(dp12))
+
+            Text(
+                text = "Зайти в мой профиль и залайкать PixelWanker или PleinAir " +
+                    "https://play.google.com/store/apps/dev?id=8406991842366944145&pli=1",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(dp12))
+
+            Text(
+                text = "Взять с полки пирожок (тут я хочу, чтобы ты текстовыми символами нарисовал пирожок на полке. " +
+                    "Когда пользователь кликнет на него, пирожок должен исчезнуть)",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (isPieVisible) {
+                Spacer(modifier = Modifier.height(dp8))
+                Text(
+                    text = "┌───────────────┐\n" +
+                        "│    __--__     │\n" +
+                        "│   /____\\    │\n" +
+                        "│   \\____/    │\n" +
+                        "└───────────────┘",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isPieVisible = false }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dp12))
+
+            Text(
+                text = "Кажется вы дошли до самого конца... и разблокировали дополнительный цвет для сетки! " +
+                    "Да, с двумя цветами на контрасте она будет заметнее в сложных дизайнах.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
