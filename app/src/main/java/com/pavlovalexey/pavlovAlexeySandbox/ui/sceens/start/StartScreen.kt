@@ -2,6 +2,8 @@ package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
@@ -187,10 +189,10 @@ private fun AppsPage(
                         placeholderText = "Поиск приложений"
                     )
 
-                    androidx.compose.foundation.lazy.LazyColumn(
+                    LazyColumn(
                         contentPadding = PaddingValues(vertical = dp8)
                     ) {
-                        androidx.compose.foundation.lazy.items(filtered) { app ->
+                        items(filtered) { app ->
                             InstalledAppListItem(
                                 app = app,
                                 onClick = { onAppClick(app.packageName) }
