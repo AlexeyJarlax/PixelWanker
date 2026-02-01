@@ -139,6 +139,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 //    implementation ("androidx.compose.material:material-icons-extended:1.4.3")
 
+    // haze blur
+    implementation(libs.haze)
+
     // корутин
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.peko)
