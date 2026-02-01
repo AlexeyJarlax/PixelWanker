@@ -14,6 +14,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 
 class PixelWankerOverlayService : Service() {
@@ -55,16 +56,27 @@ class PixelWankerOverlayService : Service() {
     private fun createOverlayView(): FrameLayout {
         val root = FrameLayout(this)
 
+        val density = resources.displayMetrics.density
+        fun dpToPx(value: Int): Int = (value * density).toInt()
+
+        val gridLayer = FrameLayout(this)
         val gridView = GridView(this)
-        root.addView(
+        gridLayer.addView(
             gridView,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
         )
+        root.addView(
+            gridLayer,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
 
-        val closeButton = ImageView(this).apply {
+        fun createControlButton(): ImageView = ImageView(this).apply {
             setImageDrawable(
                 ContextCompat.getDrawable(
                     this@PixelWankerOverlayService,
@@ -72,20 +84,81 @@ class PixelWankerOverlayService : Service() {
                 )
             )
             setColorFilter(Color.WHITE)
-            setOnClickListener { stopSelf() }
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
-                cornerRadius = 6f
+                cornerRadius = dpToPx(6).toFloat()
                 setColor(Color.argb(200, 0, 0, 0))
             }
-            setPadding(4, 4, 4, 4)
+            setPadding(
+                dpToPx(4),
+                dpToPx(4),
+                dpToPx(4),
+                dpToPx(4)
+            )
         }
 
-        val closeSize = 20
-        val closeParams = FrameLayout.LayoutParams(closeSize, closeSize).apply {
-            gravity = Gravity.CENTER
+        val toggleButton = createControlButton()
+        val closeButton = createControlButton().apply {
+            setImageDrawable(
+                ContextCompat.getDrawable(
+                    this@PixelWankerOverlayService,
+                    android.R.drawable.ic_menu_close_clear_cancel
+                )
+            )
+            setOnClickListener { stopSelf() }
         }
-        root.addView(closeButton, closeParams)
+
+        var isGridVisible = true
+        fun updateToggleIcon() {
+            val iconRes = if (isGridVisible) {
+                android.R.drawable.presence_invisible
+            } else {
+                android.R.drawable.presence_visible
+            }
+            toggleButton.setImageDrawable(
+                ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes)
+            )
+            toggleButton.contentDescription = if (isGridVisible) {
+                "Скрыть сетку"
+            } else {
+                "Показать сетку"
+            }
+        }
+
+        updateToggleIcon()
+        toggleButton.setOnClickListener {
+            isGridVisible = !isGridVisible
+            gridLayer.visibility = if (isGridVisible) View.VISIBLE else View.GONE
+            updateToggleIcon()
+        }
+
+        val controlsContainer = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        val buttonSize = dpToPx(25)
+        val buttonSpacing = dpToPx(6)
+
+        controlsContainer.addView(
+            toggleButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize).apply {
+                marginEnd = buttonSpacing
+            }
+        )
+        controlsContainer.addView(
+            closeButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize)
+        )
+
+        val controlsParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.END
+            topMargin = dpToPx(12)
+            marginEnd = dpToPx(12)
+        }
+        root.addView(controlsContainer, controlsParams)
 
         return root
     }
