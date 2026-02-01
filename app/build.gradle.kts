@@ -3,10 +3,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-//    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
-//    id("kotlin-kapt")
-//    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -22,7 +19,7 @@ android {
         targetSdk = 36
         versionCode = 13
         versionName = "0.13"
-        testInstrumentationRunner = "com.pavlovalexey.pavlovAlexeySandbox.HiltTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -72,14 +69,6 @@ android {
         }
     }
 
-//    hilt {
-//        enableAggregatingTask = true
-//    }
-
-//    kapt {
-//        correctErrorTypes = true
-//        includeCompileClasspath = false
-//    }
 }
 
 composeCompiler {
@@ -102,12 +91,6 @@ dependencies {
     // mailto: URI
 //    implementation(libs.email.intent.builder)
     implementation(libs.snakeyaml)
-
-    // Dagger Hilt
-//    implementation(libs.hilt.android)
-//    kapt(libs.dagger.hilt.compiler)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.hilt.navigation.compose.v100)
 
     // Jetpack Compose
     implementation(libs.androidx.ui)
@@ -158,7 +141,6 @@ dependencies {
 
     // Room
 //    implementation (libs.androidx.room.runtime)
-//    ksp (libs.androidx.room.compiler)
 //    implementation (libs.androidx.room.ktx)
 
     // работа со временем

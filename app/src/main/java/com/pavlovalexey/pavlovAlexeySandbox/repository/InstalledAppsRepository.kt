@@ -7,18 +7,16 @@ import android.content.pm.PackageManager
 import android.os.Build
 import com.pavlovalexey.pavlovAlexeySandbox.model.AppDetails
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.security.MessageDigest
-import javax.inject.Inject
 
 interface InstalledAppsRepository {
     suspend fun getInstalledApps(): List<InstalledApp>
     suspend fun getAppDetails(packageName: String): AppDetails
 }
 
-class InstalledAppsRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+class InstalledAppsRepositoryImpl(
+    private val context: Context
 ) : InstalledAppsRepository {
 
     private val pm: PackageManager = context.packageManager

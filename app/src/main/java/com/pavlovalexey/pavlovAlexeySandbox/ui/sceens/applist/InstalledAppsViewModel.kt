@@ -7,14 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepository
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import androidx.lifecycle.ViewModelProvider
 
-@HiltViewModel
-class InstalledAppsViewModel @Inject constructor(
+class InstalledAppsViewModel(
     private val repository: InstalledAppsRepository
 ) : ViewModel() {
 
@@ -39,5 +37,17 @@ class InstalledAppsViewModel @Inject constructor(
                     UiState.Error(e.message ?: "Не удалось загрузить список приложений")
             }
         }
+    }
+}
+
+class InstalledAppsViewModelFactory(
+    private val repository: InstalledAppsRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(InstalledAppsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return InstalledAppsViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }

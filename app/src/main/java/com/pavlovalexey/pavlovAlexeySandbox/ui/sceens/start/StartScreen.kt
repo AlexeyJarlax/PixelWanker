@@ -30,11 +30,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppsViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppListItem
+import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppsViewModelFactory
 import kotlinx.coroutines.launch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -63,19 +63,24 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepositoryImpl
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun StartScreen(
     onAppClick: (String) -> Unit,
-    appsViewModel: InstalledAppsViewModel = hiltViewModel(),
+    appsViewModel: InstalledAppsViewModel? = null,
 ) {
-    val appsUiState by appsViewModel.uiState.collectAsState()
-    val apps by appsViewModel.apps.collectAsState()
+    val context = LocalContext.current
+    val repository = remember(context) { InstalledAppsRepositoryImpl(context.applicationContext) }
+    val factory = remember(repository) { InstalledAppsViewModelFactory(repository) }
+    val resolvedViewModel = appsViewModel ?: viewModel(factory = factory)
+    val appsUiState by resolvedViewModel.uiState.collectAsState()
+    val apps by resolvedViewModel.apps.collectAsState()
 
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     val activity = context as? Activity
     val hazeState = remember { HazeState() }
     var showAboutDialog by remember { mutableStateOf(false) }
