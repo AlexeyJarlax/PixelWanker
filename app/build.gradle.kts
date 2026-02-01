@@ -3,10 +3,10 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.dagger.hilt.android")
+//    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("com.google.devtools.ksp")
+//    id("kotlin-kapt")
+//    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -72,14 +72,14 @@ android {
         }
     }
 
-    hilt {
-        enableAggregatingTask = true
-    }
+//    hilt {
+//        enableAggregatingTask = true
+//    }
 
-    kapt {
-        correctErrorTypes = true
-        includeCompileClasspath = false
-    }
+//    kapt {
+//        correctErrorTypes = true
+//        includeCompileClasspath = false
+//    }
 }
 
 composeCompiler {
@@ -104,8 +104,8 @@ dependencies {
     implementation(libs.snakeyaml)
 
     // Dagger Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
+//    implementation(libs.hilt.android)
+//    kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.hilt.navigation.compose.v100)
 
@@ -157,9 +157,9 @@ dependencies {
     implementation (libs.accompanist.permissions)
 
     // Room
-    implementation (libs.androidx.room.runtime)
-    ksp (libs.androidx.room.compiler)
-    implementation (libs.androidx.room.ktx)
+//    implementation (libs.androidx.room.runtime)
+//    ksp (libs.androidx.room.compiler)
+//    implementation (libs.androidx.room.ktx)
 
     // работа со временем
 //    implementation (libs.androidx.datastore.preferences)
