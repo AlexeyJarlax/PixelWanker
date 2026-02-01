@@ -19,18 +19,21 @@ import androidx.core.content.ContextCompat
 class PixelWankerOverlayService : Service() {
 
     private var windowManager: WindowManager? = null
-    private var overlayView: FrameLayout? = null
+    private var gridOverlayView: FrameLayout? = null
+    private var closeOverlayView: ImageView? = null
 
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        overlayView = createOverlayView()
+        gridOverlayView = createGridOverlayView()
+        closeOverlayView = createCloseOverlayView()
 
-        val params = WindowManager.LayoutParams(
+        val gridParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
@@ -38,21 +41,39 @@ class PixelWankerOverlayService : Service() {
             gravity = Gravity.TOP or Gravity.START
         }
 
-        windowManager?.addView(overlayView, params)
+        val closeSize = 20
+        val closeParams = WindowManager.LayoutParams(
+            closeSize,
+            closeSize,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.CENTER
+        }
+
+        gridOverlayView?.let { windowManager?.addView(it, gridParams) }
+        closeOverlayView?.let { windowManager?.addView(it, closeParams) }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        overlayView?.let { view ->
+        gridOverlayView?.let { view ->
             windowManager?.removeView(view)
         }
-        overlayView = null
+        closeOverlayView?.let { view ->
+            windowManager?.removeView(view)
+        }
+        gridOverlayView = null
+        closeOverlayView = null
         windowManager = null
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun createOverlayView(): FrameLayout {
+    private fun createGridOverlayView(): FrameLayout {
         val root = FrameLayout(this)
 
         val gridView = GridView(this)
@@ -64,7 +85,11 @@ class PixelWankerOverlayService : Service() {
             )
         )
 
-        val closeButton = ImageView(this).apply {
+        return root
+    }
+
+    private fun createCloseOverlayView(): ImageView =
+        ImageView(this).apply {
             setImageDrawable(
                 ContextCompat.getDrawable(
                     this@PixelWankerOverlayService,
@@ -80,15 +105,6 @@ class PixelWankerOverlayService : Service() {
             }
             setPadding(4, 4, 4, 4)
         }
-
-        val closeSize = 20
-        val closeParams = FrameLayout.LayoutParams(closeSize, closeSize).apply {
-            gravity = Gravity.CENTER
-        }
-        root.addView(closeButton, closeParams)
-
-        return root
-    }
 
     private class GridView(context: Context) : View(context) {
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
