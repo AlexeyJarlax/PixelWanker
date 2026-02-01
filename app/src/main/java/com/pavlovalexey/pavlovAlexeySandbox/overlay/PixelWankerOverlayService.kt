@@ -275,6 +275,10 @@ class PixelWankerOverlayService : Service() {
         private const val EXTRA_GRID_UNIT = "extra_grid_unit"
         private const val EXTRA_GRID_COLOR = "extra_grid_color"
         private const val GRID_ALPHA = 120
+        private const val PREFS_NAME = "pixel_wanker_prefs"
+        private const val PREF_GRID_SIZE = "pref_grid_size"
+        private const val PREF_GRID_UNIT = "pref_grid_unit"
+        private const val PREF_GRID_COLOR = "pref_grid_color"
 
         enum class GridUnit {
             PX,
@@ -287,6 +291,12 @@ class PixelWankerOverlayService : Service() {
             RED(Color.RED)
         }
 
+        data class GridSettings(
+            val size: Int,
+            val unit: GridUnit,
+            val color: GridColor
+        )
+
         fun start(
             context: Context,
             gridSize: Int = DEFAULT_GRID_SIZE,
@@ -298,6 +308,41 @@ class PixelWankerOverlayService : Service() {
                 .putExtra(EXTRA_GRID_UNIT, gridUnit.name)
                 .putExtra(EXTRA_GRID_COLOR, gridColor.name)
             context.startService(intent)
+        }
+
+        fun startWithSavedSettings(context: Context) {
+            val settings = loadGridSettings(context)
+            start(
+                context = context,
+                gridSize = settings.size,
+                gridUnit = settings.unit,
+                gridColor = settings.color
+            )
+        }
+
+        fun saveGridSettings(
+            context: Context,
+            gridSize: Int,
+            gridUnit: GridUnit,
+            gridColor: GridColor
+        ) {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            prefs.edit()
+                .putInt(PREF_GRID_SIZE, gridSize)
+                .putString(PREF_GRID_UNIT, gridUnit.name)
+                .putString(PREF_GRID_COLOR, gridColor.name)
+                .apply()
+        }
+
+        fun loadGridSettings(context: Context): GridSettings {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val size = prefs.getInt(PREF_GRID_SIZE, DEFAULT_GRID_SIZE)
+            val unitName = prefs.getString(PREF_GRID_UNIT, GridUnit.PX.name) ?: GridUnit.PX.name
+            val colorName =
+                prefs.getString(PREF_GRID_COLOR, GridColor.WHITE.name) ?: GridColor.WHITE.name
+            val unit = GridUnit.values().firstOrNull { it.name == unitName } ?: GridUnit.PX
+            val color = GridColor.values().firstOrNull { it.name == colorName } ?: GridColor.WHITE
+            return GridSettings(size, unit, color)
         }
 
         private fun applyAlpha(color: Int): Int =

@@ -114,6 +114,12 @@ private fun PixelWankerPage() {
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
         if (pendingStart && Settings.canDrawOverlays(context)) {
+            PixelWankerOverlayService.saveGridSettings(
+                context = context,
+                gridSize = selectedSize,
+                gridUnit = selectedUnit,
+                gridColor = selectedColor.value
+            )
             PixelWankerOverlayService.start(
                 context = context,
                 gridSize = selectedSize,
@@ -172,6 +178,12 @@ private fun PixelWankerPage() {
         Button(
             onClick = {
                 if (Settings.canDrawOverlays(context)) {
+                    PixelWankerOverlayService.saveGridSettings(
+                        context = context,
+                        gridSize = selectedSize,
+                        gridUnit = selectedUnit,
+                        gridColor = selectedColor.value
+                    )
                     PixelWankerOverlayService.start(
                         context = context,
                         gridSize = selectedSize,

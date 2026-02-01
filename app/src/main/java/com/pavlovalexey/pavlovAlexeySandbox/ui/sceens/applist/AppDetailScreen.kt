@@ -51,7 +51,7 @@ fun AppDetailScreen(
     ) {
         val packageName = pendingGridPackage
         if (packageName != null && Settings.canDrawOverlays(context)) {
-            PixelWankerOverlayService.start(context)
+            PixelWankerOverlayService.startWithSavedSettings(context)
             val intent = context.packageManager.getLaunchIntentForPackage(packageName)
             if (intent != null) {
                 context.startActivity(intent)
@@ -135,7 +135,7 @@ fun AppDetailScreen(
                                 AlexIconButton(
                                     onClick = {
                                         if (Settings.canDrawOverlays(context)) {
-                                            PixelWankerOverlayService.start(context)
+                                            PixelWankerOverlayService.startWithSavedSettings(context)
                                             val intent =
                                                 context.packageManager.getLaunchIntentForPackage(
                                                     app.packageName
