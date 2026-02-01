@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "pavlovAlexeySandbox"
+rootProject.name = " pixelWanker"
 include(":app")
