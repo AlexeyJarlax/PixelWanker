@@ -49,7 +49,6 @@ fun WankerConfirmationDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .background(Color.Transparent)
                 .border(
                     width = dp2,
                     color = color,
@@ -57,7 +56,7 @@ fun WankerConfirmationDialog(
                 ),
             shape = RoundedCornerShape(dp14),
 //            elevation = CardDefaults.cardElevation(defaultElevation = dp8),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+            colors = CardDefaults.cardColors(containerColor = Color.Black)
         ) {
             Column(
                 modifier = Modifier.padding(dp18),

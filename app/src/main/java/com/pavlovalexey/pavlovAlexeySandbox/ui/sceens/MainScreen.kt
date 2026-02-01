@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pavlovalexey.pavlovAlexeySandbox.navigation.NavGraph
 import androidx.navigation.NavHostController
@@ -18,7 +18,6 @@ fun MainScreen(
     navController: NavHostController,
     onCloseApp: () -> Unit,
 ) {
-
     Box(modifier = Modifier
         .fillMaxSize()
         .windowInsetsPadding(WindowInsets.statusBars)) {
