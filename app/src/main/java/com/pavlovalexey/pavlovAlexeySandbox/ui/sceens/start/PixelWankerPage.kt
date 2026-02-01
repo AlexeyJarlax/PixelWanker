@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +51,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
+import java.util.Locale
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -72,6 +74,12 @@ fun PixelWankerPage() {
     var isCookieVisible2 by remember { mutableStateOf(true) }
     var isPieVisible1 by remember { mutableStateOf(true) }
     var isPieVisible2 by remember { mutableStateOf(true) }
+
+    val tipEligibleCountries = remember {
+        setOf("RU", "BY", "TJ", "UZ", "TM", "KZ")
+    }
+    val showTipsBlock =
+        Locale.getDefault().country.uppercase(Locale.ROOT) in tipEligibleCountries
 
     fun saveNow() {
         GridSettingsStore.save(
@@ -129,6 +137,11 @@ fun PixelWankerPage() {
             )
             permissionLauncher.launch(intent)
         }
+    }
+
+    fun openUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -263,7 +276,7 @@ fun PixelWankerPage() {
             }
 
             Text(
-                text = "Если вы хотите отблагодарить автора приложения, можете сделать это одним из следующих способов:",
+                text = stringResource(R.string.thanks_prompt),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -272,41 +285,49 @@ fun PixelWankerPage() {
 
             Row() {
                 Text(
-                    text = "Установить и зарегистрироваться в моем приложении для художников PleinAir",
+                    text = stringResource(R.string.pleinair_install_prompt),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().weight(2f)
                 )
                 Image(
                     painter = painterResource(R.drawable.ic_google),
-                    modifier = Modifier.weight(1f),
-                    contentDescription = "googlePlay"
-                ) // https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            openUrl("https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&pcampaignid=web_share")
+                        },
+                    contentDescription = stringResource(R.string.google_play_content_description)
+                )
             }
             Text(
-                text = "PleinAir - это прекрасный проект, который я всеми силами хочу развить во что-то больше и еще более прекрасное!",
+                text = stringResource(R.string.pleinair_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
             SpacerHeight(60)
 
-            Text(
-                text = "Отправить мне чаевые:",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Image(
-                painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
-                contentDescription = "tips",
-                modifier = Modifier.fillMaxWidth(),
-            )  // https://pay.cloudtips.ru/p/da048bc5
-            SpacerHeight(60)
+            if (showTipsBlock) {
+                Text(
+                    text = stringResource(R.string.tips_prompt),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Image(
+                    painter = painterResource(R.drawable.ic_icon_cloudtips_logo),
+                    contentDescription = stringResource(R.string.tips_content_description),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { openUrl("https://pay.cloudtips.ru/p/da048bc5") },
+                )
+                SpacerHeight(60)
+            }
 
 
             if (isCookieVisible2) {
             Text(
-                text = "Если вы отблагодарили автора, то возьмите печеньку!",
+                text = stringResource(R.string.cookie_reward_text),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -316,15 +337,14 @@ fun PixelWankerPage() {
             }
 
             if (isPieVisible2) {
-                Text(text = "И пирожок с полки!")
+                Text(text = stringResource(R.string.pie_reward_text))
                 Pie(onClose = { isPieVisible2 = false })
-                Text(text = "______________")
+                Text(text = stringResource(R.string.separator_line))
                 SpacerHeight(60)
             }
 
             Text(
-                text = "Кажется вы дошли до самого конца... и разблокировали дополнительный цвет для сетки! " +
-                        "Да, с двумя цветами на контрасте она будет заметнее в сложных дизайнах.",
+                text = stringResource(R.string.extra_color_unlock_text),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -337,7 +357,7 @@ fun PixelWankerPage() {
                     extraColor = null
                     saveNow()
                 },
-                label = { Text("Без второго цвета") }
+                label = { Text(stringResource(R.string.no_second_color)) }
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -383,7 +403,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Жёлтый") }
+                    label = { Text(stringResource(R.string.color_yellow)) }
                 )
 
                 FilterChip(
@@ -393,7 +413,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Синий") }
+                    label = { Text(stringResource(R.string.color_blue)) }
                 )
             }
             SpacerHeight(60)
