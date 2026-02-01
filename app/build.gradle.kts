@@ -78,42 +78,23 @@ composeCompiler {
 dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.foundation.android)
     implementation(libs.material3)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
-
-    // HTTP-клиент
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-//    implementation(libs.okhttp)
-
-    // mailto: URI
-//    implementation(libs.email.intent.builder)
-    implementation(libs.snakeyaml)
 
     // Jetpack Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.runtime.livedata)
 //    implementation(libs.android.maps.compose)
 //    implementation(libs.maps.compose.v272)
     implementation(libs.androidx.foundation)
-    implementation(libs.google.accompanist.flowlayout)
     implementation (libs.androidx.ui.tooling.preview)
     debugImplementation (libs.androidx.ui.tooling)
 
     // Compose навигация
     implementation (libs.androidx.navigation.compose)
 
-    // Пикчи
-    implementation(libs.coil.compose)
-    implementation("com.google.accompanist:accompanist-pager:0.36.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
-
     // визуал material
-    implementation (libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material.icons.extended)
 //    implementation ("androidx.compose.material:material-icons-extended:1.4.3")
@@ -123,7 +104,6 @@ dependencies {
 
     // корутин
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.peko)
 
     //логи Тимбер
 //    implementation(libs.timber)
@@ -136,9 +116,6 @@ dependencies {
 //    implementation (libs.play.services.location)
 //    implementation (libs.kotlinx.coroutines.play.services)
 
-    // запрос разрешений
-    implementation (libs.accompanist.permissions)
-
     // Room
 //    implementation (libs.androidx.room.runtime)
 //    implementation (libs.androidx.room.ktx)
@@ -146,11 +123,4 @@ dependencies {
     // работа со временем
 //    implementation (libs.androidx.datastore.preferences)
 
-    // ExoPlayer
-    implementation (libs.exoplayer)
-    implementation (libs.exoplayer.ui)
-
-    // Обфускатор R8
-    implementation(libs.bcprov.jdk15on)
-    implementation(libs.conscrypt.android)
 }
