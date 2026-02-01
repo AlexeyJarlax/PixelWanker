@@ -158,10 +158,10 @@ private fun BottomSectionSwitcher(
     val glassStyle = remember(surfaceColor) {
         HazeStyle(
             backgroundColor = Color.Transparent,
-            tint = HazeTint(surfaceColor.copy(alpha = 0.32f)),
+            tint = HazeTint(surfaceColor.copy(alpha = 0.20f)),
             blurRadius = dp20,
             noiseFactor = 0.10f,
-            fallbackTint = HazeTint(surfaceColor.copy(alpha = 0.90f))
+            fallbackTint = HazeTint(surfaceColor.copy(alpha = 0.60f))
         )
     }
     val selectedColor = MaterialTheme.colorScheme.onSurface
@@ -189,14 +189,11 @@ private fun BottomSectionSwitcher(
         )
     )
 
-    Box(
-//        modifier = modifier
-//            .heightIn(min = dp48)
-    ) {
+    Box(modifier = modifier) {
         NavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
-//                .heightIn(min = dp48)
+                .height(dp48)
                 .then(
                     if (hazeState != null) {
                         Modifier.hazeEffect(state = hazeState, style = glassStyle)
@@ -207,7 +204,7 @@ private fun BottomSectionSwitcher(
             containerColor = if (hazeState != null) {
                 Color.Transparent
             } else {
-                surfaceColor.copy(alpha = 0.92f)
+                surfaceColor.copy(alpha = 0.60f)
             },
             tonalElevation = dp0
         ) {
