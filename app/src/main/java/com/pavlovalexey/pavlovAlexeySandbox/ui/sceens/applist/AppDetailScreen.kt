@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -40,6 +41,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepositoryImpl
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,10 +117,15 @@ fun AppDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(details?.appName ?: "Информация о приложении") },
+                title = {
+                    Text(details?.appName ?: stringResource(R.string.app_detail_title_default))
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 }
             )
@@ -138,7 +145,7 @@ fun AppDetailScreen(
 
                 is UiState.Error -> {
                     Text(
-                        text = (uiState as UiState.Error).message,
+                        text = stringResource((uiState as UiState.Error).messageResId),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -146,26 +153,52 @@ fun AppDetailScreen(
 
                 is UiState.Success -> {
                     details?.let { app ->
+                        val versionName = app.versionName
+                            ?: stringResource(R.string.app_detail_not_available)
+                        val versionCode = app.versionCode ?: 0L
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(dp8)
                         ) {
-                            Text("Название: ${app.appName}")
+                            Text(
+                                stringResource(
+                                    R.string.app_detail_label_name,
+                                    app.appName
+                                )
+                            )
                             HorizontalDivider()
-                            Text("Имя пакета: ${app.packageName}")
+                            Text(
+                                stringResource(
+                                    R.string.app_detail_label_package,
+                                    app.packageName
+                                )
+                            )
                             HorizontalDivider()
-                            Text("versionName: ${app.versionName ?: "—"}")
+                            Text(
+                                stringResource(
+                                    R.string.app_detail_label_version_name,
+                                    versionName
+                                )
+                            )
                             HorizontalDivider()
-                            Text("versionCode: ${app.versionCode ?: 0}")
+                            Text(
+                                stringResource(
+                                    R.string.app_detail_label_version_code,
+                                    versionCode
+                                )
+                            )
                             HorizontalDivider()
                             app.apkSizeBytes?.let { bytes ->
                                 val mb = bytes.toDouble() / (1024 * 1024)
-                                Text("Размер APK: ${"%.2f".format(mb)} МБ")
+                                Text(stringResource(R.string.app_detail_apk_size, mb))
                                 HorizontalDivider()
                             }
                             VSpacer()
-                            Text(text = "Контрольная сумма APK по SHA-256:")
-                            Text(text = app.apkChecksumSha256 ?: "Не удалось посчитать")
+                            Text(text = stringResource(R.string.app_detail_checksum_label))
+                            Text(
+                                text = app.apkChecksumSha256
+                                    ?: stringResource(R.string.app_detail_checksum_unavailable)
+                            )
                             VSpacer(24)
 
                             Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
@@ -181,7 +214,7 @@ fun AppDetailScreen(
                                     },
                                     isFillMaxWidth = false,
                                     outlined = true,
-                                    text = "Открыть\nприложение"
+                                    text = stringResource(R.string.app_detail_open_app)
                                 )
 
                                 AlexIconButton(
@@ -192,7 +225,7 @@ fun AppDetailScreen(
                                     },
                                     isFillMaxWidth = false,
                                     outlined = true,
-                                    text = "Открыть\nс сеткой"
+                                    text = stringResource(R.string.app_detail_open_with_grid)
                                 )
                             }
                         }
@@ -204,7 +237,7 @@ fun AppDetailScreen(
 
     if (showFirstLaunchDialog) {
         WankerConfirmationDialog(
-            dialogText = FirstLaunchDialogPrefs.DIALOG_TEXT,
+            dialogText = stringResource(R.string.first_launch_dialog_text),
             onDismiss = {
                 showFirstLaunchDialog = false
                 pendingAction = null

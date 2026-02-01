@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp14
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp18
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp2
@@ -32,8 +34,8 @@ fun WankerConfirmationDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     title: String? = null,
-    confirmText: String = "Вперёд!",
-    dismissText: String = "Назад",
+    confirmText: String? = null,
+    dismissText: String? = null,
     confirmEnabled: Boolean = true,
     dismissEnabled: Boolean = true,
     showDismissIcon: Boolean = true,
@@ -42,6 +44,9 @@ fun WankerConfirmationDialog(
     textContent: (@Composable () -> Unit)? = null,
     actionsContent: (@Composable () -> Unit)? = null,
 ) {
+    val resolvedConfirmText = confirmText ?: stringResource(R.string.confirm)
+    val resolvedDismissText = dismissText ?: stringResource(R.string.dismiss)
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -83,17 +88,17 @@ fun WankerConfirmationDialog(
                             if (showDismissIcon) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = dismissText,
+                                    contentDescription = resolvedDismissText,
                                     tint = color
                                 )
                             }
-                            Text(text = dismissText, color = color)
+                            Text(text = resolvedDismissText, color = color)
                         }
 
                         SpacerHeight()
 
                         TextButton(onClick = onConfirm, enabled = confirmEnabled) {
-                            Text(text = confirmText, color = color)
+                            Text(text = resolvedConfirmText, color = color)
                         }
                     }
                 }

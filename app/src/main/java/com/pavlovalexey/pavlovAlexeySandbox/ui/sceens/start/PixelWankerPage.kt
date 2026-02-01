@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
@@ -43,6 +44,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
+import com.pavlovalexey.pavlovAlexeySandbox.R
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -129,21 +131,21 @@ fun PixelWankerPage() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "PixelWanker",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold
             )
             SpacerHeight()
 
             Text(
-                text = "Don’t be a wanker — stop guessing,\nstart measuring",
+                text = stringResource(R.string.pixelwanker_tagline),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
             SpacerHeight()
             Text(
-                text = "Pixel wanker for Android dev is a utility for Android developers and designers who want a fast way to check UI spacing, alignment, and visual rhythm directly on the device. The app generates a customizable on-screen grid and lets you overlay it on top of any app",
+                text = stringResource(R.string.pixelwanker_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -154,6 +156,10 @@ fun PixelWankerPage() {
 
             Spacer(modifier = Modifier.height(dp16))
 
+            val unitLabel = stringResource(
+                if (unit == "px") R.string.unit_px else R.string.unit_dp
+            )
+
             Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
                 FilterChip(
                     selected = unit == "px",
@@ -161,7 +167,7 @@ fun PixelWankerPage() {
                         unit = "px"
                         saveNow()
                     },
-                    label = { Text("px") }
+                    label = { Text(stringResource(R.string.unit_px)) }
                 )
                 FilterChip(
                     selected = unit == "dp",
@@ -169,7 +175,7 @@ fun PixelWankerPage() {
                         unit = "dp"
                         saveNow()
                     },
-                    label = { Text("dp") }
+                    label = { Text(stringResource(R.string.unit_dp)) }
                 )
             }
 
@@ -177,7 +183,7 @@ fun PixelWankerPage() {
 
             Box {
                 AlexIconButton(
-                    text = "Размер: $selectedSize $unit",
+                    text = stringResource(R.string.size_label, selectedSize, unitLabel),
                     isFillMaxWidth = false,
                     outlined = true,
                     onClick = { sizeMenuExpanded = true },
@@ -189,7 +195,7 @@ fun PixelWankerPage() {
                 ) {
                     sizes.forEach { v ->
                         DropdownMenuItem(
-                            text = { Text("$v $unit") },
+                            text = { Text(stringResource(R.string.size_option, v, unitLabel)) },
                             onClick = {
                                 selectedSize = v
                                 sizeMenuExpanded = false
@@ -209,7 +215,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.WHITE
                         saveNow()
                     },
-                    label = { Text("Белый") }
+                    label = { Text(stringResource(R.string.color_white)) }
                 )
                 FilterChip(
                     selected = baseColor == android.graphics.Color.BLACK,
@@ -217,7 +223,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.BLACK
                         saveNow()
                     },
-                    label = { Text("Черный") }
+                    label = { Text(stringResource(R.string.color_black)) }
                 )
                 FilterChip(
                     selected = baseColor == android.graphics.Color.RED,
@@ -225,14 +231,14 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.RED
                         saveNow()
                     },
-                    label = { Text("Красный") }
+                    label = { Text(stringResource(R.string.color_red)) }
                 )
             }
 
             Spacer(modifier = Modifier.height(dp16))
 
             AlexIconButton(
-                text = "Запустить сетку",
+                text = stringResource(R.string.start_grid),
                 outlined = true,
                 onClick = {
                     runWithFirstLaunchDialog { startOverlayOrRequestPermission() }
@@ -242,7 +248,7 @@ fun PixelWankerPage() {
 
         if (showFirstLaunchDialog) {
             WankerConfirmationDialog(
-                dialogText = FirstLaunchDialogPrefs.DIALOG_TEXT,
+                dialogText = stringResource(R.string.first_launch_dialog_text),
                 onDismiss = {
                     showFirstLaunchDialog = false
                     pendingAction = null

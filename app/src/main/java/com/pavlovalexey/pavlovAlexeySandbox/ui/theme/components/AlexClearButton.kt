@@ -9,7 +9,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
@@ -28,7 +30,7 @@ fun AlexClearButton(
     ) {
         Icon(
             imageVector = Icons.Default.Close,
-            contentDescription = "Очистить",
+            contentDescription = stringResource(R.string.clear),
             modifier = Modifier.Companion.size(dp16)
         )
     }

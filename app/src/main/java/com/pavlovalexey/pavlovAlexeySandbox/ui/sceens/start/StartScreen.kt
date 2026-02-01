@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pavlovalexey.pavlovAlexeySandbox.navigation.StartBottomBar
@@ -35,6 +36,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import kotlinx.coroutines.launch
+import com.pavlovalexey.pavlovAlexeySandbox.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -102,11 +104,11 @@ fun StartScreen(
     if (showAboutDialog) {
         AlertDialog(
             onDismissRequest = { showAboutDialog = false },
-            title = { Text(text = "About") },
-            text = { Text(text = "Pavlov Alexey Sandbox") },
+            title = { Text(text = stringResource(R.string.about_title)) },
+            text = { Text(text = stringResource(R.string.about_app_text)) },
             confirmButton = {
                 TextButton(onClick = { showAboutDialog = false }) {
-                    Text(text = "OK")
+                    Text(text = stringResource(R.string.about_ok))
                 }
             }
         )

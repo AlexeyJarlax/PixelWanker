@@ -16,7 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
+import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppListItem
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexSearchTextField
@@ -42,7 +44,7 @@ fun AppsPage(
 
             is UiState.Error -> {
                 Text(
-                    text = uiState.message,
+                    text = stringResource(uiState.messageResId),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -67,7 +69,7 @@ fun AppsPage(
                     AlexSearchTextField(
                         value = searchAppsQuery,
                         onValueChange = { searchAppsQuery = it },
-                        placeholderText = "Поиск приложений"
+                        placeholderText = stringResource(R.string.search_apps_placeholder)
                     )
 
                     LazyColumn(
