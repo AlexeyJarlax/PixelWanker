@@ -15,10 +15,10 @@
       </SelectionState>
       <SelectionState runConfigName="pavlovAlexeySandbox.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-11-27T16:09:31.085086100Z">
+        <DropdownSelection timestamp="2026-02-01T08:56:32.716821900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Admin\.android\avd\Pixel_9_Pro_XL.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Admin\.android\avd\Small_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>

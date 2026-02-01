@@ -120,7 +120,7 @@ class PixelWankerOverlayService : Service() {
             val iconRes = if (isGridVisible) {
                 android.R.drawable.presence_invisible
             } else {
-                android.R.drawable.presence_visible
+                android.R.drawable.button_onoff_indicator_off
             }
             toggleButton.setImageDrawable(
                 ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes)
