@@ -20,14 +20,17 @@ import androidx.core.content.ContextCompat
 class PixelWankerOverlayService : Service() {
 
     private var windowManager: WindowManager? = null
-    private var overlayView: FrameLayout? = null
+    private var gridOverlayView: FrameLayout? = null
+    private var controlsOverlayView: FrameLayout? = null
+    private var isGridVisible = true
 
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        overlayView = createOverlayView()
+        gridOverlayView = createGridOverlayView()
+        controlsOverlayView = createControlsOverlayView()
 
-        val params = WindowManager.LayoutParams(
+        val gridParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
@@ -39,42 +42,58 @@ class PixelWankerOverlayService : Service() {
             gravity = Gravity.TOP or Gravity.START
         }
 
-        windowManager?.addView(overlayView, params)
+        val controlsParams = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.END
+        }
+
+        windowManager?.addView(gridOverlayView, gridParams)
+        windowManager?.addView(controlsOverlayView, controlsParams)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        overlayView?.let { view ->
+        gridOverlayView?.let { view ->
             windowManager?.removeView(view)
         }
-        overlayView = null
+        controlsOverlayView?.let { view ->
+            windowManager?.removeView(view)
+        }
+        gridOverlayView = null
+        controlsOverlayView = null
         windowManager = null
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun createOverlayView(): FrameLayout {
+    private fun createGridOverlayView(): FrameLayout {
         val root = FrameLayout(this)
 
-        val density = resources.displayMetrics.density
-        fun dpToPx(value: Int): Int = (value * density).toInt()
-
-        val gridLayer = FrameLayout(this)
         val gridView = GridView(this)
-        gridLayer.addView(
+        root.addView(
             gridView,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
         )
-        root.addView(
-            gridLayer,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-        )
+
+        return root
+    }
+
+    private fun createControlsOverlayView(): FrameLayout {
+        val root = FrameLayout(this)
+
+        val density = resources.displayMetrics.density
+        fun dpToPx(value: Int): Int = (value * density).toInt()
 
         fun createControlButton(): ImageView = ImageView(this).apply {
             setImageDrawable(
@@ -108,7 +127,6 @@ class PixelWankerOverlayService : Service() {
             setOnClickListener { stopSelf() }
         }
 
-        var isGridVisible = true
         fun updateToggleIcon() {
             val iconRes = if (isGridVisible) {
                 android.R.drawable.presence_invisible
@@ -128,7 +146,11 @@ class PixelWankerOverlayService : Service() {
         updateToggleIcon()
         toggleButton.setOnClickListener {
             isGridVisible = !isGridVisible
-            gridLayer.visibility = if (isGridVisible) View.VISIBLE else View.GONE
+            if (isGridVisible) {
+                showGridOverlay()
+            } else {
+                hideGridOverlay()
+            }
             updateToggleIcon()
         }
 
@@ -161,6 +183,33 @@ class PixelWankerOverlayService : Service() {
         root.addView(controlsContainer, controlsParams)
 
         return root
+    }
+
+    private fun showGridOverlay() {
+        if (gridOverlayView != null) {
+            return
+        }
+        val view = createGridOverlayView()
+        val params = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.START
+        }
+        gridOverlayView = view
+        windowManager?.addView(view, params)
+    }
+
+    private fun hideGridOverlay() {
+        gridOverlayView?.let { view ->
+            windowManager?.removeView(view)
+        }
+        gridOverlayView = null
     }
 
     private class GridView(context: Context) : View(context) {
