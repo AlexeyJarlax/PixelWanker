@@ -24,7 +24,7 @@ fun AppTheme(
         background = Color.Black,
         surface = Color(0xFF121212),
         onPrimary = Color.Black,
-        onSecondary = Color.Black,
+        onSecondary = Color.Gray,
         onBackground = Color.White,
         onSurface = Color.White
     )
