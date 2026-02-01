@@ -42,18 +42,7 @@ class PixelWankerOverlayService : Service() {
             gravity = Gravity.TOP or Gravity.START
         }
 
-        val controlsParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.END
-        }
+        val controlsParams = createControlsLayoutParams()
 
         windowManager?.addView(gridOverlayView, gridParams)
         windowManager?.addView(controlsOverlayView, controlsParams)
@@ -203,6 +192,10 @@ class PixelWankerOverlayService : Service() {
         }
         gridOverlayView = view
         windowManager?.addView(view, params)
+        controlsOverlayView?.let { controlsView ->
+            windowManager?.removeView(controlsView)
+            windowManager?.addView(controlsView, createControlsLayoutParams())
+        }
     }
 
     private fun hideGridOverlay() {
@@ -211,6 +204,20 @@ class PixelWankerOverlayService : Service() {
         }
         gridOverlayView = null
     }
+
+    private fun createControlsLayoutParams(): WindowManager.LayoutParams =
+        WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.END
+        }
 
     private class GridView(context: Context) : View(context) {
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
