@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,6 +61,10 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp156
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp24
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -252,6 +257,8 @@ fun PixelWankerPage() {
                     colors = chipColorsFor(android.graphics.Color.GREEN),
                     label = { Text(stringResource(R.string.color_green)) }
                 )
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
                 FilterChip(
                     selected = baseColor == android.graphics.Color.BLACK,
                     onClick = {
@@ -287,10 +294,10 @@ fun PixelWankerPage() {
                 SpacerHeight(60)
             }
 
-            if (isPieVisible1) {
-                Pie(onClose = { isPieVisible1 = false })
-                SpacerHeight(60)
-            }
+//            if (isPieVisible1) {
+//                Pie(onClose = { isPieVisible1 = false })
+//                SpacerHeight(60)
+//            }
 
             Text(
                 text = stringResource(R.string.thanks_prompt),
@@ -334,8 +341,9 @@ fun PixelWankerPage() {
                 SpacerHeight(8)
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(dp12))
-                        .background(Color.LightGray.copy(alpha = 0.3f))
+                        .width(156.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.LightGray.copy(alpha = 0.5f))
                         .clickable { openUrl("https://pay.cloudtips.ru/p/da048bc5") }
                 ) {
                     Image(
@@ -343,7 +351,7 @@ fun PixelWankerPage() {
                         contentDescription = stringResource(R.string.tips_content_description),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(dp8),
+                            .padding(8.dp),
                     )
                 }
                 SpacerHeight(60)
@@ -512,11 +520,11 @@ fun PixelWankerPage() {
             WankerConfirmationDialog(
                 title = "Telegram Stars ⭐️",
                 dialogText =
-                    "Сейчас откроется канал \"$telegramChannelTitle\".\n\n" +
+                    "Oткроется канал \"$telegramChannelTitle\".\n\n" +
                             "Дальше:\n" +
                             "• открой любой пост\n" +
                             "• нажми ⭐️ (платная реакция)\n" +
-                            "• выбери количество Stars и подтверди оплату\n\n" +
+                            "• выбери количество Stars и подтверди.\n\n" +
                             "Оплата проходит внутри Telegram. Приложение PixelWanker не собирает и не хранит данные об оплатах.",
                 confirmText = "Открыть канал",
                 dismissText = "Отмена",
