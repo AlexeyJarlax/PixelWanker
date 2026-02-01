@@ -46,6 +46,9 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
 import com.pavlovalexey.pavlovAlexeySandbox.R
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.Cookie
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.Pie
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp60
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -65,7 +68,10 @@ fun PixelWankerPage() {
     var pendingStart by remember { mutableStateOf(false) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
-    var isPieVisible by remember { mutableStateOf(true) }
+    var isCookieVisible1 by remember { mutableStateOf(true) }
+    var isCookieVisible2 by remember { mutableStateOf(true) }
+    var isPieVisible1 by remember { mutableStateOf(true) }
+    var isPieVisible2 by remember { mutableStateOf(true) }
 
     fun saveNow() {
         GridSettingsStore.save(
@@ -237,7 +243,7 @@ fun PixelWankerPage() {
                 )
             }
 
-            Spacer(modifier = Modifier.height(dp16))
+            SpacerHeight()
 
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
@@ -246,8 +252,18 @@ fun PixelWankerPage() {
                     runWithFirstLaunchDialog { startOverlayOrRequestPermission() }
                 },
             )
+            SpacerHeight(60)
 
-            Spacer(modifier = Modifier.height(dp16))
+            if (isCookieVisible1) {
+                Cookie(onClose = { isCookieVisible1 = false })
+            }
+            SpacerHeight(60)
+
+            if (isPieVisible1) {
+                Pie(onClose = { isPieVisible1 = false })
+            }
+            Text(text = "______________")
+            SpacerHeight(60)
 
             Text(
                 text = "Если вы хотите отблагодарить автора приложения, можете сделать это следующим способом:",
@@ -277,30 +293,23 @@ fun PixelWankerPage() {
             Spacer(modifier = Modifier.height(dp12))
 
             Text(
-                text = "Взять с полки пирожок (тут я хочу, чтобы ты текстовыми символами нарисовал пирожок на полке. " +
-                    "Когда пользователь кликнет на него, пирожок должен исчезнуть)",
+                text = "Если вы это сделали, то возьмите печеньку!",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            if (isPieVisible) {
-                Spacer(modifier = Modifier.height(dp8))
-                Text(
-                    text = "┌───────────────┐\n" +
-                        "│    __--__     │\n" +
-                        "│   /____\\    │\n" +
-                        "│   \\____/    │\n" +
-                        "└───────────────┘",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { isPieVisible = false }
-                )
+            if (isCookieVisible1) {
+                Cookie(onClose = { isCookieVisible1 = false })
             }
+            SpacerHeight(60)
 
-            Spacer(modifier = Modifier.height(dp12))
+            Text(text = "И пирожок с полки!")
+            if (isPieVisible1) {
+                Pie(onClose = { isPieVisible1 = false })
+            }
+            Text(text = "______________")
+            SpacerHeight(60)
 
             Text(
                 text = "Кажется вы дошли до самого конца... и разблокировали дополнительный цвет для сетки! " +
@@ -309,6 +318,40 @@ fun PixelWankerPage() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+            SpacerHeight()
+
+            Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.BLUE,
+                    onClick = {},
+                    label = {  }
+                )
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.WHITE,
+                    onClick = {},
+                    label = { Text(stringResource(R.string.color_white)) }
+                )
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.RED,
+                    onClick = {},
+                    label = { Text(stringResource(R.string.color_red)) }
+                )
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.BLACK,
+                    onClick = {},
+                    label = { Text(stringResource(R.string.color_black)) }
+                )
+                FilterChip(
+                    selected = extraColor == android.graphics.Color.YELLOW,
+                    onClick = {},
+                    label = {  }
+                )
+                FilterChip(
+                    selected = extraColor == null,
+                    onClick = {},
+                    label = { }
+                )
+            }
         }
 
         if (showFirstLaunchDialog) {
