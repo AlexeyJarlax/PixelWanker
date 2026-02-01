@@ -65,6 +65,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepositoryImpl
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp56
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
