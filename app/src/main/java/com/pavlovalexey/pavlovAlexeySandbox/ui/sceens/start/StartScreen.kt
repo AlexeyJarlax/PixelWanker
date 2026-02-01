@@ -12,10 +12,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.provider.Settings
+import android.content.Intent
+import android.net.Uri
+import android.app.Activity
+import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.model.Workout
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
@@ -51,7 +61,7 @@ fun StartScreen(
     var searchWorkoutsQuery by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<String?>(null) }
 
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
@@ -67,12 +77,13 @@ fun StartScreen(
                     .fillMaxWidth()
             ) { page ->
                 when (page) {
-                    0 -> AppsPage(
+                    0 -> PixelWankerPage()
+                    1 -> AppsPage(
                         uiState = appsUiState,
                         apps = apps,
                         onAppClick = onAppClick
                     )
-                    1 -> WorkoutsPage(
+                    2 -> WorkoutsPage(
                         uiState = workoutsUiState,
                         workouts = workouts,
                         searchQuery = searchWorkoutsQuery,
@@ -96,6 +107,65 @@ fun StartScreen(
                     .padding(horizontal = dp16, vertical = dp8)
             )
         }
+    }
+}
+
+@Composable
+private fun PixelWankerPage() {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    var pendingStart by remember { mutableStateOf(false) }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (pendingStart && Settings.canDrawOverlays(context)) {
+            PixelWankerOverlayService.start(context)
+            activity?.finish()
+            pendingStart = false
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(dp16),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Сетка (PixelWanker)",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(modifier = Modifier.height(dp8))
+        Text(
+            text = "Запускает поверх других приложений сетку с шагом 20 пикселей. " +
+                    "В центре появляется кнопка с крестиком для закрытия.",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(dp16))
+        Button(
+            onClick = {
+                if (Settings.canDrawOverlays(context)) {
+                    PixelWankerOverlayService.start(context)
+                    activity?.finish()
+                } else {
+                    pendingStart = true
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:${context.packageName}")
+                    )
+                    permissionLauncher.launch(intent)
+                }
+            }
+        ) {
+            Text(text = "Показать сетку поверх всего")
+        }
+        Spacer(modifier = Modifier.height(dp8))
+        Text(
+            text = "После запуска приложение свернётся, а сетка останется поверх других экранов.",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 
@@ -257,11 +327,19 @@ private fun BottomSectionSwitcher(
             modifier = Modifier
                 .weight(1f)
                 .height(dp40),
-            text = "Приложения"
+            text = "Сетка"
         )
 
         AlexIconButton(
             onClick = { onSelectPage(1) },
+            modifier = Modifier
+                .weight(1f)
+                .height(dp40),
+            text = "Приложения"
+        )
+
+        AlexIconButton(
+            onClick = { onSelectPage(2) },
             modifier = Modifier
                 .weight(1f)
                 .height(dp40),
