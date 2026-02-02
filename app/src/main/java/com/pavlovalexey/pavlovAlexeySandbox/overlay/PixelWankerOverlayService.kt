@@ -19,6 +19,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.pavlovalexey.pavlovAlexeySandbox.R
+import android.widget.Toast
+import java.util.Locale
 
 class PixelWankerOverlayService : Service() {
 
@@ -37,9 +39,17 @@ class PixelWankerOverlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val density = resources.displayMetrics.density
         config = GridConfig.fromIntent(intent, density)
-
-        // ✅ update с учётом extra
+        val dm = resources.displayMetrics
+        val toastText = String.format(
+            Locale.US,
+            "widthPx=%d | density=%.2f | stepPx=%.1f",
+            dm.widthPixels,
+            dm.density,
+            config.spacingPx
+        )
+        Toast.makeText(applicationContext, toastText, Toast.LENGTH_LONG).show()
         gridView?.update(config.spacingPx, config.lineColorArgb, config.extraLineColorArgb)
 
         if (controlsOverlayView == null) {
@@ -136,7 +146,7 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_back)
         }
 
-        val shiftLeftButton = createControlButton(android.R.drawable.arrow_left_float).apply {
+        val shiftLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
             setOnClickListener { shiftGridBy(-1f, 0f) }
             contentDescription = getString(R.string.overlay_shift_left)
         }
