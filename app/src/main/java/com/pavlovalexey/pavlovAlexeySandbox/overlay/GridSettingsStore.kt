@@ -7,9 +7,9 @@ import android.graphics.Color
 
 data class GridUserSettings(
     val cellValue: Int,
-    val unit: String,       // "px" | "dp"
-    val baseColor: Int,     // Color.BLACK/WHITE/RED (без альфы)
-    val extraColor: Int?,   // ✅ NEW: второй цвет (nullable)
+    val unit: String,
+    val baseColor: Int,
+    val extraColor: Int?,
 )
 
 object GridSettingsStore {
