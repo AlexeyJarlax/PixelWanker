@@ -162,7 +162,7 @@ fun PixelWankerPage() {
     }
 
     Box(Modifier.fillMaxSize()) {
-//        MatrixBackground(100)
+        MatrixBackground(40)
         Column(
             modifier = Modifier
                 .fillMaxSize()

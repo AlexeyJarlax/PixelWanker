@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.NavBackStackEntry
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
@@ -58,15 +59,11 @@ fun AppDetailScreen(
     }
     val resolvedViewModel =
         viewModel ?: viewModel(viewModelStoreOwner = backStackEntry, factory = factory)
-
     val uiState by resolvedViewModel.uiState.collectAsState()
     val details by resolvedViewModel.details.collectAsState()
-
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
-
-    // ✅ Берём сохранённые настройки (включая extraColor)
     val gridSettings = GridSettingsStore.loadOrDefault(context)
 
     val overlayPermissionLauncher = rememberLauncherForActivityResult(
@@ -79,7 +76,7 @@ fun AppDetailScreen(
                 cellValue = gridSettings.cellValue,
                 unit = gridSettings.unit,
                 baseColor = gridSettings.baseColor,
-                extraColor = gridSettings.extraColor // ✅ NEW
+                extraColor = gridSettings.extraColor
             )
             val intent = context.packageManager.getLaunchIntentForPackage(packageName)
             if (intent != null) {
@@ -105,7 +102,7 @@ fun AppDetailScreen(
                 cellValue = gridSettings.cellValue,
                 unit = gridSettings.unit,
                 baseColor = gridSettings.baseColor,
-                extraColor = gridSettings.extraColor // ✅ NEW
+                extraColor = gridSettings.extraColor
             )
             val intent = context.packageManager.getLaunchIntentForPackage(appPackageName)
             if (intent != null) {
@@ -134,7 +131,11 @@ fun AppDetailScreen(
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
+                )
             )
         }
     ) { paddingValues ->
@@ -144,7 +145,7 @@ fun AppDetailScreen(
                 .padding(paddingValues)
                 .padding(dp16)
         ) {
-            MatrixBackground(100)
+            MatrixBackground(40)
             when (uiState) {
                 is UiState.Loading -> {
                     WankerProgress()

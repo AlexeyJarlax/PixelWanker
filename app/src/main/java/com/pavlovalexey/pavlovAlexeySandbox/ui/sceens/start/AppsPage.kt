@@ -39,7 +39,7 @@ fun AppsPage(
     onAppClick: (String) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
-        MatrixBackground(100)
+        MatrixBackground(40)
         when (uiState) {
             is UiState.Loading -> {
                 WankerProgress()
