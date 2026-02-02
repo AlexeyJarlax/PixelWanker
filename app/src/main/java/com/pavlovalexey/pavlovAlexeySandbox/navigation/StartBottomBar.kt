@@ -73,7 +73,6 @@ fun StartBottomBar(
         .then(
             if (hazeState != null) {
                 Modifier.hazeEffect(state = hazeState, style = glassStyle) {
-                    // КЛЮЧЕВАЯ ПРАВКА: принудительно синхронизируем blur с изменениями подложки
                     forceInvalidateOnPreDraw = true
                 }
             } else {
