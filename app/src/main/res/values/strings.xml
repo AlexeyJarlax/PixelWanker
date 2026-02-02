@@ -20,6 +20,8 @@
     <string name="installed_app_version">Version: %1$s</string>
     <string name="overlay_hint_hide_grid">Tap # to hide the grid and regain control of the workspace</string>
     <string name="overlay_back">Back</string>
+    <string name="overlay_shift_left">Shift grid left</string>
+    <string name="overlay_shift_down">Shift grid down</string>
     <string name="overlay_close">Close</string>
     <string name="overlay_hide_grid">Hide grid</string>
     <string name="overlay_show_grid">Show grid</string>
