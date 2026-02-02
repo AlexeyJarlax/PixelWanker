@@ -19,6 +19,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.pavlovalexey.pavlovAlexeySandbox.R
+import android.widget.Toast
+import java.util.Locale
 
 class PixelWankerOverlayService : Service() {
 
@@ -28,6 +30,8 @@ class PixelWankerOverlayService : Service() {
     private var gridView: GridView? = null
     private var isGridVisible = true
     private var config: GridConfig = GridConfig.default()
+    private val density: Float
+        get() = resources.displayMetrics.density
 
     override fun onCreate() {
         super.onCreate()
@@ -37,8 +41,15 @@ class PixelWankerOverlayService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val density = resources.displayMetrics.density
         config = GridConfig.fromIntent(intent, density)
-
-        // ✅ update с учётом extra
+        val dm = resources.displayMetrics
+        val toastText = String.format(
+            Locale.US,
+            "widthPx=%d | density=%.2f | stepPx=%.1f",
+            dm.widthPixels,
+            dm.density,
+            config.spacingPx
+        )
+        Toast.makeText(applicationContext, toastText, Toast.LENGTH_LONG).show()
         gridView?.update(config.spacingPx, config.lineColorArgb, config.extraLineColorArgb)
 
         if (controlsOverlayView == null) {
@@ -98,7 +109,6 @@ class PixelWankerOverlayService : Service() {
 
     private fun createControlsOverlayView(): FrameLayout {
         val root = FrameLayout(this)
-        val density = resources.displayMetrics.density
         fun dpToPx(value: Int): Int = (value * density).toInt()
 
         fun createControlButton(iconRes: Int): ImageView = ImageView(this).apply {
@@ -136,6 +146,16 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_back)
         }
 
+        val shiftLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
+            setOnClickListener { shiftGridBy(-1f, 0f) }
+            contentDescription = getString(R.string.overlay_shift_left)
+        }
+
+        val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
+            setOnClickListener { shiftGridBy(0f, 1f) }
+            contentDescription = getString(R.string.overlay_shift_down)
+        }
+
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
@@ -169,9 +189,29 @@ class PixelWankerOverlayService : Service() {
         val buttonSize = dpToPx(38)
         val buttonSpacing = dpToPx(4)
 
-        controlsContainer.addView(
+        val backColumn = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        backColumn.addView(
             backButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize)
+        )
+        backColumn.addView(
+            shiftDownButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        )
+
+        controlsContainer.addView(
+            shiftLeftButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
+        )
+        controlsContainer.addView(
+            backColumn,
+            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                marginEnd = buttonSpacing
+            }
         )
         controlsContainer.addView(
             toggleButton,
@@ -215,6 +255,11 @@ class PixelWankerOverlayService : Service() {
         }, 4000)
 
         return root
+    }
+
+    private fun shiftGridBy(deltaXUnits: Float, deltaYUnits: Float) {
+        val shiftPx = if (config.unit == "dp") density else 1f
+        gridView?.shiftBy(deltaXUnits * shiftPx, deltaYUnits * shiftPx)
     }
 
     private fun openAppHomeAndCloseOverlay() {
@@ -279,6 +324,8 @@ class PixelWankerOverlayService : Service() {
     ) : View(context) {
 
         private var spacing: Float = spacingPx
+        private var offsetX: Float = 0f
+        private var offsetY: Float = 0f
 
         private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = lineColorArgb
@@ -301,6 +348,13 @@ class PixelWankerOverlayService : Service() {
             invalidate()
         }
 
+        fun shiftBy(deltaX: Float, deltaY: Float) {
+            val step = spacing.coerceAtLeast(2f)
+            offsetX = normalizeOffset(offsetX + deltaX, step)
+            offsetY = normalizeOffset(offsetY + deltaY, step)
+            invalidate()
+        }
+
         // держим отдельное поле, чтобы в onDraw понимать, надо ли рисовать двойную линию
         private var _extraColor: Int? = extraLineColorArgb
 
@@ -318,7 +372,8 @@ class PixelWankerOverlayService : Service() {
                 null
             }
 
-            var x = 0f
+            val startX = offsetX - step
+            var x = startX
             while (x <= width) {
                 if (extra == null) {
                     canvas.drawLine(x, 0f, x, height.toFloat(), paint)
@@ -330,7 +385,8 @@ class PixelWankerOverlayService : Service() {
                 x += step
             }
 
-            var y = 0f
+            val startY = offsetY - step
+            var y = startY
             while (y <= height) {
                 if (extra == null) {
                     canvas.drawLine(0f, y, width.toFloat(), y, paint)
@@ -342,12 +398,18 @@ class PixelWankerOverlayService : Service() {
                 y += step
             }
         }
+
+        private fun normalizeOffset(value: Float, step: Float): Float {
+            val remainder = value % step
+            return if (remainder < 0f) remainder + step else remainder
+        }
     }
 
     private data class GridConfig(
         val spacingPx: Float,
         val lineColorArgb: Int,
         val extraLineColorArgb: Int?, // ✅ NEW
+        val unit: String,
     ) {
         companion object {
             private const val EXTRA_CELL_VALUE = "extra_cell_value"
@@ -362,7 +424,8 @@ class PixelWankerOverlayService : Service() {
                 return GridConfig(
                     spacingPx = 20f,
                     lineColorArgb = applyAlpha(Color.BLACK, 80),
-                    extraLineColorArgb = null
+                    extraLineColorArgb = null,
+                    unit = "px"
                 )
             }
 
@@ -380,7 +443,8 @@ class PixelWankerOverlayService : Service() {
                 return GridConfig(
                     spacingPx = spacingPx,
                     lineColorArgb = applyAlpha(baseColor, 80),
-                    extraLineColorArgb = extraColor?.let { applyAlpha(it, 80) }
+                    extraLineColorArgb = extraColor?.let { applyAlpha(it, 80) },
+                    unit = unit
                 )
             }
 
