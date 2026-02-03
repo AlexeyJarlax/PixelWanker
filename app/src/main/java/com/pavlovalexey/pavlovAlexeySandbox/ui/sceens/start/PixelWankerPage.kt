@@ -61,10 +61,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp156
-import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp24
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -541,11 +538,8 @@ private fun chipColorsFor(colorInt: Int) = run {
     val content = if (base.luminance() < 0.45f) Color.White else Color.Black
 
     FilterChipDefaults.filterChipColors(
-        // когда НЕ выбрано
         containerColor = base.copy(alpha = 0.22f),
         labelColor = content,
-
-        // когда ВЫБРАНО
         selectedContainerColor = base,
         selectedLabelColor = content
     )
