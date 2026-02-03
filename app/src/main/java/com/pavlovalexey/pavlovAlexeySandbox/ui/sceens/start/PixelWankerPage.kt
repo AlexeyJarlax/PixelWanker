@@ -72,12 +72,12 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp24
 fun PixelWankerPage() {
     val context = LocalContext.current
     val activity = context as? Activity
-    val sizes = remember { listOf(12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60) }
+    val sizes = remember { listOf(4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60) }
     val saved = remember { GridSettingsStore.loadOrDefault(context) }
     var unit by remember { mutableStateOf(saved.unit) }
     var selectedSize by remember { mutableStateOf(saved.cellValue) }
     var baseColor by remember { mutableStateOf(saved.baseColor) }
-    var extraColor by remember { mutableStateOf(saved.extraColor) } // ✅ NEW
+    var extraColor by remember { mutableStateOf(saved.extraColor) }
     var sizeMenuExpanded by remember { mutableStateOf(false) }
     var pendingStart by remember { mutableStateOf(false) }
     var showFirstLaunchDialog by remember { mutableStateOf(false) }

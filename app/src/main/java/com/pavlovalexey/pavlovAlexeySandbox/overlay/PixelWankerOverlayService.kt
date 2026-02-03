@@ -457,7 +457,7 @@ class PixelWankerOverlayService : Service() {
                 cellValue: Int,
                 unit: String,
                 baseColor: Int,
-                extraColor: Int?, // ✅ NEW
+                extraColor: Int?,
             ): Intent {
                 return Intent(context, PixelWankerOverlayService::class.java).apply {
                     putExtra(EXTRA_CELL_VALUE, cellValue)
