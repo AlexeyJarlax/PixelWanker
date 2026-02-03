@@ -111,15 +111,17 @@ class PixelWankerOverlayService : Service() {
         val root = FrameLayout(this)
         fun dpToPx(value: Int): Int = (value * density).toInt()
 
+        fun createControlBackground(): GradientDrawable = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dpToPx(8).toFloat()
+            setColor(Color.argb(200, 0, 0, 0))
+        }
+
         fun createControlButton(iconRes: Int): ImageView = ImageView(this).apply {
             setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes))
             setColorFilter(Color.WHITE)
 
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dpToPx(8).toFloat()
-                setColor(Color.argb(200, 0, 0, 0))
-            }
+            background = createControlBackground()
             setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6))
             scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
@@ -159,6 +161,15 @@ class PixelWankerOverlayService : Service() {
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
+
+        val gridInfoView = TextView(this).apply {
+            text = "${config.cellValue}\n${config.unit}"
+            setTextColor(Color.WHITE)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            gravity = Gravity.CENTER
+            setLines(2)
+            background = createControlBackground()
+        }
 
         val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
             setOnClickListener { stopSelf() }
@@ -213,9 +224,25 @@ class PixelWankerOverlayService : Service() {
                 marginEnd = buttonSpacing
             }
         )
-        controlsContainer.addView(
+        val gridColumn = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        gridColumn.addView(
             toggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
+            LinearLayout.LayoutParams(buttonSize, buttonSize)
+        )
+        gridColumn.addView(
+            gridInfoView,
+            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        )
+
+        controlsContainer.addView(
+            gridColumn,
+            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                marginEnd = buttonSpacing
+            }
         )
         controlsContainer.addView(
             closeButton,
@@ -409,6 +436,7 @@ class PixelWankerOverlayService : Service() {
         val spacingPx: Float,
         val lineColorArgb: Int,
         val extraLineColorArgb: Int?, // ✅ NEW
+        val cellValue: Int,
         val unit: String,
     ) {
         companion object {
@@ -425,6 +453,7 @@ class PixelWankerOverlayService : Service() {
                     spacingPx = 20f,
                     lineColorArgb = applyAlpha(Color.BLACK, 80),
                     extraLineColorArgb = null,
+                    cellValue = 20,
                     unit = "px"
                 )
             }
@@ -444,6 +473,7 @@ class PixelWankerOverlayService : Service() {
                     spacingPx = spacingPx,
                     lineColorArgb = applyAlpha(baseColor, 80),
                     extraLineColorArgb = extraColor?.let { applyAlpha(it, 80) },
+                    cellValue = value,
                     unit = unit
                 )
             }
