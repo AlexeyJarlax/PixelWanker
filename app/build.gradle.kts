@@ -110,6 +110,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.peko)
 
+    // markdown rendering
+    implementation(libs.commonmark)
+
     // запрос разрешений
     implementation (libs.accompanist.permissions)
 

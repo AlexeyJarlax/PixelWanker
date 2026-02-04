@@ -2,7 +2,6 @@ package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.core.os.LocaleListCompat
 import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
+import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.PrivacyPolicyContent
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.SpacerHeight
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
@@ -131,12 +131,15 @@ fun AboutPage() {
     }
 
     if (showPrivacyDialog) {
+        val policyAssetName = if (selectedLanguage == "ru") "pp_ru.md" else "pp_en.md"
         WankerConfirmationDialog(
             onDismiss = { showPrivacyDialog = false },
-            dialogText = stringResource(R.string.about_privacy_policy_text),
+            dialogText = "",
             onConfirm = { showPrivacyDialog = false },
             confirmText = stringResource(R.string.about_dialog_confirm),
             dismissText = stringResource(R.string.about_dialog_dismiss),
+            title = stringResource(R.string.about_privacy_policy_button),
+            textContent = { PrivacyPolicyContent(assetName = policyAssetName) },
         )
     }
 }
