@@ -76,6 +76,7 @@ fun WankerConfirmationDialog(
 
                 textContent?.invoke() ?: Text(
                     text = dialogText,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(bottom = dp18)
                 )
 

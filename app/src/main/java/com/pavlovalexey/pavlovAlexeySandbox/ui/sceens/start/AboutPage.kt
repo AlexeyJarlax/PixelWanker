@@ -66,26 +66,26 @@ fun AboutPage() {
             text = stringResource(R.string.about_app_text),
             style = MaterialTheme.typography.bodyMedium
         )
-
         SpacerHeight()
 
-        AlexIconButton(
-            text = stringResource(R.string.about_user_data_button),
-            onClick = {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.about_user_data_toast),
-                    Toast.LENGTH_LONG
-                ).show()
-            },
-            outlined = true
-        )
+//        AlexIconButton(
+//            text = stringResource(R.string.about_user_data_button),
+//            onClick = {
+//                Toast.makeText(
+//                    context,
+//                    context.getString(R.string.about_user_data_toast),
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            },
+//            outlined = true
+//        )
 
         AlexIconButton(
             text = stringResource(R.string.about_privacy_policy_button),
             onClick = { showPrivacyDialog = true },
             outlined = true
         )
+        SpacerHeight()
 
         Text(
             text = stringResource(R.string.about_language_title),
