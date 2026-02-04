@@ -66,6 +66,15 @@
     <string name="about_dialog_confirm">No more wanking</string>
     <string name="about_dialog_dismiss">Back to wanking</string>
     <string name="apps_page_description">All installed apps on the device. Open an app card to launch it together with the grid.</string>
+    <string name="about_user_data_button">User data</string>
+    <string name="about_user_data_toast">The app does not collect or process user data.</string>
+    <string name="about_privacy_policy_button">Privacy policy</string>
+    <string name="about_language_title">Language</string>
+    <string name="about_language_ru">Русский</string>
+    <string name="about_language_en">English</string>
+    <string name="about_language_es">Español</string>
+    <string name="about_language_hi">हिन्दी</string>
+    <string name="about_language_change_toast">Changes will take effect after reopening the app.</string>
     <string name="telegram_donations_title">Donations via Telegram ⭐️</string>
     <string name="telegram_donations_description">The easiest way to support the project is to leave a paid ⭐️ reaction in Telegram.</string>
     <string name="telegram_open_channel_button">Open channel @PixelWanker</string>

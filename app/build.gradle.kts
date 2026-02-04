@@ -14,11 +14,11 @@ android {
 
     defaultConfig {
         applicationId = "com.pavlovalexey.pavlovAlexeySandbox"
-        resourceConfigurations += setOf("ru", "en")
+        resourceConfigurations += setOf("ru", "en", "es", "hi")
         minSdk = 24 //Android 7
         targetSdk = 36
-        versionCode = 17
-        versionName = "0.17"
+        versionCode = 18
+        versionName = "0.18"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

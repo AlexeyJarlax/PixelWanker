@@ -213,7 +213,6 @@ fun PixelWankerPage() {
             Box {
                 AlexIconButton(
                     text = stringResource(R.string.size_label, selectedSize, unitLabel),
-                    isFillMaxWidth = false,
                     outlined = true,
                     onClick = { sizeMenuExpanded = true },
                 )
@@ -286,7 +285,6 @@ fun PixelWankerPage() {
 
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
-                isFillMaxWidth = false,
                 outlined = true,
                 onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
             )
@@ -328,7 +326,6 @@ fun PixelWankerPage() {
             AlexIconButton(
                 text = stringResource(R.string.telegram_open_channel_button),
                 outlined = true,
-                isFillMaxWidth = false,
                 onClick = { showTelegramStarsDialog = true },
             )
             SpacerHeight(60)
@@ -502,7 +499,6 @@ fun PixelWankerPage() {
 
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
-                isFillMaxWidth = false,
                 outlined = true,
                 onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
             )

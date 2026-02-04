@@ -30,7 +30,7 @@ fun AlexIconButton(
     painter: Painter? = null,
     buttonColor: Color = Color.Transparent,
     contentColor: Color = MaterialTheme.colorScheme.primary,
-    isFillMaxWidth: Boolean = true,
+    isFillMaxWidth: Boolean = false,
     outlined: Boolean = false,
     modifier: Modifier = Modifier,
 ) {

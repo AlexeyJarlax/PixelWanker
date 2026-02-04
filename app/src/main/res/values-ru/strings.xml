@@ -66,6 +66,15 @@
     <string name="about_dialog_confirm">Больше никаких wanking</string>
     <string name="about_dialog_dismiss">Назад к wanking</string>
     <string name="apps_page_description">Список всех приложений устройства. Открыв карточку приложения, вы сможете запустить приложение вместе с сеткой.</string>
+    <string name="about_user_data_button">Пользовательские данные</string>
+    <string name="about_user_data_toast">Приложение не собирает и не обрабатывает пользовательские данные.</string>
+    <string name="about_privacy_policy_button">Политика конфиденциальности</string>
+    <string name="about_language_title">Язык</string>
+    <string name="about_language_ru">Русский</string>
+    <string name="about_language_en">English</string>
+    <string name="about_language_es">Español</string>
+    <string name="about_language_hi">हिन्दी</string>
+    <string name="about_language_change_toast">Изменения вступят в силу после повторного открытия приложения.</string>
     <string name="telegram_donations_title">Донаты через Telegram ⭐️</string>
     <string name="telegram_donations_description">Самый простой способ поддержать проект — поставить ⭐️ платную реакцию в Telegram.</string>
     <string name="telegram_open_channel_button">Открыть канал @PixelWanker</string>

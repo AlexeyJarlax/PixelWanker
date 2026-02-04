@@ -1,3 +1,4 @@
+app/release/app-release.aab
 .gitattributes
 .gitignore
 .idea/.gitignore
@@ -63,6 +64,7 @@ app/src/main/res/drawable/grid_off_30dp.xml
 app/src/main/res/drawable/ic_dashboard_black_24dp.xml
 app/src/main/res/drawable/ic_google.png
 app/src/main/res/drawable/ic_home_black_24dp.xml
+app/src/main/res/drawable/ic_icon_arrow_left_30dp.xml
 app/src/main/res/drawable/ic_icon_cloudtips_logo.xml
 app/src/main/res/drawable/ic_launcher_background.xml
 app/src/main/res/drawable/ic_launcher_foreground.xml
@@ -85,6 +87,8 @@ app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp
 app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp
 app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp
 app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp
+app/src/main/res/values-es/strings.xml
+app/src/main/res/values-hi/strings.xml
 app/src/main/res/values-night/themes.xml
 app/src/main/res/values-ru/strings.xml
 app/src/main/res/values/colors.xml

@@ -14,6 +14,7 @@ PixelWanker накладывает измерительную сетку пов�
 
 - **Язык и сборка:** Kotlin 2.2, Java 17, Gradle (Kotlin DSL).
 - **UI:** Jetpack Compose + Material/Material3, собственная тема и компоненты.
+- **Локализация:** 4 языка (русский, английский, испанский, хинди).
 - **Навигация:** Navigation Compose.
 - **Асинхронность и состояние:** Kotlin Coroutines, StateFlow, ViewModel.
 - **Работа с разрешениями:** Accompanist Permissions, Peko.

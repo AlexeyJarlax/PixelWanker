@@ -13,14 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pavlovalexey.pavlovAlexeySandbox.navigation.StartBottomBar
@@ -32,8 +29,6 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp0
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
-import com.pavlovalexey.pavlovAlexeySandbox.R
-import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import dev.chrisbanes.haze.hazeSource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -48,11 +43,10 @@ fun StartScreen(
     val resolvedViewModel = appsViewModel ?: viewModel(factory = factory)
     val appsUiState by resolvedViewModel.uiState.collectAsState()
     val apps by resolvedViewModel.apps.collectAsState()
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
     val activity = context as? Activity
     val hazeState = remember { HazeState() }
-    var showAboutDialog by remember { mutableStateOf(false) }
     val bottomBarHeight = 48.dp
     val bottomBarOuterPadding = dp8
 
@@ -74,6 +68,7 @@ fun StartScreen(
                             apps = apps,
                             onAppClick = onAppClick
                         )
+                        2 -> AboutPage()
                     }
                 }
             }
@@ -83,7 +78,6 @@ fun StartScreen(
                 onSelectPage = { page ->
                     scope.launch { pagerState.animateScrollToPage(page) }
                 },
-                onShowAbout = { showAboutDialog = true },
                 onExit = { activity?.finish() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -92,15 +86,5 @@ fun StartScreen(
                 barHeight = bottomBarHeight
             )
         }
-    }
-
-    if (showAboutDialog) {
-        WankerConfirmationDialog(
-            onDismiss = { showAboutDialog = false },
-            dialogText = stringResource(R.string.about_app_text),
-            onConfirm = { showAboutDialog = false },
-            confirmText = stringResource(R.string.about_dialog_confirm),
-            dismissText = stringResource(R.string.about_dialog_dismiss),
-        )
     }
 }
