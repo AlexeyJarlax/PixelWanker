@@ -285,7 +285,7 @@ class PixelWankerOverlayService : Service() {
     }
 
     private fun shiftGridBy(deltaXUnits: Float, deltaYUnits: Float) {
-        val shiftPx = if (config.unit == "dp") density else 1f
+        val shiftPx = density
         gridView?.shiftBy(deltaXUnits * shiftPx, deltaYUnits * shiftPx)
     }
 
