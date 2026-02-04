@@ -89,7 +89,7 @@ fun AboutPage() {
 
         Text(
             text = stringResource(R.string.about_language_title),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Box(modifier = Modifier.fillMaxWidth()) {
