@@ -99,10 +99,8 @@ dependencies {
     // Пикчи
     implementation(libs.coil.compose)
 
-
-    // визуал material
+    // визуал material3
     implementation (libs.androidx.material3)
-    implementation(libs.androidx.material)
     implementation(libs.androidx.material.icons.extended)
 
     // haze blur
