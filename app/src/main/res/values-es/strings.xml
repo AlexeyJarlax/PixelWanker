@@ -66,6 +66,13 @@
     <string name="about_dialog_confirm">Se acabó el wanking</string>
     <string name="about_dialog_dismiss">Volver al wanking</string>
     <string name="apps_page_description">Todas las apps instaladas en el dispositivo. Abre la tarjeta de una app para lanzarla junto con la cuadrícula.</string>
+    <string name="about_user_data_button">Datos del usuario</string>
+    <string name="about_user_data_toast">La aplicación no recopila ni procesa datos del usuario.</string>
+    <string name="about_privacy_policy_button">Política de privacidad</string>
+    <string name="about_language_title">Idioma</string>
+    <string name="about_language_ru">Ruso</string>
+    <string name="about_language_en">Inglés</string>
+    <string name="about_language_change_toast">Los cambios se aplicarán después de volver a abrir la aplicación.</string>
     <string name="telegram_donations_title">Donaciones vía Telegram ⭐️</string>
     <string name="telegram_donations_description">La forma más sencilla de apoyar el proyecto es dejar una reacción ⭐️ de pago en Telegram.</string>
     <string name="telegram_open_channel_button">Abrir canal @PixelWanker</string>
