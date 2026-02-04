@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +41,7 @@ fun WankerProgress() {
         Text(
             text = currentSymbol.value.toString(),
             color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.h4,
+            style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.align(Alignment.Center)
         )
     }
