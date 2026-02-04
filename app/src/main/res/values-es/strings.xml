@@ -69,6 +69,227 @@
     <string name="about_user_data_button">Datos del usuario</string>
     <string name="about_user_data_toast">La aplicación no recopila ni procesa datos del usuario.</string>
     <string name="about_privacy_policy_button">Política de privacidad</string>
+    <string name="about_privacy_policy_text" formatted="false"><![CDATA[Privacy Policy for the Pixel wanker for Android dev / PixelWanker App (hereinafter — the Mobile App)
+
+===== Brief General Provisions =====
+
+1. Collection, processing, and use of data.
+
+The Right Holder does not collect and does not receive users’ personal data on its servers and does not perform remote tracking.
+The Mobile App may process the following data locally on the device solely for the purpose of providing functionality:
+
+the list of installed apps (to display the list of apps and allow the user to choose an app);
+
+grid/overlay settings (e.g., cell size, color, etc.), which are stored locally on the device.
+
+The Right Holder does not track or store users’ IP addresses and does not collect information that can directly identify a specific user (full name, e-mail, phone number, etc.) through the functionality of the Mobile App.
+
+2. Cookies and analytics.
+
+The Mobile App does not use cookies and does not include third-party analytics/tracker tools intended to track user behavior (Firebase Analytics / Google Analytics), and it does not send telemetry to the Right Holder.
+
+3. Security and data storage.
+
+The Mobile App does not store user data on the Right Holder’s servers. All app settings are stored locally on the device.
+Device security, the Google account, and Android system features (including backups) depend on how the User protects their device and what system settings are enabled.
+
+4. Google / Android.
+
+Personal or technical data may be collected and processed by Google and/or components of the Android operating system (for example, during installation via Google Play, updates, security checks, system crash reports, Play Protect, and other system mechanisms).
+The Right Holder, for its part, seeks to minimize this impact: it does not include third-party analytics/tracker SDKs in the app (e.g., Firebase Analytics / Google Analytics).
+
+If you have questions, objections, suggestions, or concerns regarding this privacy policy — stop using the app and uninstall it.
+This Policy may be updated (see Section 12); the current version is available via the link at the end of this document.
+
+===== Privacy Policy in Detail =====
+
+1. DEFINITIONS.
+
+“Law” primarily means the Federal Law of the Russian Federation “On Personal Data,” with all amendments and additions, as well as other legislative acts of the Russian Federation. Secondarily: international legal standards. Thirdly: divine laws embedded in the structure of the universe and existence.
+
+“Controller” means the person responsible for processing and protecting Users’ Personal Data located in the EU, within the meaning of the General Data Protection Regulation (“GDPR”) of April 27, 2016 (applicable from May 25, 2018).
+
+“Mobile App” means software (with all existing additions and improvements) intended to operate on smartphones, tablets, watches, and other mobile devices, developed for a specific platform (iOS, Android, Windows Phone, etc.). For the purposes of this Policy, the Mobile App refers to the following software: Pixel wanker for Android dev / PixelWanker.
+
+“Personal Data” means information about a User that can directly or indirectly identify the User, as well as any other information recognized as personal data under applicable law.
+
+“Policy” means this Privacy Policy of the Mobile App (including all existing additions and amendments).
+
+“User” means a legal entity or an individual who downloaded the Mobile App to a smartphone, tablet, watch, or any other mobile device and/or activated such Mobile App on one of the specified devices.
+
+“User Agreement” means an agreement concluded between the Right Holder and the User regarding the procedure, rules, and specific features of the User’s use of the Mobile App. The User accedes to such agreement and has no right to introduce and/or demand any changes or additions to it.
+
+“Right Holder” means the following person who owns the exclusive rights to the Mobile App: Pavlov Alexey.
+https://github.com/AlexeyJarlax
+
+https://play.google.com/store/apps/dev?id=8406991842366944145
+
+“Processor” means a person who, within the meaning of the GDPR, stores and/or processes Users’ Personal Data on behalf of the Controller.
+
+“Cookies” means small files primarily used by websites/web content. In the context of this Mobile App, cookies are not used unless the User interacts with external web resources outside the app (for example, by opening links in a browser).
+
+2. RELATIONSHIPS COVERED BY THE POLICY.
+
+General provisions
+
+This Policy is used and applicable exclusively to data processed in connection with the use of the Mobile App.
+
+The provisions of this Policy are aimed at:
+
+defining the types of data that may be processed when using the app;
+
+defining the purposes of such processing;
+
+defining the User’s privacy rights.
+
+By installing and/or activating the Mobile App on a device, the User agrees to the terms of this Policy.
+
+If the User does not agree with the terms of the Policy and/or certain terms of the Policy are not clear to the User, the User must immediately stop using the Mobile App and uninstall it.
+
+User rights
+
+In connection with using the Mobile App, the User has the following main rights:
+
+to use the app under the terms of this Policy;
+
+to отказаться from using the app and uninstall it.
+
+3. LIST OF PROCESSED DATA.
+
+3.1. Data that the app does NOT collect on the Right Holder’s server
+
+The Right Holder does not collect and does not receive on its servers:
+
+full names, addresses, e-mails, phone numbers;
+
+document data;
+
+the User’s photos/content;
+
+the User’s IP address via the app functionality;
+
+identifiers used for remote tracking of the User (including advertising identifiers) by the Right Holder.
+
+The Right Holder also does not use third-party analytics/tracker SDKs (Firebase Analytics / Google Analytics, etc.) to track user behavior.
+
+3.2. Data that the app may process LOCALLY on the device
+
+To provide the Mobile App functionality, it may process locally on the device:
+
+Installed apps list — to display the list of apps and allow the User to choose an app.
+
+Local app settings (e.g., grid/overlay parameters: cell size, color, additional settings) — to save the User’s preferences.
+
+This data is used only for functionality and, by default, is not sent to the Right Holder.
+
+3.3. Storage
+
+Local settings may be stored in the device memory (for example, via standard Android mechanisms, including SharedPreferences).
+The User can delete this data by uninstalling the app via the device interface.
+
+4. ACCESS OF THIRD PARTIES TO DATA — Google / Android.
+
+Using the app involves Google platforms and the Android operating system. Some technical data may be collected and processed by Google/Android as part of platform operation (installation, updates, security checks, system crash reports, Play Protect, etc.).
+
+By installing the Mobile App via Google Play, the User agrees to Google’s privacy policy or refuses to use the app.
+
+The Right Holder, for its part:
+
+does not include third-party analytics/tracker SDKs in the app;
+
+does not transfer User data to its own servers.
+
+Note: if Android system backups are enabled on the User’s device, the app’s local settings may be included in the backup as part of OS operation (this is governed by device settings and platform mechanisms).
+
+5. ADVERTISING PLACEMENT.
+
+The Right Holder does not place third-party advertising in the Mobile App.
+At the same time, the Right Holder may inform the User about its other products, place links to its groups/channels, and indicate ways of voluntary support (tips, donations).
+
+6. SUBMITTING COMPLAINTS AND REQUESTS TO THE RIGHT HOLDER.
+
+The User has the right at any time to uninstall the app and delete associated local data using the device interface.
+
+The User may contact the Right Holder with questions and suggestions at the following e-mail address: a9633238@gmail.com
+
+The Right Holder does not guarantee a timely response to the User’s messages.
+
+7. ACCESS BY MINORS TO THE MOBILE APP.
+
+The Mobile App and/or its content is intended for persons aged 16 and older.
+Since the Right Holder does not collect Users’ personal data on its servers, separate consent to personal data processing by the Right Holder within the app functionality is not required.
+
+8. DATA PROTECTION PROCEDURE.
+
+Protecting data confidentiality is an important task for the Right Holder.
+Since the app does not use the Right Holder’s servers to store User data, the main portion of data is stored locally on the device.
+
+The Right Holder applies reasonable measures at the app architecture level to:
+
+minimize data collection;
+
+not use third-party trackers;
+
+not transfer User data to the Right Holder’s server.
+
+9. USERS LOCATED IN THE EUROPEAN UNION.
+
+Since the Mobile App may be available to users from the European Union, the Right Holder undertakes to comply with applicable GDPR provisions.
+
+The Controller within the meaning of this Policy is the Right Holder.
+The Right Holder does not collect the User’s personal data on its servers and is located outside the European Union.
+
+The User manages data on their device themselves, including system privacy and backup settings.
+
+10. DISCLAIMER OF WARRANTIES AND LIMITATION OF LIABILITY.
+
+The Right Holder, Controller, or Developer does not warrant or represent that no failures or errors will occur when using the Mobile App, and you agree that the Right Holder, Controller, or Developer may disable/remove/modify the Mobile App for an indefinite period, cancel the Mobile App operation at any time, or otherwise restrict or block access to the App without prior notice.
+
+You expressly agree that you bear all risks associated with your use (or inability to use) the Mobile App, as well as any other activity in relation to the Mobile App. All content provided to you within the Mobile App is provided “as is” and “as available” without any express or implied warranties, including implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement. Since some jurisdictions do not allow the exclusion of implied warranties, the above exclusion may not apply to you.
+
+You agree that, unless otherwise required by applicable law, the Right Holder, Controller, or Developer is not responsible for providing you with uninterrupted access to content and is also not responsible if content becomes unavailable for download, re-download, or other use.
+
+Under no circumstances shall the Right Holder, Controller, or Developer, its managers, officers, employees, affiliates, agents, contractors, or licensors be liable for any direct, indirect, incidental, punitive, actual, or consequential damages related to your use of the Mobile App and/or content, or other claims in any way related to your use of the Mobile App and/or content, including, without limitation, errors or omissions in any content, losses and damages of any kind incurred as a result of using any content posted, transmitted, or otherwise made available via the Mobile App, even if advised of the possibility of such damages. Since some countries, states, or jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, in such countries, states, or jurisdictions, the liability of the Right Holder, Controller, or Developer shall be limited to the extent permitted by law.
+
+The Right Holder, Controller, or Developer uses reasonable efforts to protect information provided by you in connection with your use of the Mobile App, but you agree that you provide such information at your own risk, and you hereby release the Right Holder, Controller, or Developer from any liability to you for loss of data and any other liability related to such information.
+
+The Right Holder, Controller, or Developer does not represent or warrant that the service will be completely secure from loss of data, corruption, attacks, viruses, interference, hacking, or other security breaches, and you hereby release the Right Holder, Controller, or Developer from any liability related to such breaches. You are responsible for creating backups of information contained in your system, including all content obtained via the Mobile App.
+
+The Right Holder, Controller, or Developer is not responsible for data transmission fees that may be charged to you when using the Mobile App.
+
+11. WAIVER OF THE RIGHT TO CLAIM AND INDEMNITY.
+
+In connection with your use of the Mobile App, you release (to the extent permitted by law) the Right Holder, Controller, or Developer, its managers, officers, employees, affiliates, agents, contractors, and licensors from liability and claims for damages related to any claims arising from your breach of the terms of this agreement, your use of the Mobile App, as well as actions of the Right Holder, Controller, or Developer in investigating an alleged breach of this agreement or as a result of entering into or deciding that a breach of this agreement occurred.
+
+You agree not to file lawsuits against the Right Holder, Controller, or Developer, its managers, officers, employees, affiliates, agents, contractors, and licensors and not to seek damages from them due to the decision of the Right Holder, Controller, or Developer to remove or deny access to any information or content, to suspend or terminate your access to the App, or to take other actions during the investigation of an alleged breach or as a result of concluding that a breach of this agreement occurred. This waiver of the right to claim and indemnity applies to all violations specified or provided for in this agreement.
+
+12. FINAL PROVISIONS.
+
+Availability of the policy text for review
+
+The User may ознакомиться with the terms of the Policy via the following link:
+
+RU: https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/refs/heads/main/PixelWanker_PP_RU
+
+EN: https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy/refs/heads/main/PixelWanker_PP_EN
+
+This Policy may be translated into a foreign language for Users who access the Mobile App outside the Russian Federation. In case of discrepancies between the original text (Russian language) and its translation, the Russian text shall prevail.
+
+This version of the Policy is effective as of February 04, 2026.
+
+Policy changes and amendments
+
+This Policy may be changed from time to time. The Right Holder bears no liability to the User for changes to this Policy without prior notice to the User, unless otherwise required by applicable law.
+The User undertakes to independently check the current version of the Policy via the указанная link.
+
+Applicable law
+
+This Policy is developed in accordance with the current legislation on personal data protection of the Russian Federation, in particular, Federal Law No. 152-FZ “On Personal Data” dated July 27, 2006 (with all amendments and changes), Federal Law No. 242-FZ dated July 21, 2014 “On Amendments...” (with all amendments and changes), and also taking into account the provisions of the GDPR.
+
+Risk of disclosure
+
+Regardless of the measures taken, the User is deemed to be aware that any data transmission over the Internet cannot be guaranteed to be secure, and therefore the User carries out such transmission at their own risk.
+At the same time, the Right Holder does not transmit the User’s data to its servers within the functionality of the app.]]></string>
     <string name="about_language_title">Idioma</string>
     <string name="about_language_ru">Русский</string>
     <string name="about_language_en">English</string>

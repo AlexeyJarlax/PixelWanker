@@ -31,6 +31,7 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.SpacerHeight
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.WankerConfirmationDialog
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
+import com.pavlovalexey.pavlovAlexeySandbox.utils.LanguagePrefs
 import java.util.Locale
 
 @Composable
@@ -45,7 +46,7 @@ fun AboutPage() {
         LanguageOption("es", stringResource(R.string.about_language_es)),
         LanguageOption("hi", stringResource(R.string.about_language_hi)),
     )
-    val initialLanguage = remember { resolveAppLanguage() }
+    val initialLanguage = remember { resolveAppLanguage(context) }
     var selectedLanguage by remember { mutableStateOf(initialLanguage) }
 
     Column(
@@ -112,6 +113,7 @@ fun AboutPage() {
                         onClick = {
                             languageMenuExpanded = false
                             selectedLanguage = option.code
+                            LanguagePrefs.setSelectedLanguage(context, option.code)
                             AppCompatDelegate.setApplicationLocales(
                                 LocaleListCompat.forLanguageTags(option.code)
                             )
@@ -131,7 +133,7 @@ fun AboutPage() {
     if (showPrivacyDialog) {
         WankerConfirmationDialog(
             onDismiss = { showPrivacyDialog = false },
-            dialogText = stringResource(R.string.about_app_text),
+            dialogText = stringResource(R.string.about_privacy_policy_text),
             onConfirm = { showPrivacyDialog = false },
             confirmText = stringResource(R.string.about_dialog_confirm),
             dismissText = stringResource(R.string.about_dialog_dismiss),
@@ -139,7 +141,8 @@ fun AboutPage() {
     }
 }
 
-private fun resolveAppLanguage(): String {
+private fun resolveAppLanguage(context: android.content.Context): String {
+    LanguagePrefs.getSelectedLanguage(context)?.let { return it }
     val appLocaleTags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
     if (appLocaleTags.isNotBlank()) {
         val primaryTag = appLocaleTags.split(",").firstOrNull().orEmpty()
