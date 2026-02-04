@@ -220,7 +220,6 @@ fun AppDetailScreen(
                                             context.startActivity(intent)
                                         }
                                     },
-                                    isFillMaxWidth = false,
                                     outlined = true,
                                     text = stringResource(R.string.app_detail_open_app)
                                 )
@@ -231,7 +230,6 @@ fun AppDetailScreen(
                                             openAppWithGrid(app.packageName)
                                         }
                                     },
-                                    isFillMaxWidth = false,
                                     outlined = true,
                                     text = stringResource(R.string.app_detail_open_with_grid)
                                 )

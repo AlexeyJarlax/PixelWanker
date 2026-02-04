@@ -70,9 +70,9 @@
     <string name="about_user_data_toast">ऐप उपयोगकर्ता डेटा एकत्र या प्रोसेस नहीं करता।</string>
     <string name="about_privacy_policy_button">गोपनीयता नीति</string>
     <string name="about_language_title">भाषा</string>
-    <string name="about_language_ru">रूसी</string>
-    <string name="about_language_en">अंग्रेज़ी</string>
-    <string name="about_language_es">स्पेनिश</string>
+    <string name="about_language_ru">Русский</string>
+    <string name="about_language_en">English</string>
+    <string name="about_language_es">Español</string>
     <string name="about_language_hi">हिन्दी</string>
     <string name="about_language_change_toast">परिवर्तन ऐप को फिर से खोलने के बाद लागू होंगे।</string>
     <string name="telegram_donations_title">Telegram के जरिए दान ⭐️</string>

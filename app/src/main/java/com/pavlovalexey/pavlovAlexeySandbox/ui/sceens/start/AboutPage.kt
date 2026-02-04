@@ -2,6 +2,7 @@ package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.core.os.LocaleListCompat
 import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
@@ -49,10 +51,16 @@ fun AboutPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(dp16)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(dp16),
         verticalArrangement = Arrangement.spacedBy(dp12)
     ) {
+        Text(
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold
+        )
+        SpacerHeight()
         Text(
             text = stringResource(R.string.about_app_text),
             style = MaterialTheme.typography.bodyMedium
@@ -107,16 +115,17 @@ fun AboutPage() {
                             AppCompatDelegate.setApplicationLocales(
                                 LocaleListCompat.forLanguageTags(option.code)
                             )
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.about_language_change_toast),
-                                Toast.LENGTH_LONG
-                            ).show()
+//                            Toast.makeText(
+//                                context,
+//                                context.getString(R.string.about_language_change_toast),
+//                                Toast.LENGTH_LONG
+//                            ).show()
                         }
                     )
                 }
             }
         }
+        SpacerHeight(60)
     }
 
     if (showPrivacyDialog) {

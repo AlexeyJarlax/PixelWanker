@@ -71,9 +71,9 @@
     <string name="about_privacy_policy_button">Политика конфиденциальности</string>
     <string name="about_language_title">Язык</string>
     <string name="about_language_ru">Русский</string>
-    <string name="about_language_en">Английский</string>
-    <string name="about_language_es">Испанский</string>
-    <string name="about_language_hi">Хинди</string>
+    <string name="about_language_en">English</string>
+    <string name="about_language_es">Español</string>
+    <string name="about_language_hi">हिन्दी</string>
     <string name="about_language_change_toast">Изменения вступят в силу после повторного открытия приложения.</string>
     <string name="telegram_donations_title">Донаты через Telegram ⭐️</string>
     <string name="telegram_donations_description">Самый простой способ поддержать проект — поставить ⭐️ платную реакцию в Telegram.</string>
