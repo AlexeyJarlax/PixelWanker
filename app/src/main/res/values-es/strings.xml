@@ -72,6 +72,8 @@
     <string name="about_language_title">Idioma</string>
     <string name="about_language_ru">Ruso</string>
     <string name="about_language_en">Inglés</string>
+    <string name="about_language_es">Español</string>
+    <string name="about_language_hi">Hindi</string>
     <string name="about_language_change_toast">Los cambios se aplicarán después de volver a abrir la aplicación.</string>
     <string name="telegram_donations_title">Donaciones vía Telegram ⭐️</string>
     <string name="telegram_donations_description">La forma más sencilla de apoyar el proyecto es dejar una reacción ⭐️ de pago en Telegram.</string>

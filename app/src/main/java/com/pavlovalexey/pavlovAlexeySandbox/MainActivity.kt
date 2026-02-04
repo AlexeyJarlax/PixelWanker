@@ -1,8 +1,8 @@
 package com.pavlovalexey.pavlovAlexeySandbox
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -10,7 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.MainScreen
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.AppTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

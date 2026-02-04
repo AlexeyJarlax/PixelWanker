@@ -40,15 +40,10 @@ fun AboutPage() {
     val languages = listOf(
         LanguageOption("ru", stringResource(R.string.about_language_ru)),
         LanguageOption("en", stringResource(R.string.about_language_en)),
+        LanguageOption("es", stringResource(R.string.about_language_es)),
+        LanguageOption("hi", stringResource(R.string.about_language_hi)),
     )
-    val initialLanguage = remember {
-        val appLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
-        if (appLocale.isNotBlank()) {
-            appLocale
-        } else {
-            Locale.getDefault().language
-        }
-    }
+    val initialLanguage = remember { resolveAppLanguage() }
     var selectedLanguage by remember { mutableStateOf(initialLanguage) }
 
     Column(
@@ -133,6 +128,18 @@ fun AboutPage() {
             dismissText = stringResource(R.string.about_dialog_dismiss),
         )
     }
+}
+
+private fun resolveAppLanguage(): String {
+    val appLocaleTags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+    if (appLocaleTags.isNotBlank()) {
+        val primaryTag = appLocaleTags.split(",").firstOrNull().orEmpty()
+        val normalized = Locale.forLanguageTag(primaryTag).language
+        if (normalized.isNotBlank()) {
+            return normalized
+        }
+    }
+    return Locale.getDefault().language
 }
 
 private data class LanguageOption(
