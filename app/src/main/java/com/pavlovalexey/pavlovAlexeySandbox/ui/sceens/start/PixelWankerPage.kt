@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -243,6 +244,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.WHITE
                         saveNow()
                     },
+                    border = colorChipBorder(baseColor == android.graphics.Color.WHITE),
                     colors = chipColorsFor(android.graphics.Color.WHITE),
                     label = { Text(stringResource(R.string.color_white)) }
                 )
@@ -252,6 +254,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.GREEN
                         saveNow()
                     },
+                    border = colorChipBorder(baseColor == android.graphics.Color.GREEN),
                     colors = chipColorsFor(android.graphics.Color.GREEN),
                     label = { Text(stringResource(R.string.color_green)) }
                 )
@@ -263,6 +266,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.BLACK
                         saveNow()
                     },
+                    border = colorChipBorder(baseColor == android.graphics.Color.BLACK),
                     colors = chipColorsFor(android.graphics.Color.BLACK),
                     label = { Text(stringResource(R.string.color_black)) }
                 )
@@ -272,6 +276,7 @@ fun PixelWankerPage() {
                         baseColor = android.graphics.Color.RED
                         saveNow()
                     },
+                    border = colorChipBorder(baseColor == android.graphics.Color.RED),
                     colors = chipColorsFor(android.graphics.Color.RED),
                     label = { Text(stringResource(R.string.color_red)) }
                 )
@@ -411,6 +416,7 @@ fun PixelWankerPage() {
                     extraColor = null
                     saveNow()
                 },
+                border = colorChipBorder(extraColor == null),
                 label = { Text(stringResource(R.string.no_second_color)) }
             )
             Row(
@@ -424,6 +430,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    border = colorChipBorder(extraColor == android.graphics.Color.WHITE),
                     colors = chipColorsFor(android.graphics.Color.WHITE),
                     label = { Text(stringResource(R.string.color_white)) }
                 )
@@ -435,6 +442,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    border = colorChipBorder(extraColor == android.graphics.Color.BLACK),
                     colors = chipColorsFor(android.graphics.Color.BLACK),
                     label = { Text(stringResource(R.string.color_black)) }
                 )
@@ -446,6 +454,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    border = colorChipBorder(extraColor == android.graphics.Color.RED),
                     colors = chipColorsFor(android.graphics.Color.RED),
                     label = { Text(stringResource(R.string.color_red)) }
                 )
@@ -461,6 +470,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    border = colorChipBorder(extraColor == android.graphics.Color.GREEN),
                     colors = chipColorsFor(android.graphics.Color.GREEN),
                     label = { Text(stringResource(R.string.color_green)) }
                 )
@@ -471,6 +481,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    border = colorChipBorder(extraColor == android.graphics.Color.YELLOW),
                     colors = chipColorsFor(android.graphics.Color.YELLOW),
                     label = { Text(stringResource(R.string.color_yellow)) }
                 )
@@ -482,6 +493,7 @@ fun PixelWankerPage() {
                         saveNow()
                     },
                     modifier = Modifier.weight(1f),
+                    border = colorChipBorder(extraColor == android.graphics.Color.BLUE),
                     colors = chipColorsFor(android.graphics.Color.BLUE),
                     label = { Text(stringResource(R.string.color_blue)) }
                 )
@@ -544,3 +556,8 @@ private fun chipColorsFor(colorInt: Int) = run {
         selectedLabelColor = content
     )
 }
+
+private fun colorChipBorder(selected: Boolean): BorderStroke = BorderStroke(
+    width = 2.dp,
+    color = if (selected) Color.White else Color.Gray
+)
