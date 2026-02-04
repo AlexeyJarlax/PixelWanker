@@ -35,7 +35,6 @@ import dev.chrisbanes.haze.hazeEffect
 fun StartBottomBar(
     currentPage: Int,
     onSelectPage: (Int) -> Unit,
-    onShowAbout: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
     barHeight: Dp,
@@ -63,7 +62,7 @@ fun StartBottomBar(
     val items = listOf(
         BottomNavItem(stringResource(R.string.bottom_nav_grid), currentPage == 0) { onSelectPage(0) },
         BottomNavItem(stringResource(R.string.bottom_nav_apps), currentPage == 1) { onSelectPage(1) },
-        BottomNavItem(stringResource(R.string.bottom_nav_about), false, onShowAbout),
+        BottomNavItem(stringResource(R.string.bottom_nav_about), currentPage == 2) { onSelectPage(2) },
         BottomNavItem(stringResource(R.string.bottom_nav_exit), false, onExit),
     )
 
