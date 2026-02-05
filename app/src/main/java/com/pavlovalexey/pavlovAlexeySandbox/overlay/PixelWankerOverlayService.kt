@@ -7,17 +7,43 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
-import android.graphics.drawable.GradientDrawable
 import android.os.IBinder
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color as ComposeColor
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.pavlovalexey.pavlovAlexeySandbox.R
 import android.widget.Toast
 import java.util.Locale
@@ -109,203 +135,42 @@ class PixelWankerOverlayService : Service() {
 
     private fun createControlsOverlayView(): FrameLayout {
         val root = FrameLayout(this)
-        fun dpToPx(value: Int): Int = (value * density).toInt()
 
-        fun createControlBackground(): GradientDrawable = GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            cornerRadius = dpToPx(8).toFloat()
-            setColor(Color.argb(200, 0, 0, 0))
-        }
-
-        fun createControlButton(iconRes: Int): ImageView = ImageView(this).apply {
-            setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes))
-            setColorFilter(Color.WHITE)
-
-            background = createControlBackground()
-            setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6))
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
-        }
-
-        val hintTextView = TextView(this).apply {
-            text = getString(R.string.overlay_hint_hide_grid)
-            setTextColor(Color.RED)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            maxLines = 3
-            maxWidth = dpToPx(260)
-            gravity = Gravity.CENTER
-
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dpToPx(10).toFloat()
-                setColor(Color.LTGRAY)
-            }
-            setPadding(dpToPx(10), dpToPx(8), dpToPx(10), dpToPx(8))
-        }
-
-        val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
-            setOnClickListener { openAppHomeAndCloseOverlay() }
-            contentDescription = getString(R.string.overlay_back)
-        }
-
-        val shiftLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
-            setOnClickListener { shiftGridBy(-1f, 0f) }
-            contentDescription = getString(R.string.overlay_shift_left)
-        }
-
-        val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
-            setOnClickListener { shiftGridBy(0f, 1f) }
-            contentDescription = getString(R.string.overlay_shift_down)
-        }
-
-        val toggleButton = createControlButton(
-            if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
-        )
-
-        val hintArrowView = ImageView(this).apply {
-            setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, android.R.drawable.arrow_down_float))
-            setColorFilter(Color.RED)
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
-        }
-
-        val hintContainer = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            addView(
-                hintTextView,
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+        val composeView = ComposeView(this).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+            setContent {
+                OverlayControls(
+                    cellValue = config.cellValue,
+                    unit = config.unit,
+                    isGridVisibleInitial = isGridVisible,
+                    onBackClick = { openAppHomeAndCloseOverlay() },
+                    onShiftLeftClick = { shiftGridBy(-1f, 0f) },
+                    onShiftDownClick = { shiftGridBy(0f, 1f) },
+                    onToggleGrid = { visible ->
+                        isGridVisible = visible
+                        if (visible) showGridOverlay() else hideGridOverlay()
+                    },
+                    onCloseClick = { stopSelf() },
+                    hintText = getString(R.string.overlay_hint_hide_grid),
+                    hideGridDescription = getString(R.string.overlay_hide_grid),
+                    showGridDescription = getString(R.string.overlay_show_grid),
+                    backDescription = getString(R.string.overlay_back),
+                    shiftLeftDescription = getString(R.string.overlay_shift_left),
+                    shiftDownDescription = getString(R.string.overlay_shift_down),
+                    closeDescription = getString(R.string.overlay_close)
                 )
-            )
+            }
         }
 
-        val gridInfoView = TextView(this).apply {
-            text = "${config.cellValue}\n${config.unit}"
-            setTextColor(Color.WHITE)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
-            gravity = Gravity.CENTER
-            setLines(2)
-            background = createControlBackground()
-        }
-
-        val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
-            setOnClickListener { stopSelf() }
-            contentDescription = getString(R.string.overlay_close)
-        }
-
-        fun updateToggleIcon() {
-            val iconRes = if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
-            toggleButton.setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, iconRes))
-            toggleButton.contentDescription = getString(
-                if (isGridVisible) R.string.overlay_hide_grid else R.string.overlay_show_grid
-            )
-        }
-
-        toggleButton.setOnClickListener {
-            hintContainer.visibility = View.GONE
-            isGridVisible = !isGridVisible
-            if (isGridVisible) showGridOverlay() else hideGridOverlay()
-            updateToggleIcon()
-        }
-
-        val controlsContainer = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-
-        val buttonSize = dpToPx(38)
-        val hintArrowSize = (buttonSize * 1.5f).toInt()
-        val buttonSpacing = dpToPx(4)
-
-        val backColumn = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-        }
-
-        backColumn.addView(
-            backButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
-        backColumn.addView(
-            shiftDownButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
-        )
-
-        controlsContainer.addView(
-            shiftLeftButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
-        )
-        controlsContainer.addView(
-            backColumn,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
+        root.addView(
+            composeView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.CENTER
             }
         )
-        val gridColumn = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-        }
-
-        gridColumn.addView(
-            hintContainer,
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = buttonSpacing }
-        )
-        hintContainer.addView(
-            hintArrowView,
-            LinearLayout.LayoutParams(hintArrowSize, hintArrowSize)
-        )
-
-        gridColumn.addView(
-            toggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
-        gridColumn.addView(
-            gridInfoView,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
-        )
-
-        controlsContainer.addView(
-            gridColumn,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
-        controlsContainer.addView(
-            closeButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
-
-        val controlsRoot = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-        }
-
-        controlsRoot.addView(controlsContainer)
-
-        val controlsParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.CENTER
-        }
-        root.addView(controlsRoot, controlsParams)
-
-        val dismissHint = Runnable {
-            hintContainer.visibility = View.GONE
-        }
-
-        fun hideHint() {
-            hintContainer.visibility = View.GONE
-            hintContainer.removeCallbacks(dismissHint)
-        }
-
-        hintContainer.setOnClickListener { hideHint() }
-        hintArrowView.setOnClickListener { hideHint() }
-        hintTextView.setOnClickListener { hideHint() }
-        hintContainer.postDelayed(dismissHint, 8_000)
 
         return root
     }
@@ -368,6 +233,173 @@ class PixelWankerOverlayService : Service() {
         ).apply {
             gravity = Gravity.CENTER
         }
+
+    @Composable
+    private fun OverlayControls(
+        cellValue: Int,
+        unit: String,
+        isGridVisibleInitial: Boolean,
+        onBackClick: () -> Unit,
+        onShiftLeftClick: () -> Unit,
+        onShiftDownClick: () -> Unit,
+        onToggleGrid: (Boolean) -> Unit,
+        onCloseClick: () -> Unit,
+        hintText: String,
+        hideGridDescription: String,
+        showGridDescription: String,
+        backDescription: String,
+        shiftLeftDescription: String,
+        shiftDownDescription: String,
+        closeDescription: String,
+    ) {
+        var isGridVisibleState by remember { mutableStateOf(isGridVisibleInitial) }
+        var showHint by remember { mutableStateOf(true) }
+
+        LaunchedEffect(showHint) {
+            if (showHint) {
+                delay(8_000)
+                showHint = false
+            }
+        }
+
+        val buttonSize = 38.dp
+        val hintArrowSize = buttonSize * 1.5f
+        val buttonSpacing = 4.dp
+        val buttonShape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+
+        val buttonBackgroundModifier = Modifier
+            .size(buttonSize)
+            .clip(buttonShape)
+            .background(ComposeColor.Black.copy(alpha = 0.78f))
+            .padding(6.dp)
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
+            ) {
+                OverlayIconButton(
+                    modifier = buttonBackgroundModifier,
+                    painter = painterResource(id = R.drawable.ic_icon_arrow_left_30dp),
+                    contentDescription = shiftLeftDescription,
+                    onClick = onShiftLeftClick
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(buttonSpacing)
+                ) {
+                    OverlayIconButton(
+                        modifier = buttonBackgroundModifier,
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = backDescription,
+                        onClick = onBackClick
+                    )
+                    OverlayIconButton(
+                        modifier = buttonBackgroundModifier,
+                        imageVector = Icons.Default.ArrowDownward,
+                        contentDescription = shiftDownDescription,
+                        onClick = onShiftDownClick
+                    )
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(buttonSpacing)
+                ) {
+                    if (showHint) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { showHint = false }
+                        ) {
+                            Text(
+                                text = hintText,
+                                color = ComposeColor.Red,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .widthIn(max = 260.dp)
+                                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+                                    .background(ComposeColor.LightGray)
+                                    .padding(horizontal = 10.dp, vertical = 8.dp)
+                            )
+                            Icon(
+                                imageVector = Icons.Default.ArrowDownward,
+                                contentDescription = null,
+                                tint = ComposeColor.Red,
+                                modifier = Modifier.size(hintArrowSize)
+                            )
+                        }
+                    }
+
+                    OverlayIconButton(
+                        modifier = buttonBackgroundModifier,
+                        painter = painterResource(
+                            id = if (isGridVisibleState) R.drawable.grid_30dp else R.drawable.grid_off_30dp
+                        ),
+                        contentDescription = if (isGridVisibleState) hideGridDescription else showGridDescription,
+                        onClick = {
+                            showHint = false
+                            isGridVisibleState = !isGridVisibleState
+                            onToggleGrid(isGridVisibleState)
+                        }
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(buttonShape)
+                            .background(ComposeColor.Black.copy(alpha = 0.78f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "$cellValue\n$unit",
+                            color = ComposeColor.White,
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                OverlayIconButton(
+                    modifier = buttonBackgroundModifier,
+                    imageVector = Icons.Default.Close,
+                    contentDescription = closeDescription,
+                    onClick = onCloseClick
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun OverlayIconButton(
+        modifier: Modifier,
+        contentDescription: String,
+        onClick: () -> Unit,
+        painter: androidx.compose.ui.graphics.painter.Painter? = null,
+        imageVector: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    ) {
+        Box(
+            modifier = modifier.clickable(onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                painter != null -> Icon(
+                    painter = painter,
+                    contentDescription = contentDescription,
+                    tint = ComposeColor.White,
+                    modifier = Modifier.fillMaxSize(),
+                )
+
+                imageVector != null -> Icon(
+                    imageVector = imageVector,
+                    contentDescription = contentDescription,
+                    tint = ComposeColor.White,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
+    }
 
     private class GridView(
         context: Context,
