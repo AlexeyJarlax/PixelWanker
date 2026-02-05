@@ -206,9 +206,14 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_toggle_hint)
         }
 
+        val extraHintViews = listOf(backHintTextView, shiftDownHintTextView)
+
         fun updateHintVisibility(visible: Boolean) {
             isHintVisible = visible
             hintContainer.visibility = if (visible) View.VISIBLE else View.GONE
+            extraHintViews.forEach { hintView ->
+                hintView.visibility = if (visible) View.VISIBLE else View.GONE
+            }
             hintToggleButton.setColorFilter(if (visible) Color.YELLOW else Color.WHITE)
         }
 
@@ -253,7 +258,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         hintToggleButton.setOnClickListener {
-            updateHintVisibility(!isHintVisible)
+            updateHintVisibility(true)
             scheduleHintAutoHide()
         }
 
