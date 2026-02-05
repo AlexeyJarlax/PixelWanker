@@ -147,11 +147,6 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_back)
         }
 
-        val shiftLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
-            setOnClickListener { shiftGridBy(-1f, 0f) }
-            contentDescription = getString(R.string.overlay_shift_left)
-        }
-
         val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
             setOnClickListener { shiftGridBy(0f, 1f) }
             contentDescription = getString(R.string.overlay_shift_down)
@@ -179,6 +174,18 @@ class PixelWankerOverlayService : Service() {
             )
         }
 
+        var isHintVisible = true
+
+        val hintToggleButton = createControlButton(android.R.drawable.ic_dialog_info).apply {
+            contentDescription = getString(R.string.overlay_toggle_hint)
+        }
+
+        fun updateHintVisibility(visible: Boolean) {
+            isHintVisible = visible
+            hintContainer.visibility = if (visible) View.VISIBLE else View.GONE
+            hintToggleButton.setColorFilter(if (visible) Color.YELLOW else Color.WHITE)
+        }
+
         val gridInfoView = TextView(this).apply {
             text = "${config.cellValue}\n${config.unit}"
             setTextColor(Color.WHITE)
@@ -202,10 +209,26 @@ class PixelWankerOverlayService : Service() {
         }
 
         toggleButton.setOnClickListener {
-            hintContainer.visibility = View.GONE
+            updateHintVisibility(false)
             isGridVisible = !isGridVisible
             if (isGridVisible) showGridOverlay() else hideGridOverlay()
             updateToggleIcon()
+        }
+
+        val dismissHint = Runnable {
+            updateHintVisibility(false)
+        }
+
+        fun scheduleHintAutoHide() {
+            hintContainer.removeCallbacks(dismissHint)
+            if (isHintVisible) {
+                hintContainer.postDelayed(dismissHint, 8_000)
+            }
+        }
+
+        hintToggleButton.setOnClickListener {
+            updateHintVisibility(!isHintVisible)
+            scheduleHintAutoHide()
         }
 
         val controlsContainer = LinearLayout(this).apply {
@@ -232,14 +255,14 @@ class PixelWankerOverlayService : Service() {
         )
 
         controlsContainer.addView(
-            shiftLeftButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
-        )
-        controlsContainer.addView(
             backColumn,
             LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginEnd = buttonSpacing
             }
+        )
+        controlsContainer.addView(
+            hintToggleButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
         )
         val gridColumn = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -293,19 +316,16 @@ class PixelWankerOverlayService : Service() {
         }
         root.addView(controlsRoot, controlsParams)
 
-        val dismissHint = Runnable {
-            hintContainer.visibility = View.GONE
-        }
-
         fun hideHint() {
-            hintContainer.visibility = View.GONE
-            hintContainer.removeCallbacks(dismissHint)
+            updateHintVisibility(false)
+            scheduleHintAutoHide()
         }
 
         hintContainer.setOnClickListener { hideHint() }
         hintArrowView.setOnClickListener { hideHint() }
         hintTextView.setOnClickListener { hideHint() }
-        hintContainer.postDelayed(dismissHint, 8_000)
+        updateHintVisibility(true)
+        scheduleHintAutoHide()
 
         return root
     }

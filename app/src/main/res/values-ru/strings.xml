@@ -25,6 +25,7 @@
     <string name="overlay_close">Закрыть</string>
     <string name="overlay_hide_grid">Скрыть сетку</string>
     <string name="overlay_show_grid">Показать сетку</string>
+    <string name="overlay_toggle_hint">Показать или скрыть подсказки</string>
     <string name="search_apps_placeholder">Поиск приложений</string>
     <string name="about_title">О приложении</string>
     <string name="about_body">Pavlov Alexey Sandbox</string>
