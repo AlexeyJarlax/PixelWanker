@@ -27,6 +27,7 @@
     <string name="overlay_shift_down">ग्रिड नीचे खिसकाएं</string>
     <string name="overlay_close">बंद करें</string>
     <string name="overlay_hide_grid">ग्रिड छिपाएं</string>
+    <string name="overlay_toggle_hint">सुझाव दिखाएँ/छिपाएँ</string>
     <string name="overlay_show_grid">ग्रिड दिखाएं</string>
     <string name="search_apps_placeholder">ऐप खोजें</string>
     <string name="about_title">परिचय</string>

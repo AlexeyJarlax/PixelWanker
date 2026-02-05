@@ -24,7 +24,7 @@ import java.util.Locale
 
 class PixelWankerOverlayService : Service() {
 
-    private val availableGridSizes = listOf(4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60, 100)
+    private val availableGridSizes = listOf(4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60, 100, 200, 300, 400)
 
     private var windowManager: WindowManager? = null
     private var gridOverlayView: FrameLayout? = null
