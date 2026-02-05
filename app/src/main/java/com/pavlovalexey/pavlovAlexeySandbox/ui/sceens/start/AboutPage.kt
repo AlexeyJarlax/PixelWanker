@@ -1,8 +1,9 @@
 package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,6 +84,33 @@ fun AboutPage() {
         AlexIconButton(
             text = stringResource(R.string.about_privacy_policy_button),
             onClick = { showPrivacyDialog = true },
+            outlined = true
+        )
+
+        AlexIconButton(
+            text = stringResource(R.string.about_support_button),
+            onClick = {
+                val supportMailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = Uri.parse(
+                        "mailto:a9633238@gmail.com?subject=${Uri.encode("Help with PixelWanker app")}"
+                    )
+                }
+
+                val chooserIntent = Intent.createChooser(
+                    supportMailIntent,
+                    context.getString(R.string.about_support_chooser_title)
+                )
+
+                if (supportMailIntent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(chooserIntent)
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.about_support_no_email_app),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            },
             outlined = true
         )
         SpacerHeight()

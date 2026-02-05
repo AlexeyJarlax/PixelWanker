@@ -74,7 +74,10 @@
     <string name="about_user_data_button">Datos del usuario</string>
     <string name="about_user_data_toast">La aplicación no recopila ni procesa datos del usuario.</string>
     <string name="about_privacy_policy_button">Política de privacidad</string>
-    
+
+    <string name="about_support_button">Contactar con soporte</string>
+    <string name="about_support_chooser_title">Enviar correo con</string>
+    <string name="about_support_no_email_app">No se encontró ninguna app de correo en este dispositivo.</string>
     <string name="about_language_title">Idioma</string>
     <string name="about_language_ru">Русский</string>
     <string name="about_language_en">English</string>

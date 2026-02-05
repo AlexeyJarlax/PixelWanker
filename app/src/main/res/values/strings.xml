@@ -74,7 +74,10 @@
     <string name="about_user_data_button">User data</string>
     <string name="about_user_data_toast">The app does not collect or process user data.</string>
     <string name="about_privacy_policy_button">Privacy policy</string>
-    
+
+    <string name="about_support_button">Contact support</string>
+    <string name="about_support_chooser_title">Send email via</string>
+    <string name="about_support_no_email_app">No email app found on this device.</string>
     <string name="about_language_title">Language</string>
     <string name="about_language_ru">Русский</string>
     <string name="about_language_en">English</string>
