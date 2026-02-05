@@ -22,6 +22,7 @@
     <string name="overlay_back">Back</string>
     <string name="overlay_hint_back_to_menu">Tap to return to the main app menu\n▼</string>
     <string name="overlay_hint_shift_down">▲\nThis button shifts the grid down</string>
+    <string name="overlay_hint_change_grid_size">Click to change grid size</string>
     <string name="overlay_shift_left">Shift grid left</string>
     <string name="overlay_shift_down">Shift grid down</string>
     <string name="overlay_close">Close</string>

@@ -22,6 +22,7 @@
     <string name="overlay_back">Возврат</string>
     <string name="overlay_hint_back_to_menu">Нажмите, чтобы вернуться в главное меню приложения\n▼</string>
     <string name="overlay_hint_shift_down">▲\nЭта кнопка сдвигает сетку вниз</string>
+    <string name="overlay_hint_change_grid_size">Нажмите, чтобы изменить размер сетки</string>
     <string name="overlay_shift_left">Сдвинуть влево</string>
     <string name="overlay_shift_down">Сдвинуть вниз</string>
     <string name="overlay_close">Закрыть</string>
