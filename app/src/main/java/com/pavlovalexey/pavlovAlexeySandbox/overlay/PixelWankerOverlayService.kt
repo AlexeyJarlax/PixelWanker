@@ -344,7 +344,7 @@ class PixelWankerOverlayService : Service() {
         fun scheduleHintAutoHide() {
             hintContainer.removeCallbacks(dismissHint)
             if (isHintVisible) {
-                hintContainer.postDelayed(dismissHint, 8_000)
+                hintContainer.postDelayed(dismissHint, 18_000)
             }
         }
 
@@ -359,7 +359,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         val buttonSize = dpToPx(38)
-        val buttonSizeExtra = dpToPx(56)
+        val buttonSizeExtra = dpToPx(60)
         val buttonSpacing = dpToPx(4)
 
         val column0 = LinearLayout(this).apply {
