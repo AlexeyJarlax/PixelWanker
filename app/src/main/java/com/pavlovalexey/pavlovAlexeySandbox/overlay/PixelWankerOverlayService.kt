@@ -256,6 +256,8 @@ class PixelWankerOverlayService : Service() {
         }
 
         val extraHintViews = listOf(goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
+        val allHintViews = listOf(gridHintTextView) + extraHintViews
+        var updateControlsSizing: ((Boolean) -> Unit)? = null
 
         fun updateHintVisibility(visible: Boolean) {
             isHintVisible = visible
@@ -264,6 +266,7 @@ class PixelWankerOverlayService : Service() {
                 hintView.visibility = if (visible) View.VISIBLE else View.GONE
             }
             hintToggleButton.setColorFilter(if (visible) Color.YELLOW else Color.WHITE)
+            updateControlsSizing?.invoke(visible)
         }
 
         /*** кнопка-индикатор размера ячейки (переключение размеров по нажатию) ***/
@@ -375,29 +378,23 @@ class PixelWankerOverlayService : Service() {
             ).apply { bottomMargin = buttonSpacing }
         )
 
-        controlsContainer.addView(
-            column0,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
+        val column0Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column0, column0Params)
 
         val column1 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        column1.addView(
-            goLeftButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
+        val goLeftButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize)
+        column1.addView(goLeftButton, goLeftButtonParams)
 
-        controlsContainer.addView(
-            column1,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
+        val column1Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column1, column1Params)
 
         val column2 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -411,14 +408,10 @@ class PixelWankerOverlayService : Service() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = buttonSpacing }
         )
-        column2.addView(
-            goBackButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { bottomMargin = buttonSpacing }
-        )
-        column2.addView(
-            shiftDownButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { bottomMargin = buttonSpacing }
-        )
+        val goBackButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { bottomMargin = buttonSpacing }
+        column2.addView(goBackButton, goBackButtonParams)
+        val shiftDownButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { bottomMargin = buttonSpacing }
+        column2.addView(shiftDownButton, shiftDownButtonParams)
         column2.addView(
             shiftDownHintTextView,
             LinearLayout.LayoutParams(
@@ -427,50 +420,38 @@ class PixelWankerOverlayService : Service() {
             )
         )
 
-        controlsContainer.addView(
-            column2,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
+        val column2Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column2, column2Params)
 
         val column3 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        column3.addView(
-            hintToggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
-        )
+        val hintToggleButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        column3.addView(hintToggleButton, hintToggleButtonParams)
 
-        controlsContainer.addView(
-            column3,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
+        val column3Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column3, column3Params)
 
         val column4 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        column4.addView(
-            hintContainer,
-            LinearLayout.LayoutParams(
-                buttonSizeExtra,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = buttonSpacing }
-        )
-        column4.addView(
-            toggleButton,
-            LinearLayout.LayoutParams(buttonSizeExtra, buttonSize)
-        )
-        column4.addView(
-            gridInfoView,
-            LinearLayout.LayoutParams(buttonSizeExtra, buttonSize).apply { topMargin = buttonSpacing }
-        )
+        val hintContainerParams = LinearLayout.LayoutParams(
+            buttonSizeExtra,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { bottomMargin = buttonSpacing }
+        column4.addView(hintContainer, hintContainerParams)
+        val toggleButtonParams = LinearLayout.LayoutParams(buttonSizeExtra, buttonSize)
+        column4.addView(toggleButton, toggleButtonParams)
+        val gridInfoViewParams = LinearLayout.LayoutParams(buttonSizeExtra, buttonSize).apply { topMargin = buttonSpacing }
+        column4.addView(gridInfoView, gridInfoViewParams)
         column4.addView(
             sizeHintTextView,
             LinearLayout.LayoutParams(
@@ -479,27 +460,47 @@ class PixelWankerOverlayService : Service() {
             ).apply { topMargin = buttonSpacing }
         )
 
-        controlsContainer.addView(
-            column4,
-            LinearLayout.LayoutParams(buttonSizeExtra, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
+        val column4Params = LinearLayout.LayoutParams(buttonSizeExtra, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column4, column4Params)
 
         val column5 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        column5.addView(
-            closeButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
+        val closeButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize)
+        column5.addView(closeButton, closeButtonParams)
 
-        controlsContainer.addView(
-            column5,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT)
-        )
+        val column5Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT)
+        controlsContainer.addView(column5, column5Params)
+
+        updateControlsSizing = { isExpanded ->
+            val target = if (isExpanded) buttonSizeExtra else buttonSize
+
+            listOf(column0Params, column1Params, column2Params, column3Params, column4Params, column5Params).forEach { params ->
+                params.width = target
+            }
+            listOf(
+                goLeftButtonParams,
+                goBackButtonParams,
+                shiftDownButtonParams,
+                hintToggleButtonParams,
+                toggleButtonParams,
+                gridInfoViewParams,
+                closeButtonParams
+            ).forEach { params ->
+                params.width = target
+                params.height = target
+            }
+            allHintViews.forEach { hintView ->
+                (hintView.layoutParams as? LinearLayout.LayoutParams)?.width = target
+            }
+            hintContainerParams.width = target
+
+            controlsContainer.requestLayout()
+        }
 
         val controlsRoot = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -521,7 +522,6 @@ class PixelWankerOverlayService : Service() {
             scheduleHintAutoHide()
         }
 
-        val allHintViews = listOf(gridHintTextView, goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
         hintContainer.setOnClickListener { hideHint() }
         allHintViews.forEach { hintView ->
             hintView.setOnClickListener { hideHint() }
