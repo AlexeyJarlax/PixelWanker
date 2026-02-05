@@ -347,7 +347,7 @@ class PixelWankerOverlayService : Service() {
         fun scheduleHintAutoHide() {
             hintContainer.removeCallbacks(dismissHint)
             if (isHintVisible) {
-                hintContainer.postDelayed(dismissHint, 18_000)
+                hintContainer.postDelayed(dismissHint, 30_000)
             }
         }
 
