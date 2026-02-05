@@ -18,7 +18,7 @@
     <string name="app_detail_open_app">Abrir\napp</string>
     <string name="app_detail_open_with_grid">Abrir\ncon cuadrícula</string>
     <string name="installed_app_version">Versión: %1$s</string>
-    <string name="overlay_hint_hide_grid">Toca # para ocultar la cuadrícula y recuperar el control del área de trabajo</string>
+    <string name="overlay_hint_hide_grid">Toca # para ocultar la cuadrícula y recuperar el control del área de trabajo\n▼</string>
     <string name="overlay_back">Atrás</string>
     <string name="overlay_shift_left">Mover la cuadrícula a la izquierda</string>
     <string name="overlay_shift_down">Mover la cuadrícula hacia abajo</string>

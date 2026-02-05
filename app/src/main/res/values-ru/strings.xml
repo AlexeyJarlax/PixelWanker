@@ -18,10 +18,8 @@
     <string name="app_detail_open_app">Открыть\nприложение</string>
     <string name="app_detail_open_with_grid">Открыть\nс сеткой</string>
     <string name="installed_app_version">Версия: %1$s</string>
-    <string name="overlay_hint_hide_grid">Кликните #, чтобы скрыть сетку и вернуть контроль над рабочей областью</string>
+    <string name="overlay_hint_hide_grid">Кликните #, чтобы скрыть сетку и вернуть контроль над рабочей областью\n▼</string>
     <string name="overlay_back">Возврат</string>
-    <string name="overlay_hint_back_to_menu">Нажмите «Возврат», чтобы вернуться в главное меню приложения</string>
-    <string name="overlay_hint_shift_down">Эта кнопка сместит сетку вниз</string>
     <string name="overlay_shift_left">Сдвинуть влево</string>
     <string name="overlay_shift_down">Сдвинуть вниз</string>
     <string name="overlay_close">Закрыть</string>

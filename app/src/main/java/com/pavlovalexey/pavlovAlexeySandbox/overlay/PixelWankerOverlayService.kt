@@ -130,7 +130,7 @@ class PixelWankerOverlayService : Service() {
             text = getString(R.string.overlay_hint_hide_grid)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            maxLines = 3
+            maxLines = 10
             maxWidth = dpToPx(260)
             gravity = Gravity.CENTER
 
@@ -139,7 +139,7 @@ class PixelWankerOverlayService : Service() {
                 cornerRadius = dpToPx(10).toFloat()
                 setColor(Color.LTGRAY)
             }
-            setPadding(dpToPx(10), dpToPx(8), dpToPx(10), dpToPx(8))
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
         val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
@@ -151,8 +151,8 @@ class PixelWankerOverlayService : Service() {
             text = getString(R.string.overlay_hint_back_to_menu)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
-            maxLines = 3
-            maxWidth = dpToPx(140)
+            maxLines = 10
+            maxWidth = dpToPx(180)
             gravity = Gravity.CENTER
 
             background = GradientDrawable().apply {
@@ -160,7 +160,7 @@ class PixelWankerOverlayService : Service() {
                 cornerRadius = dpToPx(10).toFloat()
                 setColor(Color.LTGRAY)
             }
-            setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6))
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
         val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
@@ -172,8 +172,8 @@ class PixelWankerOverlayService : Service() {
             text = getString(R.string.overlay_hint_shift_down)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
-            maxLines = 3
-            maxWidth = dpToPx(140)
+            maxLines = 10
+            maxWidth = dpToPx(180)
             gravity = Gravity.CENTER
 
             background = GradientDrawable().apply {
@@ -181,18 +181,12 @@ class PixelWankerOverlayService : Service() {
                 cornerRadius = dpToPx(10).toFloat()
                 setColor(Color.LTGRAY)
             }
-            setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6))
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
-
-        val hintArrowView = ImageView(this).apply {
-            setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, android.R.drawable.arrow_down_float))
-            setColorFilter(Color.RED)
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
-        }
 
         val hintContainer = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -322,10 +316,6 @@ class PixelWankerOverlayService : Service() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = buttonSpacing }
         )
-        hintContainer.addView(
-            hintArrowView,
-            LinearLayout.LayoutParams(hintArrowSize, hintArrowSize)
-        )
 
         gridColumn.addView(
             toggleButton,
@@ -368,7 +358,6 @@ class PixelWankerOverlayService : Service() {
         }
 
         hintContainer.setOnClickListener { hideHint() }
-        hintArrowView.setOnClickListener { hideHint() }
         hintTextView.setOnClickListener { hideHint() }
         updateHintVisibility(true)
         scheduleHintAutoHide()

@@ -18,7 +18,7 @@
     <string name="app_detail_open_app">ऐप\nखोलें</string>
     <string name="app_detail_open_with_grid">ग्रिड के साथ\nखोलें</string>
     <string name="installed_app_version">संस्करण: %1$s</string>
-    <string name="overlay_hint_hide_grid">ग्रिड छिपाने और कार्यक्षेत्र का नियंत्रण वापस पाने के लिए # पर टैप करें</string>
+    <string name="overlay_hint_hide_grid">ग्रिड छिपाने और कार्यक्षेत्र का नियंत्रण वापस पाने के लिए # पर टैप करें\n▼</string>
     <string name="overlay_back">वापस</string>
     <string name="overlay_shift_left">ग्रिड बाईं ओर खिसकाएं</string>
     <string name="overlay_shift_down">ग्रिड नीचे खिसकाएं</string>
