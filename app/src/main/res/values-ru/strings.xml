@@ -27,6 +27,7 @@
     <string name="overlay_close">Закрыть</string>
     <string name="overlay_hide_grid">Скрыть сетку</string>
     <string name="overlay_show_grid">Показать сетку</string>
+    <string name="overlay_grid_size_hint">Кликните, чтобы изменить размер сетки</string>
     <string name="overlay_toggle_hint">Показать или скрыть подсказки</string>
     <string name="search_apps_placeholder">Поиск приложений</string>
     <string name="about_title">О приложении</string>

@@ -27,6 +27,7 @@
     <string name="overlay_close">बंद करें</string>
     <string name="overlay_hide_grid">ग्रिड छिपाएं</string>
     <string name="overlay_show_grid">ग्रिड दिखाएं</string>
+    <string name="overlay_grid_size_hint">ग्रिड का आकार बदलने के लिए क्लिक करें</string>
     <string name="search_apps_placeholder">ऐप खोजें</string>
     <string name="about_title">परिचय</string>
     <string name="about_body">Pavlov Alexey Sandbox</string>

@@ -27,6 +27,7 @@
     <string name="overlay_close">Cerrar</string>
     <string name="overlay_hide_grid">Ocultar cuadrícula</string>
     <string name="overlay_show_grid">Mostrar cuadrícula</string>
+    <string name="overlay_grid_size_hint">Haz clic para cambiar el tamaño de la cuadrícula</string>
     <string name="search_apps_placeholder">Buscar apps</string>
     <string name="about_title">Acerca de</string>
     <string name="about_body">Pavlov Alexey Sandbox</string>

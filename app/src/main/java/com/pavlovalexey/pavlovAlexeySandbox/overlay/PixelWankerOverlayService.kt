@@ -224,6 +224,8 @@ class PixelWankerOverlayService : Service() {
             gravity = Gravity.CENTER
             setLines(2)
             background = createControlBackground()
+            contentDescription = getString(R.string.overlay_grid_size_hint)
+            tooltipText = getString(R.string.overlay_grid_size_hint)
         }
 
         val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
@@ -324,16 +326,16 @@ class PixelWankerOverlayService : Service() {
 
         gridColumn.addView(
             toggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
+            LinearLayout.LayoutParams(buttonSizeExtra, buttonSizeExtra)
         )
         gridColumn.addView(
             gridInfoView,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+            LinearLayout.LayoutParams(buttonSizeExtra, buttonSizeExtra).apply { topMargin = buttonSpacing }
         )
 
         controlsContainer.addView(
             gridColumn,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            LinearLayout.LayoutParams(buttonSizeExtra, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginEnd = buttonSpacing
             }
         )
