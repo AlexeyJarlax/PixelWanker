@@ -33,7 +33,7 @@
     <string name="search_apps_placeholder">Search apps</string>
     <string name="about_title">About</string>
     <string name="about_body">Pavlov Alexey Sandbox</string>
-    <string name="about_app_text">PixelWanker overlays a measurement grid on top of any app. You can pick the grid cell size from 4 to 100 px/dp and choose a base line color (white, black, green, red). An optional second color draws a double line next to the base—pick none or any of: white, black, green, red, yellow, blue. The grid is built from vertical and horizontal stripes, and the number of stripes depends on the selected cell size. You can also open the installed apps list, tap an app card, and launch it together with the grid.</string>
+    <string name="about_app_text">PixelWanker overlays a measurement grid on top of any app. You can pick the grid cell size from 4 to 400 px/dp and choose a base line color (white, black, green, red). An optional second color draws a double line next to the base—pick none or any of: white, black, green, red, yellow, blue. The grid is built from vertical and horizontal stripes, and the number of stripes depends on the selected cell size. You can also open the installed apps list, tap an app card, and launch it together with the grid.</string>
     <string name="about_ok">OK</string>
     <string name="pixelwanker_tagline">Don’t be a wanker — stop guessing,\nstart measuring</string>
     <string name="pixelwanker_description">PixelWanker is a utility for developers, designers, and testers, who want a fast way to check UI spacing, alignment, and visual rhythm directly on the device. The app generates a customizable on-screen grid and lets you overlay it on top of any app</string>
