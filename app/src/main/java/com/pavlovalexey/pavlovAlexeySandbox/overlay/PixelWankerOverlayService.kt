@@ -369,8 +369,6 @@ class PixelWankerOverlayService : Service() {
         fun update(spacingPx: Float, lineColorArgb: Int, extraLineColorArgb: Int?) {
             spacing = spacingPx
             paint.color = lineColorArgb
-
-            // пересоздаём extraPaint через поля (проще и надёжнее, чем мутировать null/non-null)
             _extraColor = extraLineColorArgb
             invalidate()
         }
@@ -382,7 +380,6 @@ class PixelWankerOverlayService : Service() {
             invalidate()
         }
 
-        // держим отдельное поле, чтобы в onDraw понимать, надо ли рисовать двойную линию
         private var _extraColor: Int? = extraLineColorArgb
 
         override fun onDraw(canvas: Canvas) {
@@ -405,7 +402,6 @@ class PixelWankerOverlayService : Service() {
                 if (extra == null) {
                     canvas.drawLine(x, 0f, x, height.toFloat(), paint)
                 } else {
-                    // ✅ двойная вертикальная полоса “впритык”
                     canvas.drawLine(x, 0f, x, height.toFloat(), paint)
                     canvas.drawLine(x + 1f, 0f, x + 1f, height.toFloat(), extra)
                 }
@@ -418,7 +414,6 @@ class PixelWankerOverlayService : Service() {
                 if (extra == null) {
                     canvas.drawLine(0f, y, width.toFloat(), y, paint)
                 } else {
-                    // ✅ двойная горизонтальная полоса “впритык”
                     canvas.drawLine(0f, y, width.toFloat(), y, paint)
                     canvas.drawLine(0f, y + 1f, width.toFloat(), y + 1f, extra)
                 }
@@ -435,7 +430,7 @@ class PixelWankerOverlayService : Service() {
     private data class GridConfig(
         val spacingPx: Float,
         val lineColorArgb: Int,
-        val extraLineColorArgb: Int?, // ✅ NEW
+        val extraLineColorArgb: Int?,
         val cellValue: Int,
         val unit: String,
     ) {
@@ -443,8 +438,6 @@ class PixelWankerOverlayService : Service() {
             private const val EXTRA_CELL_VALUE = "extra_cell_value"
             private const val EXTRA_CELL_UNIT = "extra_cell_unit"
             private const val EXTRA_COLOR = "extra_color"
-
-            // ✅ NEW
             private const val EXTRA_HAS_EXTRA_COLOR = "extra_has_extra_color"
             private const val EXTRA_EXTRA_COLOR = "extra_extra_color"
 
