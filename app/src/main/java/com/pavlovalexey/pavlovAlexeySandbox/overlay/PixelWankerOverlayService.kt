@@ -130,8 +130,8 @@ class PixelWankerOverlayService : Service() {
             text = getString(R.string.overlay_hint_hide_grid)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            maxLines = 10
-            maxWidth = dpToPx(260)
+            maxLines = 18
+            maxWidth = dpToPx(200)
             gravity = Gravity.CENTER
 
             background = GradientDrawable().apply {
@@ -268,7 +268,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         val buttonSize = dpToPx(38)
-        val hintArrowSize = (buttonSize * 1.5f).toInt()
+        val buttonSizeExtra = dpToPx(48)
         val buttonSpacing = dpToPx(4)
 
         val backColumn = LinearLayout(this).apply {
