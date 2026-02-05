@@ -145,15 +145,15 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
-        /*** кнопка возврата в главное меню приложения ***/
-        val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
-            setOnClickListener { openAppHomeAndCloseOverlay() }
-            contentDescription = getString(R.string.overlay_back)
+        /*** кнопка смещения сетки влево ***/
+        val backButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
+            setOnClickListener { shiftGridBy(-1f, 0f) }
+            contentDescription = getString(R.string.overlay_shift_left)
         }
 
-        /*** подсказка: вернуться в меню приложения ***/
+        /*** подсказка: сместить сетку влево ***/
         val backHintTextView = TextView(this).apply {
-            text = getString(R.string.overlay_hint_back_to_menu)
+            text = getString(R.string.overlay_hint_shift_left)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
             maxLines = 10
@@ -339,27 +339,44 @@ class PixelWankerOverlayService : Service() {
         val buttonSizeExtra = dpToPx(48)
         val buttonSpacing = dpToPx(4)
 
-        val backColumn = LinearLayout(this).apply {
+        val hintColumn = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        backColumn.addView(
+        hintColumn.addView(
             backHintTextView,
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = buttonSpacing }
         )
-        backColumn.addView(
+        hintColumn.addView(
             backButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize)
         )
-        backColumn.addView(
-            shiftDownButton,
+        hintColumn.addView(
+            hintToggleButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
         )
-        backColumn.addView(
+
+        controlsContainer.addView(
+            hintColumn,
+            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                marginEnd = buttonSpacing
+            }
+        )
+
+        val shiftDownColumn = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        shiftDownColumn.addView(
+            shiftDownButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize)
+        )
+        shiftDownColumn.addView(
             shiftDownHintTextView,
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -368,14 +385,10 @@ class PixelWankerOverlayService : Service() {
         )
 
         controlsContainer.addView(
-            backColumn,
+            shiftDownColumn,
             LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginEnd = buttonSpacing
             }
-        )
-        controlsContainer.addView(
-            hintToggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
         )
         val gridColumn = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -453,14 +466,6 @@ class PixelWankerOverlayService : Service() {
         gridView?.shiftBy(deltaXUnits * shiftPx, deltaYUnits * shiftPx)
     }
 
-    private fun openAppHomeAndCloseOverlay() {
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-        if (launchIntent != null) {
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(launchIntent)
-        }
-        stopSelf()
-    }
 
     private fun showGridOverlay() {
         if (gridOverlayView != null) return
