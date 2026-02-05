@@ -74,7 +74,10 @@
     <string name="about_user_data_button">उपयोगकर्ता डेटा</string>
     <string name="about_user_data_toast">ऐप उपयोगकर्ता डेटा एकत्र या प्रोसेस नहीं करता।</string>
     <string name="about_privacy_policy_button">गोपनीयता नीति</string>
-    
+
+    <string name="about_support_button">सहायता से संपर्क करें</string>
+    <string name="about_support_chooser_title">ईमेल भेजें</string>
+    <string name="about_support_no_email_app">इस डिवाइस पर कोई ईमेल ऐप नहीं मिला।</string>
     <string name="about_language_title">भाषा</string>
     <string name="about_language_ru">Русский</string>
     <string name="about_language_en">English</string>
