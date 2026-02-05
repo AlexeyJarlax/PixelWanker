@@ -24,6 +24,8 @@ import java.util.Locale
 
 class PixelWankerOverlayService : Service() {
 
+    private val availableGridSizes = listOf(4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60, 100)
+
     private var windowManager: WindowManager? = null
     private var gridOverlayView: FrameLayout? = null
     private var controlsOverlayView: FrameLayout? = null
@@ -184,6 +186,22 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        val sizeHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_change_grid_size)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
@@ -206,7 +224,7 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_toggle_hint)
         }
 
-        val extraHintViews = listOf(backHintTextView, shiftDownHintTextView)
+        val extraHintViews = listOf(backHintTextView, shiftDownHintTextView, sizeHintTextView)
 
         fun updateHintVisibility(visible: Boolean) {
             isHintVisible = visible
@@ -224,6 +242,46 @@ class PixelWankerOverlayService : Service() {
             gravity = Gravity.CENTER
             setLines(2)
             background = createControlBackground()
+        }
+
+        fun updateGridInfo() {
+            gridInfoView.text = "${config.cellValue}\n${config.unit}"
+        }
+
+        fun stripAlpha(color: Int): Int = color and 0x00FFFFFF
+
+        fun cycleGridDimension() {
+            val unitVariants = listOf("px", "dp")
+            val currentSizeIndex = availableGridSizes.indexOf(config.cellValue).takeIf { it >= 0 } ?: 0
+            val currentUnitIndex = unitVariants.indexOf(config.unit).takeIf { it >= 0 } ?: 0
+            val isLastSize = currentSizeIndex == availableGridSizes.lastIndex
+
+            val nextSize = if (isLastSize) availableGridSizes.first() else availableGridSizes[currentSizeIndex + 1]
+            val nextUnit = if (isLastSize) unitVariants[(currentUnitIndex + 1) % unitVariants.size] else unitVariants[currentUnitIndex]
+            val nextSpacingPx = if (nextUnit == "dp") nextSize * density else nextSize.toFloat()
+
+            config = config.copy(
+                spacingPx = nextSpacingPx,
+                cellValue = nextSize,
+                unit = nextUnit
+            )
+            gridView?.update(config.spacingPx, config.lineColorArgb, config.extraLineColorArgb)
+            updateGridInfo()
+
+            GridSettingsStore.save(
+                context = this,
+                settings = GridUserSettings(
+                    cellValue = config.cellValue,
+                    unit = config.unit,
+                    baseColor = stripAlpha(config.lineColorArgb),
+                    extraColor = config.extraLineColorArgb?.let(::stripAlpha)
+                )
+            )
+        }
+
+        gridInfoView.setOnClickListener {
+            updateHintVisibility(false)
+            cycleGridDimension()
         }
 
         val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
@@ -329,6 +387,13 @@ class PixelWankerOverlayService : Service() {
         gridColumn.addView(
             gridInfoView,
             LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        )
+        gridColumn.addView(
+            sizeHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = buttonSpacing }
         )
 
         controlsContainer.addView(

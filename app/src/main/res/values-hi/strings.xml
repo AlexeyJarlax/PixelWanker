@@ -22,6 +22,7 @@
     <string name="overlay_back">वापस</string>
     <string name="overlay_hint_back_to_menu">ऐप के मुख्य मेनू में लौटने के लिए टैप करें\n▼</string>
     <string name="overlay_hint_shift_down">▲\nयह बटन ग्रिड को नीचे खिसकाता है</string>
+    <string name="overlay_hint_change_grid_size">ग्रिड का आकार बदलने के लिए टैप करें</string>
     <string name="overlay_shift_left">ग्रिड बाईं ओर खिसकाएं</string>
     <string name="overlay_shift_down">ग्रिड नीचे खिसकाएं</string>
     <string name="overlay_close">बंद करें</string>

@@ -22,6 +22,7 @@
     <string name="overlay_back">Atrás</string>
     <string name="overlay_hint_back_to_menu">Toca para volver al menú principal de la app\n▼</string>
     <string name="overlay_hint_shift_down">▲\nEste botón desplaza la cuadrícula hacia abajo</string>
+    <string name="overlay_hint_change_grid_size">Toca para cambiar el tamaño de la cuadrícula</string>
     <string name="overlay_shift_left">Mover la cuadrícula a la izquierda</string>
     <string name="overlay_shift_down">Mover la cuadrícula hacia abajo</string>
     <string name="overlay_close">Cerrar</string>
