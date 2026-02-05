@@ -128,31 +128,14 @@ class PixelWankerOverlayService : Service() {
             scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
 
-        /*** подсказка: скрыть/показать сетку ***/
-        val gridHintTextView = TextView(this).apply {
-            text = getString(R.string.overlay_hint_hide_grid)
-            setTextColor(Color.RED)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            maxLines = 18
-            maxWidth = dpToPx(200)
-            gravity = Gravity.CENTER
-
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dpToPx(10).toFloat()
-                setColor(Color.LTGRAY)
-            }
-            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
-        }
-
         /*** кнопка смещения сетки влево ***/
-        val backButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
+        val goLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
             setOnClickListener { shiftGridBy(-1f, 0f) }
             contentDescription = getString(R.string.overlay_shift_left)
         }
 
         /*** подсказка: сместить сетку влево ***/
-        val backHintTextView = TextView(this).apply {
+        val goLeftHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_shift_left)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
@@ -191,6 +174,29 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        /*** кнопка возврата в главное меню приложения ***/
+        val goBackButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
+            setOnClickListener { openAppHomeAndCloseOverlay() }
+            contentDescription = getString(R.string.overlay_back)
+        }
+
+        /*** подсказка: вернуться в меню приложения ***/
+        val goBackHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_back_to_menu)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
         /*** подсказка: изменить размер ячейки сетки ***/
         val sizeHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_change_grid_size)
@@ -213,6 +219,23 @@ class PixelWankerOverlayService : Service() {
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
 
+        /*** подсказка: скрыть/показать сетку ***/
+        val gridHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_hide_grid)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            maxLines = 18
+            maxWidth = dpToPx(200)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
         val hintContainer = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
@@ -232,7 +255,7 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_toggle_hint)
         }
 
-        val extraHintViews = listOf(backHintTextView, shiftDownHintTextView, sizeHintTextView)
+        val extraHintViews = listOf(goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
 
         fun updateHintVisibility(visible: Boolean) {
             isHintVisible = visible
@@ -345,14 +368,14 @@ class PixelWankerOverlayService : Service() {
         }
 
         hintColumn.addView(
-            backHintTextView,
+            goLeftHintTextView,
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = buttonSpacing }
         )
         hintColumn.addView(
-            backButton,
+            goLeftButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize)
         )
         hintColumn.addView(
@@ -382,6 +405,11 @@ class PixelWankerOverlayService : Service() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { topMargin = buttonSpacing }
+        )
+
+        controlsContainer.addView(
+            hintToggleButton,
+            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
         )
 
         controlsContainer.addView(
@@ -450,7 +478,7 @@ class PixelWankerOverlayService : Service() {
             scheduleHintAutoHide()
         }
 
-        val allHintViews = listOf(gridHintTextView, backHintTextView, shiftDownHintTextView, sizeHintTextView)
+        val allHintViews = listOf(gridHintTextView, goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
         hintContainer.setOnClickListener { hideHint() }
         allHintViews.forEach { hintView ->
             hintView.setOnClickListener { hideHint() }
@@ -466,6 +494,14 @@ class PixelWankerOverlayService : Service() {
         gridView?.shiftBy(deltaXUnits * shiftPx, deltaYUnits * shiftPx)
     }
 
+    private fun openAppHomeAndCloseOverlay() {
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(launchIntent)
+        }
+        stopSelf()
+    }
 
     private fun showGridOverlay() {
         if (gridOverlayView != null) return
