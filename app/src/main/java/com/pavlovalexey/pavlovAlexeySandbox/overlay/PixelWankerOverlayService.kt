@@ -147,9 +147,41 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_back)
         }
 
+        val backHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_back_to_menu)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 3
+            maxWidth = dpToPx(140)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6))
+        }
+
         val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
             setOnClickListener { shiftGridBy(0f, 1f) }
             contentDescription = getString(R.string.overlay_shift_down)
+        }
+
+        val shiftDownHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_shift_down)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 3
+            maxWidth = dpToPx(140)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6))
         }
 
         val toggleButton = createControlButton(
@@ -246,12 +278,26 @@ class PixelWankerOverlayService : Service() {
         }
 
         backColumn.addView(
+            backHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = buttonSpacing }
+        )
+        backColumn.addView(
             backButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize)
         )
         backColumn.addView(
             shiftDownButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        )
+        backColumn.addView(
+            shiftDownHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = buttonSpacing }
         )
 
         controlsContainer.addView(
