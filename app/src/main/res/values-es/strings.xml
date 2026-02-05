@@ -20,6 +20,8 @@
     <string name="installed_app_version">Versión: %1$s</string>
     <string name="overlay_hint_hide_grid">Toca # para ocultar la cuadrícula y recuperar el control del área de trabajo\n▼</string>
     <string name="overlay_back">Atrás</string>
+    <string name="overlay_hint_back_to_menu">Toca para volver al menú principal de la app\n▼</string>
+    <string name="overlay_hint_shift_down">▲\nEste botón desplaza la cuadrícula hacia abajo</string>
     <string name="overlay_shift_left">Mover la cuadrícula a la izquierda</string>
     <string name="overlay_shift_down">Mover la cuadrícula hacia abajo</string>
     <string name="overlay_close">Cerrar</string>
