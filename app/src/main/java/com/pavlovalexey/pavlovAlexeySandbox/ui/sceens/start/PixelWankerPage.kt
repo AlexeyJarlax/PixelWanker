@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,10 +60,18 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
 import java.util.Locale
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -219,17 +228,70 @@ fun PixelWankerPage() {
                 SpacerHeight()
                 DropdownMenu(
                     expanded = sizeMenuExpanded,
-                    onDismissRequest = { sizeMenuExpanded = false }
+                    onDismissRequest = { sizeMenuExpanded = false },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    sizes.forEach { v ->
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.size_option, v, unitLabel)) },
-                            onClick = {
-                                selectedSize = v
-                                sizeMenuExpanded = false
-                                saveNow()
+                    val rows = remember(sizes) { sizes.chunked(4) }
+
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = 360.dp)
+                            .verticalScroll(rememberScrollState())
+                            .padding(vertical = 4.dp)
+                    ) {
+                        rows.forEachIndexed { index, row ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                @Composable
+                                fun cell(v: Int?) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        if (v != null) {
+                                            DropdownMenuItem(
+                                                text = {
+                                                    Text(
+                                                        text = stringResource(R.string.size_option, v, unitLabel),
+                                                        textAlign = TextAlign.Center,
+                                                        modifier = Modifier.fillMaxWidth()
+                                                    )
+                                                },
+                                                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp),
+                                                onClick = {
+                                                    selectedSize = v
+                                                    sizeMenuExpanded = false
+                                                    saveNow()
+                                                }
+                                            )
+                                        } else {
+                                            Spacer(modifier = Modifier.height(48.dp))
+                                        }
+                                    }
+                                }
+
+                                @Composable
+                                fun vDivider() {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(1.dp)
+                                            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                                    )
+                                }
+
+                                cell(row.getOrNull(0))
+                                vDivider()
+                                cell(row.getOrNull(1))
+                                vDivider()
+                                cell(row.getOrNull(2))
+                                vDivider()
+                                cell(row.getOrNull(3))
                             }
-                        )
+
+                            if (index != rows.lastIndex) {
+                                HorizontalDivider(thickness = 0.5.dp)
+                            }
+                        }
                     }
                 }
             }

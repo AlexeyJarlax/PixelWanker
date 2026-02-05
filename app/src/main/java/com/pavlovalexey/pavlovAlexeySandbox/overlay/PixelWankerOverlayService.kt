@@ -128,7 +128,7 @@ class PixelWankerOverlayService : Service() {
             scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
 
-        val hintTextView = TextView(this).apply {
+        val gridHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_hide_grid)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
@@ -210,7 +210,7 @@ class PixelWankerOverlayService : Service() {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
             addView(
-                hintTextView,
+                gridHintTextView,
                 LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -428,7 +428,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         hintContainer.setOnClickListener { hideHint() }
-        hintTextView.setOnClickListener { hideHint() }
+        gridHintTextView.setOnClickListener { hideHint() }
         updateHintVisibility(true)
         scheduleHintAutoHide()
 
