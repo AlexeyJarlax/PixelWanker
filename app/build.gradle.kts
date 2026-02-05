@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation("androidx.lifecycle:lifecycle-service:2.8.7")
     implementation(libs.androidx.foundation.android)
     implementation(libs.material3)
     coreLibraryDesugaring (libs.desugar.jdk.libs)

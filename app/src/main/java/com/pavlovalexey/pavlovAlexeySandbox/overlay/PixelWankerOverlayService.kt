@@ -1,17 +1,16 @@
 package com.pavlovalexey.pavlovAlexeySandbox.overlay
 
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
-import android.os.IBinder
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.lifecycle.LifecycleService
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,11 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import com.pavlovalexey.pavlovAlexeySandbox.R
-import android.widget.Toast
-import java.util.Locale
 
-class PixelWankerOverlayService : Service() {
+class PixelWankerOverlayService : LifecycleService() {
 
     private var windowManager: WindowManager? = null
     private var gridOverlayView: FrameLayout? = null
@@ -67,15 +66,6 @@ class PixelWankerOverlayService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val density = resources.displayMetrics.density
         config = GridConfig.fromIntent(intent, density)
-        val dm = resources.displayMetrics
-        val toastText = String.format(
-            Locale.US,
-            "widthPx=%d | density=%.2f | stepPx=%.1f",
-            dm.widthPixels,
-            dm.density,
-            config.spacingPx
-        )
-        Toast.makeText(applicationContext, toastText, Toast.LENGTH_LONG).show()
         gridView?.update(config.spacingPx, config.lineColorArgb, config.extraLineColorArgb)
 
         if (controlsOverlayView == null) {
@@ -110,7 +100,6 @@ class PixelWankerOverlayService : Service() {
         windowManager = null
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
 
     private fun createGridOverlayView(config: GridConfig): FrameLayout {
         val root = FrameLayout(this)
@@ -137,7 +126,9 @@ class PixelWankerOverlayService : Service() {
         val root = FrameLayout(this)
 
         val composeView = ComposeView(this).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+            ViewTreeLifecycleOwner.set(this, this@PixelWankerOverlayService)
+            ViewTreeSavedStateRegistryOwner.set(this, this@PixelWankerOverlayService)
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 OverlayControls(
                     cellValue = config.cellValue,
