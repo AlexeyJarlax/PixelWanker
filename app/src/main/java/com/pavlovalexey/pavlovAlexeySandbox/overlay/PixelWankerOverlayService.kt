@@ -362,7 +362,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         val buttonSize = dpToPx(38)
-        val buttonSizeExtra = dpToPx(60)
+        val buttonSizeExtra = dpToPx(56)
         val buttonSpacing = dpToPx(4)
 
         val column0 = LinearLayout(this).apply {
