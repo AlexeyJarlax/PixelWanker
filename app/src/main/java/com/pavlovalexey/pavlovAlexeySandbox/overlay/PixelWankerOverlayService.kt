@@ -24,6 +24,8 @@ import java.util.Locale
 
 class PixelWankerOverlayService : Service() {
 
+    private val availableGridSizes = listOf(4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60, 100, 200, 300, 400)
+
     private var windowManager: WindowManager? = null
     private var gridOverlayView: FrameLayout? = null
     private var controlsOverlayView: FrameLayout? = null
@@ -126,42 +128,148 @@ class PixelWankerOverlayService : Service() {
             scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
 
-        val hintTextView = TextView(this).apply {
-            text = getString(R.string.overlay_hint_hide_grid)
-            setTextColor(Color.WHITE)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            maxLines = 3
-            maxWidth = dpToPx(260)
-
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dpToPx(10).toFloat()
-                setColor(Color.argb(200, 0, 0, 0))
-            }
-            setPadding(dpToPx(10), dpToPx(8), dpToPx(10), dpToPx(8))
-            alpha = 0f
-            visibility = View.VISIBLE
-        }
-
-        val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
-            setOnClickListener { openAppHomeAndCloseOverlay() }
-            contentDescription = getString(R.string.overlay_back)
-        }
-
-        val shiftLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
+        /*** кнопка смещения сетки влево ***/
+        val goLeftButton = createControlButton(R.drawable.ic_icon_arrow_left_30dp).apply {
             setOnClickListener { shiftGridBy(-1f, 0f) }
             contentDescription = getString(R.string.overlay_shift_left)
         }
 
+        /*** подсказка: сместить сетку влево ***/
+        val goLeftHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_shift_left)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
+        /*** кнопка смещения сетки вниз ***/
         val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
             setOnClickListener { shiftGridBy(0f, 1f) }
             contentDescription = getString(R.string.overlay_shift_down)
         }
 
+        /*** подсказка: сместить сетку вниз ***/
+        val shiftDownHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_shift_down)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
+        /*** кнопка возврата в главное меню приложения ***/
+        val goBackButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
+            setOnClickListener { openAppHomeAndCloseOverlay() }
+            contentDescription = getString(R.string.overlay_back)
+        }
+
+        /*** подсказка: вернуться в меню приложения ***/
+        val goBackHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_back_to_menu)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
+        /*** подсказка: изменить размер ячейки сетки ***/
+        val sizeHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_change_grid_size)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
+        /*** кнопка показа/скрытия сетки ***/
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
 
+        /*** подсказка: скрыть/показать сетку ***/
+        val gridHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_hide_grid)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
+        val hintContainer = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            addView(
+                gridHintTextView,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            )
+        }
+
+        var isHintVisible = true
+
+        /*** кнопка показа/скрытия всех подсказок ***/
+        val hintToggleButton = createControlButton(android.R.drawable.ic_dialog_info).apply {
+            contentDescription = getString(R.string.overlay_toggle_hint)
+        }
+
+        val extraHintViews = listOf(goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
+        val allHintViews = listOf(gridHintTextView) + extraHintViews
+        var updateControlsSizing: ((Boolean) -> Unit)? = null
+
+        fun updateHintVisibility(visible: Boolean) {
+            isHintVisible = visible
+            hintContainer.visibility = if (visible) View.VISIBLE else View.GONE
+            extraHintViews.forEach { hintView ->
+                hintView.visibility = if (visible) View.VISIBLE else View.GONE
+            }
+            hintToggleButton.setColorFilter(if (visible) Color.YELLOW else Color.WHITE)
+            updateControlsSizing?.invoke(visible)
+        }
+
+        /*** кнопка-индикатор размера ячейки (переключение размеров по нажатию) ***/
         val gridInfoView = TextView(this).apply {
             text = "${config.cellValue}\n${config.unit}"
             setTextColor(Color.WHITE)
@@ -171,6 +279,47 @@ class PixelWankerOverlayService : Service() {
             background = createControlBackground()
         }
 
+        fun updateGridInfo() {
+            gridInfoView.text = "${config.cellValue}\n${config.unit}"
+        }
+
+        fun stripAlpha(color: Int): Int = color and 0x00FFFFFF
+
+        fun cycleGridDimension() {
+            val unitVariants = listOf("px", "dp")
+            val currentSizeIndex = availableGridSizes.indexOf(config.cellValue).takeIf { it >= 0 } ?: 0
+            val currentUnitIndex = unitVariants.indexOf(config.unit).takeIf { it >= 0 } ?: 0
+            val isLastSize = currentSizeIndex == availableGridSizes.lastIndex
+
+            val nextSize = if (isLastSize) availableGridSizes.first() else availableGridSizes[currentSizeIndex + 1]
+            val nextUnit = if (isLastSize) unitVariants[(currentUnitIndex + 1) % unitVariants.size] else unitVariants[currentUnitIndex]
+            val nextSpacingPx = if (nextUnit == "dp") nextSize * density else nextSize.toFloat()
+
+            config = config.copy(
+                spacingPx = nextSpacingPx,
+                cellValue = nextSize,
+                unit = nextUnit
+            )
+            gridView?.update(config.spacingPx, config.lineColorArgb, config.extraLineColorArgb)
+            updateGridInfo()
+
+            GridSettingsStore.save(
+                context = this,
+                settings = GridUserSettings(
+                    cellValue = config.cellValue,
+                    unit = config.unit,
+                    baseColor = stripAlpha(config.lineColorArgb),
+                    extraColor = config.extraLineColorArgb?.let(::stripAlpha)
+                )
+            )
+        }
+
+        gridInfoView.setOnClickListener {
+            updateHintVisibility(false)
+            cycleGridDimension()
+        }
+
+        /*** кнопка закрытия окна с сеткой ***/
         val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
             setOnClickListener { stopSelf() }
             contentDescription = getString(R.string.overlay_close)
@@ -185,11 +334,26 @@ class PixelWankerOverlayService : Service() {
         }
 
         toggleButton.setOnClickListener {
-            hintTextView.visibility = View.GONE
-
+            updateHintVisibility(false)
             isGridVisible = !isGridVisible
             if (isGridVisible) showGridOverlay() else hideGridOverlay()
             updateToggleIcon()
+        }
+
+        val dismissHint = Runnable {
+            updateHintVisibility(false)
+        }
+
+        fun scheduleHintAutoHide() {
+            hintContainer.removeCallbacks(dismissHint)
+            if (isHintVisible) {
+                hintContainer.postDelayed(dismissHint, 30_000)
+            }
+        }
+
+        hintToggleButton.setOnClickListener {
+            updateHintVisibility(!isHintVisible)
+            scheduleHintAutoHide()
         }
 
         val controlsContainer = LinearLayout(this).apply {
@@ -198,56 +362,145 @@ class PixelWankerOverlayService : Service() {
         }
 
         val buttonSize = dpToPx(38)
+        val buttonSizeExtra = dpToPx(56)
         val buttonSpacing = dpToPx(4)
 
-        val backColumn = LinearLayout(this).apply {
+        val column0 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        backColumn.addView(
-            backButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
-        backColumn.addView(
-            shiftDownButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        column0.addView(
+            goLeftHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = buttonSpacing }
         )
 
-        controlsContainer.addView(
-            shiftLeftButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { marginEnd = buttonSpacing }
-        )
-        controlsContainer.addView(
-            backColumn,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
-            }
-        )
-        val gridColumn = LinearLayout(this).apply {
+        val column0Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column0, column0Params)
+
+        val column1 = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
 
-        gridColumn.addView(
-            toggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
+        val goLeftButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize)
+        column1.addView(goLeftButton, goLeftButtonParams)
+
+        val column1Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column1, column1Params)
+
+        val column2 = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        column2.addView(
+            goBackHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = buttonSpacing }
         )
-        gridColumn.addView(
-            gridInfoView,
-            LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        val goBackButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { bottomMargin = buttonSpacing }
+        column2.addView(goBackButton, goBackButtonParams)
+        val shiftDownButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { bottomMargin = buttonSpacing }
+        column2.addView(shiftDownButton, shiftDownButtonParams)
+        column2.addView(
+            shiftDownHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         )
 
-        controlsContainer.addView(
-            gridColumn,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = buttonSpacing
+        val column2Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column2, column2Params)
+
+        val column3 = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        val hintToggleButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
+        column3.addView(hintToggleButton, hintToggleButtonParams)
+
+        val column3Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column3, column3Params)
+
+        val column4 = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        val hintContainerParams = LinearLayout.LayoutParams(
+            buttonSizeExtra,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { bottomMargin = buttonSpacing }
+        column4.addView(hintContainer, hintContainerParams)
+        val toggleButtonParams = LinearLayout.LayoutParams(buttonSizeExtra, buttonSize)
+        column4.addView(toggleButton, toggleButtonParams)
+        val gridInfoViewParams = LinearLayout.LayoutParams(buttonSizeExtra, buttonSize).apply { topMargin = buttonSpacing }
+        column4.addView(gridInfoView, gridInfoViewParams)
+        column4.addView(
+            sizeHintTextView,
+            LinearLayout.LayoutParams(
+                buttonSizeExtra,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = buttonSpacing }
+        )
+
+        val column4Params = LinearLayout.LayoutParams(buttonSizeExtra, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = buttonSpacing
+        }
+        controlsContainer.addView(column4, column4Params)
+
+        val column5 = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+
+        val closeButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize)
+        column5.addView(closeButton, closeButtonParams)
+
+        val column5Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT)
+        controlsContainer.addView(column5, column5Params)
+
+        updateControlsSizing = { isExpanded ->
+            val target = if (isExpanded) buttonSizeExtra else buttonSize
+
+            listOf(column0Params, column1Params, column2Params, column3Params, column4Params, column5Params).forEach { params ->
+                params.width = target
             }
-        )
-        controlsContainer.addView(
-            closeButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
-        )
+            listOf(
+                goLeftButtonParams,
+                goBackButtonParams,
+                shiftDownButtonParams,
+                hintToggleButtonParams,
+                toggleButtonParams,
+                gridInfoViewParams,
+                closeButtonParams
+            ).forEach { params ->
+                params.width = target
+                params.height = target
+            }
+            allHintViews.forEach { hintView ->
+                (hintView.layoutParams as? LinearLayout.LayoutParams)?.width = target
+            }
+            hintContainerParams.width = target
+
+            controlsContainer.requestLayout()
+        }
 
         val controlsRoot = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -255,14 +508,6 @@ class PixelWankerOverlayService : Service() {
         }
 
         controlsRoot.addView(controlsContainer)
-
-        controlsRoot.addView(
-            hintTextView,
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dpToPx(8) }
-        )
 
         val controlsParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -272,14 +517,17 @@ class PixelWankerOverlayService : Service() {
         }
         root.addView(controlsRoot, controlsParams)
 
-        hintTextView.animate().alpha(1f).setDuration(250).start()
-        hintTextView.postDelayed({
-            hintTextView.animate()
-                .alpha(0f)
-                .setDuration(250)
-                .withEndAction { hintTextView.visibility = View.GONE }
-                .start()
-        }, 4000)
+        fun hideHint() {
+            updateHintVisibility(false)
+            scheduleHintAutoHide()
+        }
+
+        hintContainer.setOnClickListener { hideHint() }
+        allHintViews.forEach { hintView ->
+            hintView.setOnClickListener { hideHint() }
+        }
+        updateHintVisibility(true)
+        scheduleHintAutoHide()
 
         return root
     }
