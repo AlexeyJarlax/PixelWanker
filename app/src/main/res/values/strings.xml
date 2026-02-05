@@ -18,13 +18,12 @@
     <string name="app_detail_open_app">Open\napp</string>
     <string name="app_detail_open_with_grid">Open\nwith grid</string>
     <string name="installed_app_version">Version: %1$s</string>
-    <string name="overlay_hint_hide_grid">Tap # to hide the grid and regain control of the workspace\n▼</string>
+    <string name="overlay_hint_hide_grid">Tap # to hide the grid and regain control\n▼</string>
     <string name="overlay_back">Back</string>
-    <string name="overlay_hint_shift_left">▶
-This button shifts the grid left</string>
+    <string name="overlay_hint_shift_left">▶\nThis button shifts the grid left</string>
     <string name="overlay_hint_back_to_menu">Tap to return to the main app menu\n▼</string>
     <string name="overlay_hint_shift_down">▲\nThis button shifts the grid down</string>
-    <string name="overlay_hint_change_grid_size">Click to change grid size</string>
+    <string name="overlay_hint_change_grid_size">▲\nClick to change grid size\n\n</string>
     <string name="overlay_shift_left">Shift grid left</string>
     <string name="overlay_shift_down">Shift grid down</string>
     <string name="overlay_close">Close</string>

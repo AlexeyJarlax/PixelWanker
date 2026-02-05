@@ -223,9 +223,9 @@ class PixelWankerOverlayService : Service() {
         val gridHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_hide_grid)
             setTextColor(Color.RED)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            maxLines = 18
-            maxWidth = dpToPx(200)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
             gravity = Gravity.CENTER
 
             background = GradientDrawable().apply {
@@ -359,7 +359,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         val buttonSize = dpToPx(38)
-        val buttonSizeExtra = dpToPx(48)
+        val buttonSizeExtra = dpToPx(56)
         val buttonSpacing = dpToPx(4)
 
         val column0 = LinearLayout(this).apply {
@@ -459,29 +459,29 @@ class PixelWankerOverlayService : Service() {
         column4.addView(
             hintContainer,
             LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                buttonSizeExtra,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = buttonSpacing }
         )
         column4.addView(
             toggleButton,
-            LinearLayout.LayoutParams(buttonSize, buttonSize)
+            LinearLayout.LayoutParams(buttonSizeExtra, buttonSize)
         )
         column4.addView(
             gridInfoView,
-            LinearLayout.LayoutParams(buttonSizeExtra, buttonSizeExtra).apply { topMargin = buttonSpacing }
+            LinearLayout.LayoutParams(buttonSizeExtra, buttonSize).apply { topMargin = buttonSpacing }
         )
         column4.addView(
             sizeHintTextView,
             LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                buttonSizeExtra,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { topMargin = buttonSpacing }
         )
 
         controlsContainer.addView(
             column4,
-            LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            LinearLayout.LayoutParams(buttonSizeExtra, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginEnd = buttonSpacing
             }
         )

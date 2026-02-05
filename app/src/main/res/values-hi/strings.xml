@@ -18,13 +18,12 @@
     <string name="app_detail_open_app">ऐप\nखोलें</string>
     <string name="app_detail_open_with_grid">ग्रिड के साथ\nखोलें</string>
     <string name="installed_app_version">संस्करण: %1$s</string>
-    <string name="overlay_hint_hide_grid">ग्रिड छिपाने और कार्यक्षेत्र का नियंत्रण वापस पाने के लिए # पर टैप करें\n▼</string>
+    <string name="overlay_hint_hide_grid">ग्रिड छिपाने और नियंत्रण वापस पाने के लिए # टैप करें\n▼</string>
     <string name="overlay_back">वापस</string>
-    <string name="overlay_hint_shift_left">▶
-यह बटन ग्रिड को बाईं ओर खिसकाता है</string>
+    <string name="overlay_hint_shift_left">▶\nयह बटन ग्रिड को बाईं ओर खिसकाता है</string>
     <string name="overlay_hint_back_to_menu">ऐप के मुख्य मेनू में लौटने के लिए टैप करें\n▼</string>
     <string name="overlay_hint_shift_down">▲\nयह बटन ग्रिड को नीचे खिसकाता है</string>
-    <string name="overlay_hint_change_grid_size">ग्रिड का आकार बदलने के लिए टैप करें</string>
+    <string name="overlay_hint_change_grid_size">ग▲\n्रिड का आकार बदलने के लिए टैप करें\n</string>
     <string name="overlay_shift_left">ग्रिड बाईं ओर खिसकाएं</string>
     <string name="overlay_shift_down">ग्रिड नीचे खिसकाएं</string>
     <string name="overlay_close">बंद करें</string>
