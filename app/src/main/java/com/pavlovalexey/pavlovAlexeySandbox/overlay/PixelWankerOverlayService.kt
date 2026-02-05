@@ -128,19 +128,18 @@ class PixelWankerOverlayService : Service() {
 
         val hintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_hide_grid)
-            setTextColor(Color.WHITE)
+            setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             maxLines = 3
             maxWidth = dpToPx(260)
+            gravity = Gravity.CENTER
 
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = dpToPx(10).toFloat()
-                setColor(Color.argb(200, 0, 0, 0))
+                setColor(Color.LTGRAY)
             }
             setPadding(dpToPx(10), dpToPx(8), dpToPx(10), dpToPx(8))
-            alpha = 0f
-            visibility = View.VISIBLE
         }
 
         val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
@@ -161,6 +160,24 @@ class PixelWankerOverlayService : Service() {
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
+
+        val hintArrowView = ImageView(this).apply {
+            setImageDrawable(ContextCompat.getDrawable(this@PixelWankerOverlayService, android.R.drawable.arrow_down_float))
+            setColorFilter(Color.RED)
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+
+        val hintContainer = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            addView(
+                hintTextView,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            )
+        }
 
         val gridInfoView = TextView(this).apply {
             text = "${config.cellValue}\n${config.unit}"
@@ -185,8 +202,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         toggleButton.setOnClickListener {
-            hintTextView.visibility = View.GONE
-
+            hintContainer.visibility = View.GONE
             isGridVisible = !isGridVisible
             if (isGridVisible) showGridOverlay() else hideGridOverlay()
             updateToggleIcon()
@@ -198,6 +214,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         val buttonSize = dpToPx(38)
+        val hintArrowSize = (buttonSize * 1.5f).toInt()
         val buttonSpacing = dpToPx(4)
 
         val backColumn = LinearLayout(this).apply {
@@ -230,6 +247,18 @@ class PixelWankerOverlayService : Service() {
         }
 
         gridColumn.addView(
+            hintContainer,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = buttonSpacing }
+        )
+        hintContainer.addView(
+            hintArrowView,
+            LinearLayout.LayoutParams(hintArrowSize, hintArrowSize)
+        )
+
+        gridColumn.addView(
             toggleButton,
             LinearLayout.LayoutParams(buttonSize, buttonSize)
         )
@@ -256,14 +285,6 @@ class PixelWankerOverlayService : Service() {
 
         controlsRoot.addView(controlsContainer)
 
-        controlsRoot.addView(
-            hintTextView,
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dpToPx(8) }
-        )
-
         val controlsParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT
@@ -272,14 +293,19 @@ class PixelWankerOverlayService : Service() {
         }
         root.addView(controlsRoot, controlsParams)
 
-        hintTextView.animate().alpha(1f).setDuration(250).start()
-        hintTextView.postDelayed({
-            hintTextView.animate()
-                .alpha(0f)
-                .setDuration(250)
-                .withEndAction { hintTextView.visibility = View.GONE }
-                .start()
-        }, 4000)
+        val dismissHint = Runnable {
+            hintContainer.visibility = View.GONE
+        }
+
+        fun hideHint() {
+            hintContainer.visibility = View.GONE
+            hintContainer.removeCallbacks(dismissHint)
+        }
+
+        hintContainer.setOnClickListener { hideHint() }
+        hintArrowView.setOnClickListener { hideHint() }
+        hintTextView.setOnClickListener { hideHint() }
+        hintContainer.postDelayed(dismissHint, 8_000)
 
         return root
     }
