@@ -128,6 +128,7 @@ class PixelWankerOverlayService : Service() {
             scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
 
+        /*** подсказка: скрыть/показать сетку ***/
         val gridHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_hide_grid)
             setTextColor(Color.RED)
@@ -144,11 +145,13 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        /*** кнопка возврата в главное меню приложения ***/
         val backButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
             setOnClickListener { openAppHomeAndCloseOverlay() }
             contentDescription = getString(R.string.overlay_back)
         }
 
+        /*** подсказка: вернуться в меню приложения ***/
         val backHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_back_to_menu)
             setTextColor(Color.RED)
@@ -165,11 +168,13 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        /*** кнопка смещения сетки вниз ***/
         val shiftDownButton = createControlButton(android.R.drawable.arrow_down_float).apply {
             setOnClickListener { shiftGridBy(0f, 1f) }
             contentDescription = getString(R.string.overlay_shift_down)
         }
 
+        /*** подсказка: сместить сетку вниз ***/
         val shiftDownHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_shift_down)
             setTextColor(Color.RED)
@@ -186,6 +191,7 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        /*** подсказка: изменить размер ячейки сетки ***/
         val sizeHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_change_grid_size)
             setTextColor(Color.RED)
@@ -202,6 +208,7 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        /*** кнопка показа/скрытия сетки ***/
         val toggleButton = createControlButton(
             if (isGridVisible) R.drawable.grid_30dp else R.drawable.grid_off_30dp
         )
@@ -220,6 +227,7 @@ class PixelWankerOverlayService : Service() {
 
         var isHintVisible = true
 
+        /*** кнопка показа/скрытия всех подсказок ***/
         val hintToggleButton = createControlButton(android.R.drawable.ic_dialog_info).apply {
             contentDescription = getString(R.string.overlay_toggle_hint)
         }
@@ -235,6 +243,7 @@ class PixelWankerOverlayService : Service() {
             hintToggleButton.setColorFilter(if (visible) Color.YELLOW else Color.WHITE)
         }
 
+        /*** кнопка-индикатор размера ячейки (переключение размеров по нажатию) ***/
         val gridInfoView = TextView(this).apply {
             text = "${config.cellValue}\n${config.unit}"
             setTextColor(Color.WHITE)
@@ -284,6 +293,7 @@ class PixelWankerOverlayService : Service() {
             cycleGridDimension()
         }
 
+        /*** кнопка закрытия окна с сеткой ***/
         val closeButton = createControlButton(android.R.drawable.ic_menu_close_clear_cancel).apply {
             setOnClickListener { stopSelf() }
             contentDescription = getString(R.string.overlay_close)
@@ -316,7 +326,7 @@ class PixelWankerOverlayService : Service() {
         }
 
         hintToggleButton.setOnClickListener {
-            updateHintVisibility(true)
+            updateHintVisibility(!isHintVisible)
             scheduleHintAutoHide()
         }
 
@@ -427,8 +437,11 @@ class PixelWankerOverlayService : Service() {
             scheduleHintAutoHide()
         }
 
+        val allHintViews = listOf(gridHintTextView, backHintTextView, shiftDownHintTextView, sizeHintTextView)
         hintContainer.setOnClickListener { hideHint() }
-        gridHintTextView.setOnClickListener { hideHint() }
+        allHintViews.forEach { hintView ->
+            hintView.setOnClickListener { hideHint() }
+        }
         updateHintVisibility(true)
         scheduleHintAutoHide()
 
