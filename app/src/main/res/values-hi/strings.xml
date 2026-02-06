@@ -85,6 +85,7 @@
     <string name="about_language_hi">हिन्दी</string>
     <string name="about_language_fr">Français</string>
     <string name="about_language_pt">Português</string>
+    <string name="about_language_ja">日本語</string>
     <string name="about_language_change_toast">परिवर्तन ऐप को फिर से खोलने के बाद लागू होंगे।</string>
     <string name="telegram_donations_title">Telegram के जरिए दान ⭐️</string>
     <string name="telegram_donations_description">प्रोजेक्ट को सपोर्ट करने का सबसे आसान तरीका Telegram में ⭐️ पेड रिएक्शन छोड़ना है।</string>

@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">PixelWanker</string>
+    <string name="title_home">ホーム</string>
+    <string name="title_dashboard">ダッシュボード</string>
+    <string name="title_notifications">通知</string>
+    <string name="error_load_app_info">アプリ情報を読み込めませんでした</string>
+    <string name="error_load_app_list">アプリ一覧を読み込めませんでした</string>
+    <string name="app_detail_title_default">アプリ情報</string>
+    <string name="back">戻る</string>
+    <string name="app_detail_label_name">名前: %1$s</string>
+    <string name="app_detail_label_package">パッケージ: %1$s</string>
+    <string name="app_detail_label_version_name">バージョン名: %1$s</string>
+    <string name="app_detail_label_version_code">バージョンコード: %1$d</string>
+    <string name="app_detail_not_available">—</string>
+    <string name="app_detail_apk_size">APKサイズ: %1$.2f MB</string>
+    <string name="app_detail_checksum_label">APKチェックサム（SHA-256）:</string>
+    <string name="app_detail_checksum_unavailable">計算できませんでした</string>
+    <string name="app_detail_open_app">アプリを
+開く</string>
+    <string name="app_detail_open_with_grid">グリッドで
+開く</string>
+    <string name="installed_app_version">バージョン: %1$s</string>
+    <string name="overlay_hint_hide_grid"># をタップしてグリッドを隠し、画面の操作を取り戻します
+▼</string>
+    <string name="overlay_back">戻る</string>
+    <string name="overlay_hint_shift_left">▶
+このボタンでグリッドを左に移動します</string>
+    <string name="overlay_hint_back_to_menu">タップしてメインメニューに戻ります
+▼</string>
+    <string name="overlay_hint_shift_down">▲
+このボタンでグリッドを下に移動します</string>
+    <string name="overlay_hint_change_grid_size">▲
+タップしてグリッドサイズを変更します
+
+</string>
+    <string name="overlay_shift_left">グリッドを左に移動</string>
+    <string name="overlay_shift_down">グリッドを下に移動</string>
+    <string name="overlay_close">閉じる</string>
+    <string name="overlay_hide_grid">グリッドを隠す</string>
+    <string name="overlay_show_grid">グリッドを表示</string>
+    <string name="overlay_toggle_hint">ヒントを切り替える</string>
+    <string name="search_apps_placeholder">アプリを検索</string>
+    <string name="about_title">情報</string>
+    <string name="about_body">Pavlov Alexey Sandbox</string>
+    <string name="about_app_text">PixelWankerは、あらゆるアプリの上に計測用グリッドを重ねて表示します。セルサイズは4〜400 px/dpから選択でき、基本の線色は白・黒・緑・赤から選べます。任意で2本目の線を重ねることもでき、色は白・黒・緑・赤・黄・青から選択できます。グリッドは縦横のストライプで構成され、ストライプ数は選択したセルサイズに依存します。インストール済みアプリ一覧を開き、カードをタップしてグリッドと一緒に起動することもできます。</string>
+    <string name="about_ok">OK</string>
+    <string name="pixelwanker_tagline">当てずっぽうはやめて、
+測ろう</string>
+    <string name="pixelwanker_description">PixelWankerは、開発者・デザイナー・テスター向けに、端末上でUIの間隔、整列、リズムを素早く確認できるユーティリティです。カスタマイズ可能なグリッドを画面に生成し、どのアプリの上にも重ねて表示できます</string>
+    <string name="unit_px">px</string>
+    <string name="unit_dp">dp</string>
+    <string name="size_label">サイズ: %1$d %2$s</string>
+    <string name="size_option">%1$d %2$s</string>
+    <string name="color_white">白</string>
+    <string name="color_black">黒</string>
+    <string name="color_green">緑</string>
+    <string name="color_red">赤</string>
+    <string name="start_grid">グリッドを開始</string>
+    <string name="first_launch_dialog_text">初回起動後、他のアプリの上に表示する許可を求められます。リストからPixelWankerを選び、スイッチをオンにしてください。</string>
+    <string name="thanks_prompt">アプリ作者にお礼をしたい場合は、次のいずれかの方法で行えます:</string>
+    <string name="pleinair_install_prompt">または、野外スケッチ会向けのアプリをインストールして試してください。</string>
+    <string name="pleinair_description">Plein airは、絵を描く人たちが集まって一緒に描ける素晴らしいプロジェクトです。</string>
+    <string name="tips_prompt">またはCloudTipsでチップを送る:</string>
+    <string name="cookie_reward_text">作者にお礼をしたなら、クッキーをどうぞ！</string>
+    <string name="pie_reward_text">パイもどうぞ！</string>
+    <string name="separator_line">______________</string>
+    <string name="extra_color_unlock_text">最後まで到達しました… 追加のグリッドカラーがアンロックされました！対照的な2色を使うと、複雑なデザインでもより見やすくなります。</string>
+    <string name="no_second_color">2本目の線なし</string>
+    <string name="color_yellow">黄</string>
+    <string name="color_blue">青</string>
+    <string name="google_play_content_description">Google Play</string>
+    <string name="tips_content_description">チップ</string>
+    <string name="bottom_nav_grid">グリッド</string>
+    <string name="bottom_nav_apps">アプリ</string>
+    <string name="bottom_nav_about">情報</string>
+    <string name="bottom_nav_exit">終了</string>
+    <string name="clear">クリア</string>
+    <string name="search">検索</string>
+    <string name="confirm">行こう！</string>
+    <string name="dismiss">戻る</string>
+    <string name="about_dialog_confirm">もう
+測ろう</string>
+    <string name="about_dialog_dismiss">測るのを
+やめる</string>
+    <string name="apps_page_description">端末にインストールされているすべてのアプリです。アプリのカードを開いてグリッドと一緒に起動します。</string>
+    <string name="about_user_data_button">ユーザーデータ</string>
+    <string name="about_user_data_toast">アプリはユーザーデータを収集または処理しません。</string>
+    <string name="about_privacy_policy_button">プライバシーポリシー</string>
+
+    <string name="about_support_button">サポートに連絡</string>
+    <string name="about_support_chooser_title">メールを送信</string>
+    <string name="about_support_no_email_app">この端末にメールアプリが見つかりませんでした。</string>
+    <string name="about_language_title">言語</string>
+    <string name="about_language_ru">Русский</string>
+    <string name="about_language_en">English</string>
+    <string name="about_language_es">Español</string>
+    <string name="about_language_hi">हिन्दी</string>
+    <string name="about_language_fr">Français</string>
+    <string name="about_language_pt">Português</string>
+    <string name="about_language_ja">日本語</string>
+    <string name="about_language_change_toast">変更はアプリを再起動すると反映されます。</string>
+    <string name="telegram_donations_title">Telegramでの寄付 ⭐️</string>
+    <string name="telegram_donations_description">プロジェクトを支援する最も簡単な方法は、Telegramで有料の⭐️リアクションを残すことです。</string>
+    <string name="telegram_open_channel_button">@PixelWanker を開く</string>
+    <string name="telegram_stars_dialog_title">Telegram Stars ⭐️</string>
+    <string name="telegram_stars_dialog_text">チャンネル「%1$s」を開きます。
+
+次に:
+• 任意の投稿を開く
+• ⭐️（有料リアクション）をタップ
+• Starsの数を選んで確認
+
+支払いはTelegram内で行われます。PixelWankerは支払い情報を収集・保存しません。</string>
+    <string name="telegram_stars_confirm">チャンネルを開く</string>
+    <string name="telegram_stars_dismiss">キャンセル</string>
+    <string name="telegram_channel_title">PixelWanker for Android dev</string>
+    <string name="telegram_channel_url">https://t.me/PixelWanker</string>
+    <string name="cloudtips_url">https://pay.cloudtips.ru/p/da048bc5</string>
+    <string name="pleinair_play_url">https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&amp;pcampaignid=web_share</string>
+</resources>
