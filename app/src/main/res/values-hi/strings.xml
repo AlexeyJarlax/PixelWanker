@@ -19,7 +19,7 @@
     <string name="app_detail_open_with_grid">ग्रिड के साथ\nखोलें</string>
     <string name="installed_app_version">संस्करण: %1$s</string>
     <string name="overlay_hint_hide_grid">ग्रिड छिपाने और नियंत्रण वापस पाने के लिए # टैप करें\n▼</string>
-    <string name="overlay_hint_hold_to_drag">ग्रिड पर 1 सेकंड उंगली रखें, ताकि उसे खिसकाया जा सके\n👇🏻</string>
+    <string name="overlay_hint_hold_to_drag">ग्रिड पर 1 सेकंड उंगली रखें, ताकि उसे खिसकाया जा सके\n👇🏿</string>
     <string name="overlay_back">वापस</string>
     <string name="overlay_hint_shift_left">▶\nयह बटन ग्रिड को बाईं ओर खिसकाता है</string>
     <string name="overlay_hint_back_to_menu">ऐप के मुख्य मेनू में लौटने के लिए टैप करें\n▼</string>

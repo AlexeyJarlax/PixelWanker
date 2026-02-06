@@ -21,7 +21,7 @@
     <string name="installed_app_version">バージョン: %1$s</string>
 
     <string name="overlay_hint_hide_grid"># をタップしてグリッドを隠し、画面の操作を取り戻します\n▼</string>
-    <string name="overlay_hint_hold_to_drag">グリッドを1秒長押しして移動\n👇🏻</string>
+    <string name="overlay_hint_hold_to_drag">グリッドを1秒長押しして移動\n👇🏿</string>
     <string name="overlay_back">戻る</string>
     <string name="overlay_hint_shift_left">▶\nこのボタンでグリッドを左に移動します</string>
     <string name="overlay_hint_back_to_menu">タップしてメインメニューに戻ります\n▼</string>

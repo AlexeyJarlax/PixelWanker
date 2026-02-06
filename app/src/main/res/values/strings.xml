@@ -19,7 +19,7 @@
     <string name="app_detail_open_with_grid">Open\nwith grid</string>
     <string name="installed_app_version">Version: %1$s</string>
     <string name="overlay_hint_hide_grid">Tap # to hide the grid and regain control of the screen\n▼</string>
-    <string name="overlay_hint_hold_to_drag">Hold your finger on the grid for 1 sec. to move it\n👇🏻</string>
+    <string name="overlay_hint_hold_to_drag">Hold your finger on the grid for 1 sec. to move it\n👇🏿</string>
     <string name="overlay_back">Back</string>
     <string name="overlay_hint_shift_left">▶\nThis button shifts the grid left</string>
     <string name="overlay_hint_back_to_menu">Tap to return to the main app menu\n▼</string>
