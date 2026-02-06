@@ -8,10 +8,14 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -21,6 +25,7 @@ import androidx.core.content.ContextCompat
 import com.pavlovalexey.pavlovAlexeySandbox.R
 import android.widget.Toast
 import java.util.Locale
+import kotlin.math.abs
 
 class PixelWankerOverlayService : Service() {
 
@@ -32,6 +37,16 @@ class PixelWankerOverlayService : Service() {
     private var gridView: GridView? = null
     private var isGridVisible = true
     private var config: GridConfig = GridConfig.default()
+    private val dragHandler = Handler(Looper.getMainLooper())
+    private val touchSlop by lazy { ViewConfiguration.get(this).scaledTouchSlop }
+    private var overlayTranslationX = 0f
+    private var overlayTranslationY = 0f
+    private var dragStartX = 0f
+    private var dragStartY = 0f
+    private var dragInitialTranslationX = 0f
+    private var dragInitialTranslationY = 0f
+    private var isDraggingOverlay = false
+    private var pendingLongPress: Runnable? = null
     private val density: Float
         get() = resources.displayMetrics.density
 
@@ -89,7 +104,9 @@ class PixelWankerOverlayService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun createGridOverlayView(config: GridConfig): FrameLayout {
-        val root = FrameLayout(this)
+        val root = DragOverlayLayout(this)
+        root.translationX = overlayTranslationX
+        root.translationY = overlayTranslationY
 
         val view = GridView(
             context = this,
@@ -160,6 +177,23 @@ class PixelWankerOverlayService : Service() {
         /*** подсказка: сместить сетку вниз ***/
         val shiftDownHintTextView = TextView(this).apply {
             text = getString(R.string.overlay_hint_shift_down)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
+        /*** подсказка: удерживать палец для перемещения сетки ***/
+        val hintToggleHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_hold_to_drag)
             setTextColor(Color.RED)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
             maxLines = 10
@@ -255,7 +289,13 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_toggle_hint)
         }
 
-        val extraHintViews = listOf(goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
+        val extraHintViews = listOf(
+            goLeftHintTextView,
+            goBackHintTextView,
+            shiftDownHintTextView,
+            sizeHintTextView,
+            hintToggleHintTextView
+        )
         val allHintViews = listOf(gridHintTextView) + extraHintViews
         var updateControlsSizing: ((Boolean) -> Unit)? = null
 
@@ -432,6 +472,13 @@ class PixelWankerOverlayService : Service() {
 
         val hintToggleButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
         column3.addView(hintToggleButton, hintToggleButtonParams)
+        column3.addView(
+            hintToggleHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = buttonSpacing }
+        )
 
         val column3Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             marginEnd = buttonSpacing
@@ -564,6 +611,8 @@ class PixelWankerOverlayService : Service() {
         }
 
         gridOverlayView = view
+        view.translationX = overlayTranslationX
+        view.translationY = overlayTranslationY
         windowManager?.addView(view, params)
         controlsOverlayView?.let { controlsView ->
             windowManager?.removeView(controlsView)
@@ -590,6 +639,87 @@ class PixelWankerOverlayService : Service() {
         ).apply {
             gravity = Gravity.CENTER
         }
+
+    private fun updateOverlayTranslation(x: Float, y: Float) {
+        overlayTranslationX = x
+        overlayTranslationY = y
+        gridOverlayView?.translationX = x
+        gridOverlayView?.translationY = y
+    }
+
+    private fun scheduleOverlayDragStart(rawX: Float, rawY: Float, view: View) {
+        cancelOverlayDrag()
+        dragStartX = rawX
+        dragStartY = rawY
+        dragInitialTranslationX = overlayTranslationX
+        dragInitialTranslationY = overlayTranslationY
+        pendingLongPress = Runnable {
+            isDraggingOverlay = true
+            view.parent?.requestDisallowInterceptTouchEvent(true)
+        }
+        dragHandler.postDelayed(pendingLongPress!!, 1_000L)
+    }
+
+    private fun cancelOverlayDrag() {
+        pendingLongPress?.let { dragHandler.removeCallbacks(it) }
+        pendingLongPress = null
+        isDraggingOverlay = false
+    }
+
+    private inner class DragOverlayLayout(context: Context) : FrameLayout(context) {
+        private var downX = 0f
+        private var downY = 0f
+
+        override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+            when (ev.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = ev.rawX
+                    downY = ev.rawY
+                    scheduleOverlayDragStart(ev.rawX, ev.rawY, this)
+                    return false
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (!isDraggingOverlay) {
+                        val dx = ev.rawX - downX
+                        val dy = ev.rawY - downY
+                        if (abs(dx) > touchSlop || abs(dy) > touchSlop) {
+                            cancelOverlayDrag()
+                        }
+                        return false
+                    }
+                    return true
+                }
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    cancelOverlayDrag()
+                    return false
+                }
+            }
+            return super.onInterceptTouchEvent(ev)
+        }
+
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+                    if (isDraggingOverlay) {
+                        val dx = event.rawX - dragStartX
+                        val dy = event.rawY - dragStartY
+                        updateOverlayTranslation(
+                            dragInitialTranslationX + dx,
+                            dragInitialTranslationY + dy
+                        )
+                        return true
+                    }
+                }
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    cancelOverlayDrag()
+                    return true
+                }
+            }
+            return super.onTouchEvent(event)
+        }
+    }
 
     private class GridView(
         context: Context,
