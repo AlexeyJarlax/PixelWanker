@@ -1,0 +1,119 @@
+<resources>
+    <string name="app_name">PixelWanker</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_dashboard">Tableau de bord</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="error_load_app_info">Impossible de charger les infos de l'appli</string>
+    <string name="error_load_app_list">Impossible de charger la liste des applis</string>
+    <string name="app_detail_title_default">Informations sur l'appli</string>
+    <string name="back">Retour</string>
+    <string name="app_detail_label_name">Nom : %1$s</string>
+    <string name="app_detail_label_package">Package : %1$s</string>
+    <string name="app_detail_label_version_name">Nom de version : %1$s</string>
+    <string name="app_detail_label_version_code">Code de version : %1$d</string>
+    <string name="app_detail_not_available">—</string>
+    <string name="app_detail_apk_size">Taille de l'APK : %1$.2f MB</string>
+    <string name="app_detail_checksum_label">Somme de contrôle de l'APK (SHA-256) :</string>
+    <string name="app_detail_checksum_unavailable">Impossible à calculer</string>
+    <string name="app_detail_open_app">Ouvrir
+l'appli</string>
+    <string name="app_detail_open_with_grid">Ouvrir
+avec la grille</string>
+    <string name="installed_app_version">Version : %1$s</string>
+    <string name="overlay_hint_hide_grid">Appuyez sur # pour masquer la grille et reprendre le contrôle de l'écran
+▼</string>
+    <string name="overlay_back">Retour</string>
+    <string name="overlay_hint_shift_left">▶
+Ce bouton déplace la grille vers la gauche</string>
+    <string name="overlay_hint_back_to_menu">Appuyez pour revenir au menu principal de l'appli
+▼</string>
+    <string name="overlay_hint_shift_down">▲
+Ce bouton déplace la grille vers le bas</string>
+    <string name="overlay_hint_change_grid_size">▲
+Appuyez pour changer la taille de la grille
+
+</string>
+    <string name="overlay_shift_left">Déplacer la grille à gauche</string>
+    <string name="overlay_shift_down">Déplacer la grille vers le bas</string>
+    <string name="overlay_close">Fermer</string>
+    <string name="overlay_hide_grid">Masquer la grille</string>
+    <string name="overlay_show_grid">Afficher la grille</string>
+    <string name="overlay_toggle_hint">Afficher/Masquer les astuces</string>
+    <string name="search_apps_placeholder">Rechercher des applis</string>
+    <string name="about_title">À propos</string>
+    <string name="about_body">Pavlov Alexey Sandbox</string>
+    <string name="about_app_text">PixelWanker superpose une grille de mesure par-dessus n'importe quelle appli. Vous pouvez choisir la taille des cellules de 4 à 400 px/dp et la couleur de base des lignes (blanc, noir, vert, rouge). Une seconde couleur optionnelle dessine une double ligne à côté de la base — choisissez aucune ou l'une de ces couleurs : blanc, noir, vert, rouge, jaune, bleu. La grille est composée de bandes verticales et horizontales, et le nombre de bandes dépend de la taille de cellule sélectionnée. Vous pouvez aussi ouvrir la liste des applis installées, toucher une carte d'appli et la lancer avec la grille.</string>
+    <string name="about_ok">OK</string>
+    <string name="pixelwanker_tagline">Ne sois pas un wanker — arrête d'estimer,
+commence à mesurer</string>
+    <string name="pixelwanker_description">PixelWanker est un utilitaire pour les développeurs, designers et testeurs qui veulent un moyen rapide de vérifier l'espacement, l'alignement et le rythme visuel directement sur l'appareil. L'appli génère une grille personnalisable à l'écran et permet de la superposer à n'importe quelle appli</string>
+    <string name="unit_px">px</string>
+    <string name="unit_dp">dp</string>
+    <string name="size_label">Taille : %1$d %2$s</string>
+    <string name="size_option">%1$d %2$s</string>
+    <string name="color_white">Blanc</string>
+    <string name="color_black">Noir</string>
+    <string name="color_green">Vert</string>
+    <string name="color_red">Rouge</string>
+    <string name="start_grid">Démarrer la grille</string>
+    <string name="first_launch_dialog_text">Après le premier lancement, le système demandera l'autorisation d'afficher par-dessus d'autres applis. Trouvez PixelWanker dans la liste et activez l'interrupteur.</string>
+    <string name="thanks_prompt">Si vous voulez remercier l'auteur de l'appli, vous pouvez le faire de l'une des façons suivantes :</string>
+    <string name="pleinair_install_prompt">Ou installez et essayez mon appli pour des rencontres de peinture en plein air.</string>
+    <string name="pleinair_description">Plein air est un projet merveilleux qui permet aux passionnés de peinture de se rencontrer et de peindre ensemble.</string>
+    <string name="tips_prompt">Ou envoyez un pourboire via CloudTips :</string>
+    <string name="cookie_reward_text">Si vous avez remercié l'auteur, prenez un cookie !</string>
+    <string name="pie_reward_text">Et une tarte !</string>
+    <string name="separator_line">______________</string>
+    <string name="extra_color_unlock_text">On dirait que vous êtes arrivé tout au bout… et que vous avez débloqué une couleur supplémentaire de grille ! Avec deux couleurs contrastées, elle sera plus visible dans des designs complexes.</string>
+    <string name="no_second_color">Pas de deuxième couleur</string>
+    <string name="color_yellow">Jaune</string>
+    <string name="color_blue">Bleu</string>
+    <string name="google_play_content_description">Google Play</string>
+    <string name="tips_content_description">Pourboires</string>
+    <string name="bottom_nav_grid">Grille</string>
+    <string name="bottom_nav_apps">Applis</string>
+    <string name="bottom_nav_about">À propos</string>
+    <string name="bottom_nav_exit">Quitter</string>
+    <string name="clear">Effacer</string>
+    <string name="search">Rechercher</string>
+    <string name="confirm">C'est parti !</string>
+    <string name="dismiss">Retour</string>
+    <string name="about_dialog_confirm">Plus de
+wanking</string>
+    <string name="about_dialog_dismiss">Retour au
+wanking</string>
+    <string name="apps_page_description">Toutes les applis installées sur l'appareil. Ouvrez la carte d'une appli pour la lancer avec la grille.</string>
+    <string name="about_user_data_button">Données utilisateur</string>
+    <string name="about_user_data_toast">L'appli ne collecte ni ne traite les données utilisateur.</string>
+    <string name="about_privacy_policy_button">Politique de confidentialité</string>
+
+    <string name="about_support_button">Contacter le support</string>
+    <string name="about_support_chooser_title">Envoyer un e-mail via</string>
+    <string name="about_support_no_email_app">Aucune appli e-mail trouvée sur cet appareil.</string>
+    <string name="about_language_title">Langue</string>
+    <string name="about_language_ru">Русский</string>
+    <string name="about_language_en">English</string>
+    <string name="about_language_es">Español</string>
+    <string name="about_language_hi">हिन्दी</string>
+    <string name="about_language_fr">Français</string>
+    <string name="about_language_pt">Português</string>
+    <string name="about_language_change_toast">Les changements seront appliqués après la réouverture de l'appli.</string>
+    <string name="telegram_donations_title">Dons via Telegram ⭐️</string>
+    <string name="telegram_donations_description">La façon la plus simple de soutenir le projet est de laisser une réaction ⭐️ payante sur Telegram.</string>
+    <string name="telegram_open_channel_button">Ouvrir le canal @PixelWanker</string>
+    <string name="telegram_stars_dialog_title">Telegram Stars ⭐️</string>
+    <string name="telegram_stars_dialog_text">Le canal « %1$s » va s'ouvrir.
+
+Ensuite :
+• ouvrez n'importe quel post
+• appuyez sur ⭐️ (réaction payante)
+• choisissez le nombre de Stars et confirmez.
+
+Le paiement se fait dans Telegram. PixelWanker ne collecte ni ne stocke les données de paiement.</string>
+    <string name="telegram_stars_confirm">Ouvrir le canal</string>
+    <string name="telegram_stars_dismiss">Annuler</string>
+    <string name="telegram_channel_title">PixelWanker for Android dev</string>
+    <string name="telegram_channel_url">https://t.me/PixelWanker</string>
+    <string name="cloudtips_url">https://pay.cloudtips.ru/p/da048bc5</string>
+    <string name="pleinair_play_url">https://play.google.com/store/apps/details?id=com.pavlovalexey.pleinair_kmp&amp;pcampaignid=web_share</string>
+</resources>

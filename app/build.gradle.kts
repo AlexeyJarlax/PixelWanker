@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.pavlovalexey.pavlovAlexeySandbox"
-        resourceConfigurations += setOf("ru", "en", "es", "hi")
+        resourceConfigurations += setOf("ru", "en", "es", "hi", "fr", "pt")
         minSdk = 24 //Android 7
         targetSdk = 36
         versionCode = 22
