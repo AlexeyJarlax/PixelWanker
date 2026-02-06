@@ -46,6 +46,9 @@ fun AboutPage() {
         LanguageOption("en", stringResource(R.string.about_language_en)),
         LanguageOption("es", stringResource(R.string.about_language_es)),
         LanguageOption("hi", stringResource(R.string.about_language_hi)),
+        LanguageOption("fr", stringResource(R.string.about_language_fr)),
+        LanguageOption("pt", stringResource(R.string.about_language_pt)),
+        LanguageOption("ja", stringResource(R.string.about_language_ja)),
     )
     val initialLanguage = remember { resolveAppLanguage(context) }
     var selectedLanguage by remember { mutableStateOf(initialLanguage) }

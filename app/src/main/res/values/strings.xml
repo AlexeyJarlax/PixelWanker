@@ -83,6 +83,9 @@
     <string name="about_language_en">English</string>
     <string name="about_language_es">Español</string>
     <string name="about_language_hi">हिन्दी</string>
+    <string name="about_language_fr">Français</string>
+    <string name="about_language_pt">Português</string>
+    <string name="about_language_ja">日本語</string>
     <string name="about_language_change_toast">Changes will take effect after reopening the app.</string>
     <string name="telegram_donations_title">Donations via Telegram ⭐️</string>
     <string name="telegram_donations_description">The easiest way to support the project is to leave a paid ⭐️ reaction in Telegram.</string>
