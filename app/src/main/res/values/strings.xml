@@ -24,6 +24,7 @@
     <string name="overlay_hint_back_to_menu">Tap to return to the main app menu\n▼</string>
     <string name="overlay_hint_shift_down">▲\nThis button shifts the grid down</string>
     <string name="overlay_hint_change_grid_size">▲\nClick to change grid size\n\n</string>
+    <string name="overlay_hint_hold_to_drag">Hold your finger on the grid to start moving it 👇 + 1 sec.</string>
     <string name="overlay_shift_left">Shift grid left</string>
     <string name="overlay_shift_down">Shift grid down</string>
     <string name="overlay_close">Close</string>

@@ -191,6 +191,23 @@ class PixelWankerOverlayService : Service() {
             setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
         }
 
+        /*** подсказка: удерживать палец для перемещения сетки ***/
+        val hintToggleHintTextView = TextView(this).apply {
+            text = getString(R.string.overlay_hint_hold_to_drag)
+            setTextColor(Color.RED)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            maxLines = 10
+            maxWidth = dpToPx(180)
+            gravity = Gravity.CENTER
+
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dpToPx(10).toFloat()
+                setColor(Color.LTGRAY)
+            }
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+
         /*** кнопка возврата в главное меню приложения ***/
         val goBackButton = createControlButton(android.R.drawable.ic_menu_revert).apply {
             setOnClickListener { openAppHomeAndCloseOverlay() }
@@ -272,7 +289,13 @@ class PixelWankerOverlayService : Service() {
             contentDescription = getString(R.string.overlay_toggle_hint)
         }
 
-        val extraHintViews = listOf(goLeftHintTextView, goBackHintTextView, shiftDownHintTextView, sizeHintTextView)
+        val extraHintViews = listOf(
+            goLeftHintTextView,
+            goBackHintTextView,
+            shiftDownHintTextView,
+            sizeHintTextView,
+            hintToggleHintTextView
+        )
         val allHintViews = listOf(gridHintTextView) + extraHintViews
         var updateControlsSizing: ((Boolean) -> Unit)? = null
 
@@ -449,6 +472,13 @@ class PixelWankerOverlayService : Service() {
 
         val hintToggleButtonParams = LinearLayout.LayoutParams(buttonSize, buttonSize).apply { topMargin = buttonSpacing }
         column3.addView(hintToggleButton, hintToggleButtonParams)
+        column3.addView(
+            hintToggleHintTextView,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = buttonSpacing }
+        )
 
         val column3Params = LinearLayout.LayoutParams(buttonSize, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             marginEnd = buttonSpacing
