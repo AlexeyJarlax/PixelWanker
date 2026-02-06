@@ -29,6 +29,7 @@
     <string name="installed_app_version">Version : %1$s</string>
 
     <string name="overlay_hint_hide_grid">Appuyez sur # pour masquer la grille et reprendre le contrôle de l\'écran\n▼</string>
+    <string name="overlay_hint_hold_to_drag">Maintiens le doigt sur la grille 1 s pour la déplacer\n👇🏿</string>
     <string name="overlay_back">Retour</string>
 
     <string name="overlay_hint_shift_left">▶\nCe bouton déplace la grille vers la gauche</string>
