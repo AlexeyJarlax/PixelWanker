@@ -17,8 +17,8 @@ android {
         resourceConfigurations += setOf("ru", "en", "es", "hi")
         minSdk = 24 //Android 7
         targetSdk = 36
-        versionCode = 20
-        versionName = "0.20"
+        versionCode = 22
+        versionName = "0.22"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
