@@ -28,6 +28,7 @@
     <string name="installed_app_version">Versão: %1$s</string>
 
     <string name="overlay_hint_hide_grid">Toque em # para ocultar a grade e retomar o controle da tela\n▼</string>
+    <string name="overlay_hint_hold_to_drag">Mantenha o dedo na grade por 1 s para movê-la\n👇🏻</string>
     <string name="overlay_back">Voltar</string>
 
     <string name="overlay_hint_shift_left">▶\nEste botão desloca a grade para a esquerda</string>
