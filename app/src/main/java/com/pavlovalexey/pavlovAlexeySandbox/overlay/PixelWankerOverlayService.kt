@@ -130,6 +130,10 @@ class PixelWankerOverlayService : Service() {
         val root = DragOverlayLayout(this)
         root.translationX = overlayTranslationX
         root.translationY = overlayTranslationY
+        root.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
         fun dpToPx(value: Int): Int = (value * density).toInt()
 
         fun createControlBackground(): GradientDrawable = GradientDrawable().apply {
@@ -600,8 +604,8 @@ class PixelWankerOverlayService : Service() {
 
     private fun createControlsLayoutParams(): WindowManager.LayoutParams =
         WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
