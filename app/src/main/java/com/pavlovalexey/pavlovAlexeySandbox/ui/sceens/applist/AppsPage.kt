@@ -1,4 +1,4 @@
-package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
+package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
 import com.pavlovalexey.pavlovAlexeySandbox.R
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
-import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppListItem
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexSearchTextField
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.MatrixBackground
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.VSpacer
