@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pavlovalexey.pavlovAlexeySandbox.navigation.StartBottomBar
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepositoryImpl
+import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.aboutPage.AboutPage
+import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.AppsPage
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppsViewModel
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.applist.InstalledAppsViewModelFactory
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.LocalHazeState

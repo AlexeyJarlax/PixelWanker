@@ -11,7 +11,7 @@ PixelWanker накладывает измерительную сетку пов�
 приложений — откройте карточку и запустите приложение вместе с сеткой.
 
 ## Технологический стек
-
+- **Использовал для написания кода chatgpt, Codex.
 - **Язык и сборка:** Kotlin 2.2, Java 17, Gradle (Kotlin DSL).
 - **UI:** Jetpack Compose + Material/Material3, собственная тема и компоненты.
 - **Локализация:** 7 языков (русский, английский, испанский, хинди, французский, португальский, японский).
@@ -33,4 +33,5 @@ PixelWanker накладывает измерительную сетку пов�
   кнопками управления (сдвиг, скрытие, выход).
 - **Хранилище настроек сетки:** `GridSettingsStore` сохраняет параметры сетки и восстанавливает их при запуске.
 
+![readme image](app/src/main/res/drawable/readme_img.jpg)
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=22&duration=4000&pause=400&width=435&lines=/Павлов+Алексей/" alt="Typing SVG" /></a>

@@ -1,5 +1,6 @@
-package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
+package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.aboutPage
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -172,7 +173,7 @@ fun AboutPage() {
     }
 }
 
-private fun resolveAppLanguage(context: android.content.Context): String {
+private fun resolveAppLanguage(context: Context): String {
     LanguagePrefs.getSelectedLanguage(context)?.let { return it }
     val appLocaleTags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
     if (appLocaleTags.isNotBlank()) {

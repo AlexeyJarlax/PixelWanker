@@ -32,6 +32,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.pavlovalexey.pavlovAlexeySandbox.R
-import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
-import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.PixelWankerOverlayService
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.AlexIconButton
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.components.Cookie
@@ -57,21 +56,16 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp40
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
-import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
 import java.util.Locale
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
 
 /** Павлов Алексей https://github.com/AlexeyJarlax */
 
@@ -79,21 +73,11 @@ import androidx.compose.foundation.rememberScrollState
 fun PixelWankerPage() {
     val context = LocalContext.current
     val activity = context as? Activity
-    val sizes = remember { listOf(4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 60, 100, 200, 300, 400) }
-    val saved = remember { GridSettingsStore.loadOrDefault(context) }
-    var unit by remember { mutableStateOf(saved.unit) }
-    var selectedSize by remember { mutableStateOf(saved.cellValue) }
-    var baseColor by remember { mutableStateOf(saved.baseColor) }
-    var extraColor by remember { mutableStateOf(saved.extraColor) }
+    val viewModel: PixelWankerViewModel = viewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val sizes = viewModel.sizes
     var sizeMenuExpanded by remember { mutableStateOf(false) }
     var pendingStart by remember { mutableStateOf(false) }
-    var showFirstLaunchDialog by remember { mutableStateOf(false) }
-    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
-    var isCookieVisible1 by remember { mutableStateOf(true) }
-    var isCookieVisible2 by remember { mutableStateOf(true) }
-    var isPieVisible1 by remember { mutableStateOf(true) }
-    var isPieVisible2 by remember { mutableStateOf(true) }
-    var showTelegramStarsDialog by remember { mutableStateOf(false) }
     val cloudtipsUrl = stringResource(R.string.cloudtips_url)
     val pleinairPlayUrl = stringResource(R.string.pleinair_play_url)
     val telegramChannelUrl = stringResource(R.string.telegram_channel_url)
@@ -105,52 +89,32 @@ fun PixelWankerPage() {
     val showRussianTipsBlock =
         Locale.getDefault().country.uppercase(Locale.ROOT) in tipEligibleCountries
 
-    fun saveNow() {
-        GridSettingsStore.save(
-            context = context,
-            settings = GridUserSettings(
-                cellValue = selectedSize,
-                unit = unit,
-                baseColor = baseColor,
-                extraColor = extraColor
-            )
-        )
-    }
-
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
         if (pendingStart && Settings.canDrawOverlays(context)) {
+            val settings = viewModel.currentSettings()
             PixelWankerOverlayService.start(
                 context = context,
-                cellValue = selectedSize,
-                unit = unit,
-                baseColor = baseColor,
-                extraColor = extraColor
+                cellValue = settings.cellValue,
+                unit = settings.unit,
+                baseColor = settings.baseColor,
+                extraColor = settings.extraColor
             )
             activity?.finish()
             pendingStart = false
         }
     }
 
-    fun runWithFirstLaunchDialog(action: () -> Unit) {
-        if (FirstLaunchDialogPrefs.shouldShow(context)) {
-            pendingAction = action
-            showFirstLaunchDialog = true
-        } else {
-            action()
-        }
-    }
-
     fun startOverlayOrRequestPermission() {
-        saveNow()
+        val settings = viewModel.currentSettings()
         if (Settings.canDrawOverlays(context)) {
             PixelWankerOverlayService.start(
                 context = context,
-                cellValue = selectedSize,
-                unit = unit,
-                baseColor = baseColor,
-                extraColor = extraColor
+                cellValue = settings.cellValue,
+                unit = settings.unit,
+                baseColor = settings.baseColor,
+                extraColor = settings.extraColor
             )
             activity?.finish()
         } else {
@@ -195,23 +159,21 @@ fun PixelWankerPage() {
             Spacer(modifier = Modifier.height(dp16))
 
             val unitLabel = stringResource(
-                if (unit == "px") R.string.unit_px else R.string.unit_dp
+                if (uiState.unit == "px") R.string.unit_px else R.string.unit_dp
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
                 FilterChip(
-                    selected = unit == "px",
+                    selected = uiState.unit == "px",
                     onClick = {
-                        unit = "px"
-                        saveNow()
+                        viewModel.selectUnit("px")
                     },
                     label = { Text(stringResource(R.string.unit_px)) }
                 )
                 FilterChip(
-                    selected = unit == "dp",
+                    selected = uiState.unit == "dp",
                     onClick = {
-                        unit = "dp"
-                        saveNow()
+                        viewModel.selectUnit("dp")
                     },
                     label = { Text(stringResource(R.string.unit_dp)) }
                 )
@@ -221,7 +183,7 @@ fun PixelWankerPage() {
 
             Box {
                 AlexIconButton(
-                    text = stringResource(R.string.size_label, selectedSize, unitLabel),
+                    text = stringResource(R.string.size_label, uiState.selectedSize, unitLabel),
                     outlined = true,
                     onClick = { sizeMenuExpanded = true },
                 )
@@ -258,9 +220,8 @@ fun PixelWankerPage() {
                                                 },
                                                 contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp),
                                                 onClick = {
-                                                    selectedSize = v
+                                                    viewModel.selectSize(v)
                                                     sizeMenuExpanded = false
-                                                    saveNow()
                                                 }
                                             )
                                         } else {
@@ -300,44 +261,40 @@ fun PixelWankerPage() {
 
             Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
                 FilterChip(
-                    selected = baseColor == android.graphics.Color.WHITE,
+                    selected = uiState.baseColor == android.graphics.Color.WHITE,
                     onClick = {
-                        baseColor = android.graphics.Color.WHITE
-                        saveNow()
+                        viewModel.selectBaseColor(android.graphics.Color.WHITE)
                     },
-                    border = colorChipBorder(baseColor == android.graphics.Color.WHITE),
+                    border = colorChipBorder(uiState.baseColor == android.graphics.Color.WHITE),
                     colors = chipColorsFor(android.graphics.Color.WHITE),
                     label = { Text(stringResource(R.string.color_white)) }
                 )
                 FilterChip(
-                    selected = baseColor == android.graphics.Color.GREEN,
+                    selected = uiState.baseColor == android.graphics.Color.GREEN,
                     onClick = {
-                        baseColor = android.graphics.Color.GREEN
-                        saveNow()
+                        viewModel.selectBaseColor(android.graphics.Color.GREEN)
                     },
-                    border = colorChipBorder(baseColor == android.graphics.Color.GREEN),
+                    border = colorChipBorder(uiState.baseColor == android.graphics.Color.GREEN),
                     colors = chipColorsFor(android.graphics.Color.GREEN),
                     label = { Text(stringResource(R.string.color_green)) }
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
                 FilterChip(
-                    selected = baseColor == android.graphics.Color.BLACK,
+                    selected = uiState.baseColor == android.graphics.Color.BLACK,
                     onClick = {
-                        baseColor = android.graphics.Color.BLACK
-                        saveNow()
+                        viewModel.selectBaseColor(android.graphics.Color.BLACK)
                     },
-                    border = colorChipBorder(baseColor == android.graphics.Color.BLACK),
+                    border = colorChipBorder(uiState.baseColor == android.graphics.Color.BLACK),
                     colors = chipColorsFor(android.graphics.Color.BLACK),
                     label = { Text(stringResource(R.string.color_black)) }
                 )
                 FilterChip(
-                    selected = baseColor == android.graphics.Color.RED,
+                    selected = uiState.baseColor == android.graphics.Color.RED,
                     onClick = {
-                        baseColor = android.graphics.Color.RED
-                        saveNow()
+                        viewModel.selectBaseColor(android.graphics.Color.RED)
                     },
-                    border = colorChipBorder(baseColor == android.graphics.Color.RED),
+                    border = colorChipBorder(uiState.baseColor == android.graphics.Color.RED),
                     colors = chipColorsFor(android.graphics.Color.RED),
                     label = { Text(stringResource(R.string.color_red)) }
                 )
@@ -348,12 +305,16 @@ fun PixelWankerPage() {
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
                 outlined = true,
-                onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
+                onClick = {
+                    if (viewModel.onStartGridClick() == StartGridDecision.StartOverlay) {
+                        startOverlayOrRequestPermission()
+                    }
+                },
             )
             SpacerHeight(60)
 
-            if (isCookieVisible1) {
-                Cookie(onClose = { isCookieVisible1 = false })
+            if (uiState.isCookieVisible1) {
+                Cookie(onClose = viewModel::hideCookie1)
                 SpacerHeight(60)
             }
 
@@ -388,7 +349,7 @@ fun PixelWankerPage() {
             AlexIconButton(
                 text = stringResource(R.string.telegram_open_channel_button),
                 outlined = true,
-                onClick = { showTelegramStarsDialog = true },
+                onClick = viewModel::showTelegramStarsDialog,
             )
             SpacerHeight(60)
 
@@ -444,20 +405,20 @@ fun PixelWankerPage() {
             SpacerHeight(60)
 
 
-            if (isCookieVisible2) {
+            if (uiState.isCookieVisible2) {
                 Text(
                     text = stringResource(R.string.cookie_reward_text),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Cookie(onClose = { isCookieVisible2 = false })
+                Cookie(onClose = viewModel::hideCookie2)
                 SpacerHeight(60)
             }
 
-            if (isPieVisible2) {
+            if (uiState.isPieVisible2) {
                 Text(text = stringResource(R.string.pie_reward_text))
-                Pie(onClose = { isPieVisible2 = false })
+                Pie(onClose = viewModel::hidePie2)
                 SpacerHeight(60)
             }
 
@@ -470,12 +431,11 @@ fun PixelWankerPage() {
             SpacerHeight()
 
             FilterChip(
-                selected = extraColor == null,
+                selected = uiState.extraColor == null,
                 onClick = {
-                    extraColor = null
-                    saveNow()
+                    viewModel.selectExtraColor(null)
                 },
-                border = colorChipBorder(extraColor == null),
+                border = colorChipBorder(uiState.extraColor == null),
                 label = { Text(stringResource(R.string.no_second_color)) }
             )
             Row(
@@ -483,37 +443,34 @@ fun PixelWankerPage() {
                 horizontalArrangement = Arrangement.spacedBy(dp8)
             ) {
                 FilterChip(
-                    selected = extraColor == android.graphics.Color.WHITE,
+                    selected = uiState.extraColor == android.graphics.Color.WHITE,
                     onClick = {
-                        extraColor = android.graphics.Color.WHITE
-                        saveNow()
+                        viewModel.selectExtraColor(android.graphics.Color.WHITE)
                     },
                     modifier = Modifier.weight(1f),
-                    border = colorChipBorder(extraColor == android.graphics.Color.WHITE),
+                    border = colorChipBorder(uiState.extraColor == android.graphics.Color.WHITE),
                     colors = chipColorsFor(android.graphics.Color.WHITE),
                     label = { Text(stringResource(R.string.color_white)) }
                 )
 
                 FilterChip(
-                    selected = extraColor == android.graphics.Color.BLACK,
+                    selected = uiState.extraColor == android.graphics.Color.BLACK,
                     onClick = {
-                        extraColor = android.graphics.Color.BLACK
-                        saveNow()
+                        viewModel.selectExtraColor(android.graphics.Color.BLACK)
                     },
                     modifier = Modifier.weight(1f),
-                    border = colorChipBorder(extraColor == android.graphics.Color.BLACK),
+                    border = colorChipBorder(uiState.extraColor == android.graphics.Color.BLACK),
                     colors = chipColorsFor(android.graphics.Color.BLACK),
                     label = { Text(stringResource(R.string.color_black)) }
                 )
 
                 FilterChip(
-                    selected = extraColor == android.graphics.Color.RED,
+                    selected = uiState.extraColor == android.graphics.Color.RED,
                     onClick = {
-                        extraColor = android.graphics.Color.RED
-                        saveNow()
+                        viewModel.selectExtraColor(android.graphics.Color.RED)
                     },
                     modifier = Modifier.weight(1f),
-                    border = colorChipBorder(extraColor == android.graphics.Color.RED),
+                    border = colorChipBorder(uiState.extraColor == android.graphics.Color.RED),
                     colors = chipColorsFor(android.graphics.Color.RED),
                     label = { Text(stringResource(R.string.color_red)) }
                 )
@@ -523,36 +480,33 @@ fun PixelWankerPage() {
                 horizontalArrangement = Arrangement.spacedBy(dp8)
             ) {
                 FilterChip(
-                    selected = extraColor == android.graphics.Color.GREEN,
+                    selected = uiState.extraColor == android.graphics.Color.GREEN,
                     onClick = {
-                        extraColor = android.graphics.Color.GREEN
-                        saveNow()
+                        viewModel.selectExtraColor(android.graphics.Color.GREEN)
                     },
                     modifier = Modifier.weight(1f),
-                    border = colorChipBorder(extraColor == android.graphics.Color.GREEN),
+                    border = colorChipBorder(uiState.extraColor == android.graphics.Color.GREEN),
                     colors = chipColorsFor(android.graphics.Color.GREEN),
                     label = { Text(stringResource(R.string.color_green)) }
                 )
                 FilterChip(
-                    selected = extraColor == android.graphics.Color.YELLOW,
+                    selected = uiState.extraColor == android.graphics.Color.YELLOW,
                     onClick = {
-                        extraColor = android.graphics.Color.YELLOW
-                        saveNow()
+                        viewModel.selectExtraColor(android.graphics.Color.YELLOW)
                     },
                     modifier = Modifier.weight(1f),
-                    border = colorChipBorder(extraColor == android.graphics.Color.YELLOW),
+                    border = colorChipBorder(uiState.extraColor == android.graphics.Color.YELLOW),
                     colors = chipColorsFor(android.graphics.Color.YELLOW),
                     label = { Text(stringResource(R.string.color_yellow)) }
                 )
 
                 FilterChip(
-                    selected = extraColor == android.graphics.Color.BLUE,
+                    selected = uiState.extraColor == android.graphics.Color.BLUE,
                     onClick = {
-                        extraColor = android.graphics.Color.BLUE
-                        saveNow()
+                        viewModel.selectExtraColor(android.graphics.Color.BLUE)
                     },
                     modifier = Modifier.weight(1f),
-                    border = colorChipBorder(extraColor == android.graphics.Color.BLUE),
+                    border = colorChipBorder(uiState.extraColor == android.graphics.Color.BLUE),
                     colors = chipColorsFor(android.graphics.Color.BLUE),
                     label = { Text(stringResource(R.string.color_blue)) }
                 )
@@ -562,28 +516,29 @@ fun PixelWankerPage() {
             AlexIconButton(
                 text = stringResource(R.string.start_grid),
                 outlined = true,
-                onClick = { runWithFirstLaunchDialog { startOverlayOrRequestPermission() } },
+                onClick = {
+                    if (viewModel.onStartGridClick() == StartGridDecision.StartOverlay) {
+                        startOverlayOrRequestPermission()
+                    }
+                },
             )
             SpacerHeight(60)
         }
 
-        if (showFirstLaunchDialog) {
+        if (uiState.showFirstLaunchDialog) {
             WankerConfirmationDialog(
                 dialogText = stringResource(R.string.first_launch_dialog_text),
                 onDismiss = {
-                    showFirstLaunchDialog = false
-                    pendingAction = null
+                    viewModel.dismissFirstLaunchDialog()
                 },
                 onConfirm = {
-                    FirstLaunchDialogPrefs.markShown(context)
-                    showFirstLaunchDialog = false
-                    pendingAction?.invoke()
-                    pendingAction = null
+                    viewModel.confirmFirstLaunchDialog()
+                    startOverlayOrRequestPermission()
                 }
             )
         }
 
-        if (showTelegramStarsDialog) {
+        if (uiState.showTelegramStarsDialog) {
             WankerConfirmationDialog(
                 title = stringResource(R.string.telegram_stars_dialog_title),
                 dialogText = stringResource(
@@ -592,9 +547,9 @@ fun PixelWankerPage() {
                 ),
                 confirmText = stringResource(R.string.telegram_stars_confirm),
                 dismissText = stringResource(R.string.telegram_stars_dismiss),
-                onDismiss = { showTelegramStarsDialog = false },
+                onDismiss = viewModel::hideTelegramStarsDialog,
                 onConfirm = {
-                    showTelegramStarsDialog = false
+                    viewModel.hideTelegramStarsDialog()
                     openUrl(telegramChannelUrl)
                 }
             )
