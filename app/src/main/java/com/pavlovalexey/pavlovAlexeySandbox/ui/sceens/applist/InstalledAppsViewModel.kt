@@ -8,7 +8,10 @@ import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepository
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModelProvider
 import com.pavlovalexey.pavlovAlexeySandbox.R
@@ -23,8 +26,31 @@ class InstalledAppsViewModel(
     private val _apps = MutableStateFlow<List<InstalledApp>>(emptyList())
     val apps: StateFlow<List<InstalledApp>> = _apps
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    val filteredApps: StateFlow<List<InstalledApp>> = combine(_apps, _searchQuery) { apps, query ->
+        val q = query.trim()
+        if (q.isEmpty()) {
+            apps
+        } else {
+            apps.filter { app ->
+                app.appName.contains(q, ignoreCase = true) ||
+                        app.packageName.contains(q, ignoreCase = true)
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList()
+    )
+
     init {
         loadApps()
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
     }
 
     private fun loadApps() {

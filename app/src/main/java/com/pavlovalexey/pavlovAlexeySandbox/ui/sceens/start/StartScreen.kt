@@ -44,7 +44,8 @@ fun StartScreen(
     val factory = remember(repository) { InstalledAppsViewModelFactory(repository) }
     val resolvedViewModel = appsViewModel ?: viewModel(factory = factory)
     val appsUiState by resolvedViewModel.uiState.collectAsState()
-    val apps by resolvedViewModel.apps.collectAsState()
+    val apps by resolvedViewModel.filteredApps.collectAsState()
+    val searchQuery by resolvedViewModel.searchQuery.collectAsState()
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
     val activity = context as? Activity
@@ -68,6 +69,8 @@ fun StartScreen(
                         1 -> AppsPage(
                             uiState = appsUiState,
                             apps = apps,
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = resolvedViewModel::onSearchQueryChange,
                             onAppClick = onAppClick
                         )
                         2 -> AboutPage()

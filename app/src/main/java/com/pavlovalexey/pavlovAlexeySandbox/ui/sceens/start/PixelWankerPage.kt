@@ -32,6 +32,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +57,6 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp12
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp16
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp40
 import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
-import java.util.Locale
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -77,59 +77,45 @@ fun PixelWankerPage() {
     val uiState by viewModel.uiState.collectAsState()
     val sizes = viewModel.sizes
     var sizeMenuExpanded by remember { mutableStateOf(false) }
-    var pendingStart by remember { mutableStateOf(false) }
     val cloudtipsUrl = stringResource(R.string.cloudtips_url)
     val pleinairPlayUrl = stringResource(R.string.pleinair_play_url)
     val telegramChannelUrl = stringResource(R.string.telegram_channel_url)
     val telegramChannelTitle = stringResource(R.string.telegram_channel_title)
 
-    val tipEligibleCountries = remember {
-        setOf("RU", "BY", "TJ", "UZ", "TM", "KZ")
-    }
-    val showRussianTipsBlock =
-        Locale.getDefault().country.uppercase(Locale.ROOT) in tipEligibleCountries
-
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
-        if (pendingStart && Settings.canDrawOverlays(context)) {
-            val settings = viewModel.currentSettings()
-            PixelWankerOverlayService.start(
-                context = context,
-                cellValue = settings.cellValue,
-                unit = settings.unit,
-                baseColor = settings.baseColor,
-                extraColor = settings.extraColor
-            )
-            activity?.finish()
-            pendingStart = false
-        }
-    }
-
-    fun startOverlayOrRequestPermission() {
-        val settings = viewModel.currentSettings()
-        if (Settings.canDrawOverlays(context)) {
-            PixelWankerOverlayService.start(
-                context = context,
-                cellValue = settings.cellValue,
-                unit = settings.unit,
-                baseColor = settings.baseColor,
-                extraColor = settings.extraColor
-            )
-            activity?.finish()
-        } else {
-            pendingStart = true
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${context.packageName}")
-            )
-            permissionLauncher.launch(intent)
-        }
+        viewModel.onOverlayPermissionResult(Settings.canDrawOverlays(context))
     }
 
     fun openUrl(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         context.startActivity(intent)
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                PixelWankerEffect.RequestOverlayPermission -> {
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:${context.packageName}")
+                    )
+                    permissionLauncher.launch(intent)
+                }
+
+                is PixelWankerEffect.StartOverlay -> {
+                    PixelWankerOverlayService.start(
+                        context = context,
+                        cellValue = effect.settings.cellValue,
+                        unit = effect.settings.unit,
+                        baseColor = effect.settings.baseColor,
+                        extraColor = effect.settings.extraColor
+                    )
+                    activity?.finish()
+                }
+            }
+        }
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -306,9 +292,9 @@ fun PixelWankerPage() {
                 text = stringResource(R.string.start_grid),
                 outlined = true,
                 onClick = {
-                    if (viewModel.onStartGridClick() == StartGridDecision.StartOverlay) {
-                        startOverlayOrRequestPermission()
-                    }
+                    viewModel.onStartGridClick(
+                        hasOverlayPermission = Settings.canDrawOverlays(context)
+                    )
                 },
             )
             SpacerHeight(60)
@@ -353,7 +339,7 @@ fun PixelWankerPage() {
             )
             SpacerHeight(60)
 
-            if (showRussianTipsBlock) {
+            if (uiState.showRussianTipsBlock) {
                 Text(
                     text = stringResource(R.string.tips_prompt),
                     style = MaterialTheme.typography.bodyMedium,
@@ -517,9 +503,9 @@ fun PixelWankerPage() {
                 text = stringResource(R.string.start_grid),
                 outlined = true,
                 onClick = {
-                    if (viewModel.onStartGridClick() == StartGridDecision.StartOverlay) {
-                        startOverlayOrRequestPermission()
-                    }
+                    viewModel.onStartGridClick(
+                        hasOverlayPermission = Settings.canDrawOverlays(context)
+                    )
                 },
             )
             SpacerHeight(60)
@@ -533,7 +519,9 @@ fun PixelWankerPage() {
                 },
                 onConfirm = {
                     viewModel.confirmFirstLaunchDialog()
-                    startOverlayOrRequestPermission()
+                    viewModel.requestOverlayStart(
+                        hasOverlayPermission = Settings.canDrawOverlays(context)
+                    )
                 }
             )
         }
