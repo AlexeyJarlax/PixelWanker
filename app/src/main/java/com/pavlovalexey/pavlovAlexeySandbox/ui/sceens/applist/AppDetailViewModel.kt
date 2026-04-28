@@ -8,8 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pavlovAlexeySandbox.model.AppDetails
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepository
 import com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.UiState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.savedstate.SavedStateRegistryOwner
@@ -28,6 +31,12 @@ class AppDetailViewModel(
     private val _details = MutableStateFlow<AppDetails?>(null)
     val details: StateFlow<AppDetails?> = _details
 
+    private val _screenState = MutableStateFlow(AppDetailScreenState())
+    val screenState: StateFlow<AppDetailScreenState> = _screenState
+
+    private val _effects = MutableSharedFlow<AppDetailEffect>()
+    val effects: SharedFlow<AppDetailEffect> = _effects.asSharedFlow()
+
     init {load()}
 
     private fun load() {
@@ -41,6 +50,48 @@ class AppDetailViewModel(
             }
         }
     }
+
+    fun onOpenAppClick() {
+        viewModelScope.launch {
+            _effects.emit(AppDetailEffect.OpenApp(packageName))
+        }
+    }
+
+    fun onOpenWithGridClick(shouldShowFirstLaunchDialog: Boolean) {
+        if (shouldShowFirstLaunchDialog) {
+            _screenState.value = AppDetailScreenState(
+                showFirstLaunchDialog = true,
+                pendingGridPackage = packageName
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            _effects.emit(AppDetailEffect.OpenWithGrid(packageName))
+        }
+    }
+
+    fun onFirstLaunchDialogDismiss() {
+        _screenState.value = AppDetailScreenState()
+    }
+
+    fun onFirstLaunchDialogConfirm() {
+        val pendingPackage = _screenState.value.pendingGridPackage ?: return
+        _screenState.value = AppDetailScreenState()
+        viewModelScope.launch {
+            _effects.emit(AppDetailEffect.OpenWithGrid(pendingPackage))
+        }
+    }
+}
+
+data class AppDetailScreenState(
+    val showFirstLaunchDialog: Boolean = false,
+    val pendingGridPackage: String? = null
+)
+
+sealed class AppDetailEffect {
+    data class OpenApp(val packageName: String) : AppDetailEffect()
+    data class OpenWithGrid(val packageName: String) : AppDetailEffect()
 }
 
 class AppDetailViewModelFactory(

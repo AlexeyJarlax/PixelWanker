@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,9 +62,8 @@ fun AppDetailScreen(
         viewModel ?: viewModel(viewModelStoreOwner = backStackEntry, factory = factory)
     val uiState by resolvedViewModel.uiState.collectAsState()
     val details by resolvedViewModel.details.collectAsState()
+    val screenState by resolvedViewModel.screenState.collectAsState()
     var pendingGridPackage by remember { mutableStateOf<String?>(null) }
-    var showFirstLaunchDialog by remember { mutableStateOf(false) }
-    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
     val gridSettings = GridSettingsStore.loadOrDefault(context)
 
     val overlayPermissionLauncher = rememberLauncherForActivityResult(
@@ -86,15 +86,6 @@ fun AppDetailScreen(
         pendingGridPackage = null
     }
 
-    fun runWithFirstLaunchDialog(action: () -> Unit) {
-        if (FirstLaunchDialogPrefs.shouldShow(context)) {
-            pendingAction = action
-            showFirstLaunchDialog = true
-        } else {
-            action()
-        }
-    }
-
     fun openAppWithGrid(appPackageName: String) {
         if (Settings.canDrawOverlays(context)) {
             PixelWankerOverlayService.start(
@@ -115,6 +106,19 @@ fun AppDetailScreen(
                 Uri.parse("package:${context.packageName}")
             )
             overlayPermissionLauncher.launch(intent)
+        }
+    }
+
+    LaunchedEffect(resolvedViewModel) {
+        resolvedViewModel.effects.collect { effect ->
+            when (effect) {
+                is AppDetailEffect.OpenApp -> {
+                    context.packageManager.getLaunchIntentForPackage(effect.packageName)
+                        ?.let(context::startActivity)
+                }
+
+                is AppDetailEffect.OpenWithGrid -> openAppWithGrid(effect.packageName)
+            }
         }
     }
 
@@ -211,24 +215,16 @@ fun AppDetailScreen(
 
                             Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
                                 AlexIconButton(
-                                    onClick = {
-                                        val intent =
-                                            context.packageManager.getLaunchIntentForPackage(
-                                                app.packageName
-                                            )
-                                        if (intent != null) {
-                                            context.startActivity(intent)
-                                        }
-                                    },
+                                    onClick = resolvedViewModel::onOpenAppClick,
                                     outlined = true,
                                     text = stringResource(R.string.app_detail_open_app)
                                 )
 
                                 AlexIconButton(
                                     onClick = {
-                                        runWithFirstLaunchDialog {
-                                            openAppWithGrid(app.packageName)
-                                        }
+                                        resolvedViewModel.onOpenWithGridClick(
+                                            shouldShowFirstLaunchDialog = FirstLaunchDialogPrefs.shouldShow(context)
+                                        )
                                     },
                                     outlined = true,
                                     text = stringResource(R.string.app_detail_open_with_grid)
@@ -241,18 +237,15 @@ fun AppDetailScreen(
         }
     }
 
-    if (showFirstLaunchDialog) {
+    if (screenState.showFirstLaunchDialog) {
         WankerConfirmationDialog(
             dialogText = stringResource(R.string.first_launch_dialog_text),
             onDismiss = {
-                showFirstLaunchDialog = false
-                pendingAction = null
+                resolvedViewModel.onFirstLaunchDialogDismiss()
             },
             onConfirm = {
                 FirstLaunchDialogPrefs.markShown(context)
-                showFirstLaunchDialog = false
-                pendingAction?.invoke()
-                pendingAction = null
+                resolvedViewModel.onFirstLaunchDialogConfirm()
             }
         )
     }

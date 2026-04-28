@@ -12,10 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +31,8 @@ import com.pavlovalexey.pavlovAlexeySandbox.ui.theme.dp8
 fun AppsPage(
     uiState: UiState,
     apps: List<InstalledApp>,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
     onAppClick: (String) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
@@ -53,24 +51,13 @@ fun AppsPage(
             }
 
             is UiState.Success -> {
-                var searchAppsQuery by remember { mutableStateOf("") }
-
-                val filtered = remember(apps, searchAppsQuery) {
-                    val q = searchAppsQuery.trim()
-                    if (q.isEmpty()) apps
-                    else apps.filter { app ->
-                        app.appName.contains(q, ignoreCase = true) ||
-                                app.packageName.contains(q, ignoreCase = true)
-                    }
-                }
-
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     VSpacer(24)
                     AlexSearchTextField(
-                        value = searchAppsQuery,
-                        onValueChange = { searchAppsQuery = it },
+                        value = searchQuery,
+                        onValueChange = onSearchQueryChange,
                         placeholderText = stringResource(R.string.search_apps_placeholder)
                     )
                     Text(
@@ -82,7 +69,7 @@ fun AppsPage(
                     LazyColumn(
                         contentPadding = PaddingValues(vertical = dp8)
                     ) {
-                        items(filtered) { app ->
+                        items(apps) { app ->
                             InstalledAppListItem(
                                 app = app,
                                 onClick = { onAppClick(app.packageName) }
