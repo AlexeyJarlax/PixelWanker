@@ -2,6 +2,7 @@ package com.pavlovalexey.pavlovAlexeySandbox.ui.sceens.start
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridSettingsStore
 import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
 import com.pavlovalexey.pavlovAlexeySandbox.utils.FirstLaunchDialogPrefs
