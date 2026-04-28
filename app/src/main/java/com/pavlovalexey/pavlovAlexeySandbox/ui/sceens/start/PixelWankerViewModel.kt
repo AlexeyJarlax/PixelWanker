@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class PixelWankerViewModel(application: Application) : AndroidViewModel(application) {
@@ -26,7 +27,7 @@ class PixelWankerViewModel(application: Application) : AndroidViewModel(applicat
     )
     val uiState: StateFlow<PixelWankerUiState> = _uiState.asStateFlow()
 
-    private val _effects = MutableSharedFlow<PixelWankerEffect>()
+    private val _effects = MutableSharedFlow<PixelWankerEffect>(extraBufferCapacity = 1)
     val effects: SharedFlow<PixelWankerEffect> = _effects.asSharedFlow()
 
     private var isOverlayStartPending = false
@@ -109,7 +110,9 @@ class PixelWankerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun emitEffect(effect: PixelWankerEffect) {
-        _effects.tryEmit(effect)
+        viewModelScope.launch {
+            _effects.emit(effect)
+        }
     }
 }
 
