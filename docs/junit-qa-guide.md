@@ -243,10 +243,10 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 ./gradlew :app:qaTestSummary
 ```
 
-После завершения задача печатает итог в формате:
+После завершения задача печатает итог в ASCII-формате (корректно отображается в Bash/MINGW/CI-логах):
 
 ```
-🔬🔬🔬 QA PavlovAlexey: 90% of the tests were successfully completed 🧪🧪🧪
+[QA][SUMMARY] QA PavlovAlexey: 90% of the tests were successfully completed
 ```
 
 И дополнительную числовую сводку: total/passed/failed/errors/skipped.
