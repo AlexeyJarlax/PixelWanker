@@ -201,7 +201,7 @@ fun AppDetailScreen(
                             )
                             HorizontalDivider()
                             app.apkSizeBytes?.let { bytes ->
-                                val mb = bytes.toDouble() / (1024 * 1024)
+                                val mb = formatApkSizeInMb(bytes)
                                 Text(stringResource(R.string.app_detail_apk_size, mb))
                                 HorizontalDivider()
                             }

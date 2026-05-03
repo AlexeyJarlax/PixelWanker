@@ -63,6 +63,13 @@ android {
         compose = true
     }
 
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
@@ -115,4 +122,10 @@ dependencies {
 
     // Обфускатор R8
     implementation(libs.bcprov.jdk15on)
+
+    testImplementation(libs.junit)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
 }
+
+apply(from = rootProject.file("gradle/qa-summary.gradle.kts"))
