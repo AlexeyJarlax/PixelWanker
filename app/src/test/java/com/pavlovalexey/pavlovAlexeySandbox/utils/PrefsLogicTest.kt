@@ -7,9 +7,12 @@ import com.pavlovalexey.pavlovAlexeySandbox.overlay.GridUserSettings
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import org.junit.Before
 import org.junit.Test
 
+@RunWith(RobolectricTestRunner::class)
 class PrefsLogicTest {
 
     private val context = ApplicationProvider.getApplicationContext<android.content.Context>()

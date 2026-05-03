@@ -6,8 +6,8 @@ import com.pavlovalexey.pavlovAlexeySandbox.model.InstalledApp
 import com.pavlovalexey.pavlovAlexeySandbox.repository.InstalledAppsRepository
 import com.pavlovalexey.pavlovAlexeySandbox.testutil.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -37,10 +37,10 @@ class AppDetailViewModelTest {
         val vm = createViewModel()
         advanceUntilIdle()
 
-        val effectDeferred = async { vm.effects.first() }
         vm.onOpenWithGridClick(shouldShowFirstLaunchDialog = false)
 
-        assertEquals(AppDetailEffect.OpenWithGrid(TEST_PACKAGE), effectDeferred.await())
+        val effect = withTimeout(1_000) { vm.effects.first() }
+        assertEquals(AppDetailEffect.OpenWithGrid(TEST_PACKAGE), effect)
     }
 
     @Test
@@ -49,11 +49,11 @@ class AppDetailViewModelTest {
         advanceUntilIdle()
 
         vm.onOpenWithGridClick(shouldShowFirstLaunchDialog = true)
-        val effectDeferred = async { vm.effects.first() }
 
         vm.onFirstLaunchDialogConfirm()
 
-        assertEquals(AppDetailEffect.OpenWithGrid(TEST_PACKAGE), effectDeferred.await())
+        val effect = withTimeout(1_000) { vm.effects.first() }
+        assertEquals(AppDetailEffect.OpenWithGrid(TEST_PACKAGE), effect)
         assertFalse(vm.screenState.value.showFirstLaunchDialog)
         assertEquals(null, vm.screenState.value.pendingGridPackage)
     }
