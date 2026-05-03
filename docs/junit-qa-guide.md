@@ -32,7 +32,6 @@ Unit-тесты в проекте должны защищать от регре�
 - `.../ui/sceens/applist/AppDetailViewModelTest.kt`
 - `.../ui/sceens/applist/AppDetailFormatterTest.kt`
 - `.../ui/sceens/start/PixelWankerUiStateMapperTest.kt`
-- `.../utils/PrefsLogicTest.kt`
 - `.../testutil/MainDispatcherRule.kt`
 
 > Правило: размещайте тест рядом с пакетом тестируемого кода (matching package structure).
@@ -45,7 +44,6 @@ Unit-тесты в проекте должны защищать от регре�
 
 - **JUnit 4** — базовый раннер и assertions;
 - **kotlinx-coroutines-test** — контроль корутин и `Dispatchers.Main`;
-- **Robolectric + androidx.test:core** — unit-тесты Android-зависимой логики (например, `Context`, `SharedPreferences`).
 
 Для Android-ресурсов в unit-тестах включено:
 
@@ -209,7 +207,7 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 
 - **Проблемы с Dispatchers.Main** → использовать `MainDispatcherRule`;
 - **Случайные тайминги** → избегать `delay` в тестах, использовать `advanceUntilIdle()`;
-- **Android API в unit-тестах** → Robolectric + `ApplicationProvider`;
+- **Android API в unit-тестах** → предпочитайте вынос логики в чистые функции/модели;
 - **Порядок выполнения тестов** → каждый тест изолирован, без shared mutable state.
 
 ---
