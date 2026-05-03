@@ -33,5 +33,8 @@ PixelWanker накладывает измерительную сетку пов�
   кнопками управления (сдвиг, скрытие, выход).
 - **Хранилище настроек сетки:** `GridSettingsStore` сохраняет параметры сетки и восстанавливает их при запуске.
 
+## Ссылка в GooglePlay
+https://play.google.com/store/apps/details?id=com.pavlovalexey.pavlovAlexeySandbox
+
 ![readme image](app/src/main/res/drawable/readme_img.jpg)
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=22&duration=4000&pause=400&width=435&lines=/Павлов+Алексей/" alt="Typing SVG" /></a>
