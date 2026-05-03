@@ -31,7 +31,7 @@ tasks.register("qaTestSummary") {
         val passed = (total - failures - errors - skipped).coerceAtLeast(0)
         val successRate = if (total == 0) 0 else ((passed * 100.0) / total).toInt()
 
-        println("[QA][SUMMARY] QA PavlovAlexey: $successRate% of the tests were successfully completed")
-        println("QA summary: total=$total, passed=$passed, failed=$failures, errors=$errors, skipped=$skipped")
+        println("[QA][SUMMARY]: $successRate% of the tests were successfully completed")
+        println("[QA][SUMMARY]: total=$total, passed=$passed, failed=$failures, errors=$errors, skipped=$skipped")
     }
 }
