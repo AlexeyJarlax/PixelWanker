@@ -38,3 +38,10 @@ https://play.google.com/store/apps/details?id=com.pavlovalexey.pavlovAlexeySandb
 
 ![readme image](app/src/main/res/drawable/readme_img.jpg)
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=22&duration=4000&pause=400&width=435&lines=/Павлов+Алексей/" alt="Typing SVG" /></a>
+
+
+## Jenkins
+
+- Jenkins: в репозиторий `Jenkinsfile` с базовыми Android/Gradle проверками.
+- Базовый пайплайн публикует JUnit XML и отчёты из `build/reports` как артефакты.
+- Jenkins проверяет то же самое, что и локальный JUnit
