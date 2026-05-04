@@ -38,3 +38,27 @@ https://play.google.com/store/apps/details?id=com.pavlovalexey.pavlovAlexeySandb
 
 ![readme image](app/src/main/res/drawable/readme_img.jpg)
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=22&duration=4000&pause=400&width=435&lines=/Павлов+Алексей/" alt="Typing SVG" /></a>
+
+
+## Jenkins (быстрый старт)
+
+Да, проект можно быстро подключить к Jenkins: в репозиторий добавлен `Jenkinsfile` с базовыми Android/Gradle проверками.
+
+Минимальные шаги:
+1. Установить Jenkins (LTS) и JDK 17 на агенте.
+2. Создать Pipeline job -> *Pipeline script from SCM* -> указать этот репозиторий.
+3. Запустить сборку: Jenkins выполнит `clean`, `testDebugUnitTest` и `lintDebug`.
+
+Базовый пайплайн публикует JUnit XML и отчёты из `build/reports` как артефакты.
+
+
+### FAQ по JUnit и сборкам
+
+- **Jenkins проверяет то же самое, что и локальный JUnit?**  
+  Да. В нашем `Jenkinsfile` выполняется Gradle-задача `testDebugUnitTest`, это те же unit-тесты JUnit (папка `app/src/test`), которые разработчик может запускать локально.
+
+- **Запускаются ли JUnit автоматически при `assembleDebug` / `assembleRelease`?**  
+  По умолчанию — нет. Задачи сборки APK/AAB (`assemble*`, `bundle*`) не обязаны запускать unit-тесты автоматически. Для обязательной проверки нужно запускать `testDebugUnitTest` отдельно или использовать `check`/CI pipeline.
+
+- **Что будет, если JUnit-тест упадёт?**  
+  Gradle завершит задачу тестов с ошибкой (ненулевой exit code), и stage в Jenkins станет `FAILED`. При этом отчёты будут доступны в `build/reports/tests/...` и `build/test-results/...`.
