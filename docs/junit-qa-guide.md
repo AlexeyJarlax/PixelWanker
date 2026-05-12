@@ -1,6 +1,6 @@
-# QA Guide: JUnit in PixelWanker
+# QA Guide: JUnit + Espresso in PixelWanker
 
-> Документ на практический стандарт команды dev по JUnit для PixelWanker.
+> Документ на практический стандарт команды dev по JUnit и Espresso для PixelWanker.
 
 ## 1. Текущие приоритетные зоны:
 
@@ -8,14 +8,15 @@
 2. **Фильтрация/поиск** (корректность отбора данных);
 3. **Форматтеры** (преобразование чисел, байтов, дат и т.д.);
 4. **Мапперы** (UI ↔ domain/persistence);
-5. **Prefs/хранилище настроек** (SharedPreferences, default/fallback behavior).
+5. **Prefs/хранилище настроек** (SharedPreferences, default/fallback behavior);
+6. **UI smoke-checks через Espresso** (запуск экрана, базовая интеракция, проверки root/view).
 
 ---
 
 ## 2. Где лежат тесты
 
-`app/src/test/java/...`
-> Путь туда, где пакет тестируемого кода.
+- JUnit unit-тесты: `app/src/test/java/...`
+- Espresso instrumented-тесты: `app/src/androidTest/java/...`
 
 ---
 
@@ -23,8 +24,13 @@
 
 В проекте используются:
 
-- **JUnit 4**;
+- **JUnit 4** (unit-тесты);
 - **kotlinx-coroutines-test** — контроль корутин и `Dispatchers.Main`;
+- **AndroidX Test + Espresso** (instrumented UI-тесты);
+  - `androidx.test.ext:junit`
+  - `androidx.test:runner`
+  - `androidx.test:rules`
+  - `androidx.test.espresso:espresso-core`
 
 Для Android-ресурсов в unit-тестах включено:
 
@@ -38,7 +44,23 @@ testOptions {
 
 ---
 
-## 4. Как запускать
+## 4. Как работает Espresso в этом проекте
+
+- Espresso-тесты запускаются **на устройстве или эмуляторе** (не на локальной JVM).
+- Инструментальный раннер задаётся в `defaultConfig`:
+  - `testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"`
+- Базовый smoke-тест: `MainActivityEspressoTest`.
+  - Сценарий запускает `MainActivity` через `ActivityScenario`.
+  - Далее Espresso проверяет, что root view отображается (`onView(isRoot()).check(matches(isDisplayed()))`).
+- Назначение smoke-теста:
+  - быстро валидировать, что приложение стартует и UI-дерево поднимается корректно;
+  - дать точку расширения для следующих UI-кейсов (клики, текст, навигация, проверки экранов).
+
+---
+
+## 5. Как запускать
+
+### Unit (JUnit)
 
 ```bash
 ./gradlew :app:testDebugUnitTest
@@ -47,13 +69,25 @@ testOptions {
 ./gradlew :app:qaTestSummary
 ```
 
+### UI instrumented (Espresso)
+
+```bash
+# все instrumented-тесты модуля app
+./gradlew :app:connectedDebugAndroidTest
+
+# только Espresso-класс
+./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.pavlovalexey.pavlovAlexeySandbox.ui.MainActivityEspressoTest
+```
+
+> Важно: для `connectedDebugAndroidTest` должен быть поднят эмулятор или подключено Android-устройство (`adb devices`).
+
 ## Полезные варианты
 
 ```bash
-# только один класс тестов
+# только один класс unit-тестов
 ./gradlew :app:testDebugUnitTest --tests "*InstalledAppsViewModelTest"
 
-# один конкретный тест
+# один конкретный unit-тест
 ./gradlew :app:testDebugUnitTest --tests "*InstalledAppsViewModelTest.filters by app name and package ignoring case"
 
 # подробный вывод
@@ -62,12 +96,19 @@ testOptions {
 
 ---
 
-## 5. Где смотреть результаты
+## 6. Где смотреть результаты
 
-После запуска Gradle формирует отчёт:
+После запуска Gradle формирует отчёты:
+
+### JUnit
 
 - HTML: `app/build/reports/tests/testDebugUnitTest/index.html`
 - XML (для CI): `app/build/test-results/testDebugUnitTest/`
+
+### Espresso
+
+- HTML: `app/build/reports/androidTests/connected/index.html`
+- XML (для CI): `app/build/outputs/androidTest-results/connected/`
 
 ### Интерпретация статусов
 
@@ -84,18 +125,19 @@ testOptions {
 
 ---
 
-## 6. Стандарт написания тестов
+## 7. Стандарт написания тестов
 
-## 6.1 Именование
+## 7.1 Именование
 
 Юзаем поведенческие имена:
 
 - `fun \`returns all apps when query is blank with spaces\`()`
 - `fun \`first launch dialog is shown once\`()`
+- `fun launchMainActivity_displaysRootView()`
 
 Формула: **что проверяется + при каком условии + ожидаемый результат**.
 
-## 6.2 Структура AAA
+## 7.2 Структура AAA
 
 Каждый тест должен быть в стиле **Arrange / Act / Assert**:
 
@@ -103,66 +145,20 @@ testOptions {
 2. Act — одно действие;
 3. Assert — точные проверки результата.
 
-## 6.3 Один тест — одна причина падения
+## 7.3 Один тест — одна причина падения
 
 Не объединяем независимые проверки в один тест. Меньше когнитивной нагрузки и проще дебаг.
 
-## 6.4 Детерминированность
+## 7.4 Детерминированность
 
 - не используем реальные network/диск/время;
 - исключить зависимость от локали/часового пояса;
-- для coroutines test-dispatcher и MainDispatcherRule.
+- для coroutines test-dispatcher и MainDispatcherRule;
+- для Espresso избегаем жёстких `Thread.sleep`, используем механизмы синхронизации/IdlingResource при необходимости.
 
-## 6.5 Минимально необходимый scope
+## 7.5 Минимально необходимый scope
 
-Unit-тест проверяет бизнес-логику; UI-поведение оставляйте для UI/инструментальных тестов.
-
----
-
-## 7. Рекомендации по зонам
-
-## 7.1 ViewModel
-
-Проверяем:
-
-- переходы `UiState`;
-- emission side-effects (`SharedFlow`/`Channel`);
-- поведение pending-флагов;
-- обработку success/error веток.
-
-## 7.2 Фильтрация
-
-Проверяем:
-
-- `ignoreCase`;
-- `trim` поведения пустого запроса;
-- поиск по нескольким полям;
-- корректность размера и содержимого результата.
-
-## 7.3 Formatter
-
-Проверяем:
-
-- граничные значения (0, 1, большие числа);
-- точность округления;
-- единицы измерения.
-
-## 7.4 Mapper
-
-Проверяем:
-
-- полное соответствие полей;
-- nullable/corner cases;
-- reset временных UI-флагов при восстановлении состояния.
-
-## 7.5 Prefs-логика
-
-Проверяем:
-
-- default значения при пустом хранилище;
-- запись/чтение;
-- поведение nullable полей;
-- idempotency и последовательные сценарии (например, “показывается один раз”).
+Unit-тест проверяет бизнес-логику; UI-поведение — в instrumented/Espresso тестах.
 
 ---
 
@@ -171,8 +167,9 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 Минимум для PR с логикой:
 
 1. добавлены/обновлены unit-тесты для изменённой логики;
-2. тесты воспроизводимо запускаются локально;
-3. в PR описано:
+2. если затронут UI, добавлены/обновлены Espresso-кейсы;
+3. тесты воспроизводимо запускаются локально;
+4. в PR описано:
     - что покрыто;
     - как запускали;
     - результат;
@@ -184,8 +181,9 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 
 - **Проблемы с Dispatchers.Main** → использовать `MainDispatcherRule`;
 - **Случайные тайминги** → избегать `delay` в тестах, использовать `advanceUntilIdle()`;
-- **Android API в unit-тестах** →  вынос логики в чистые функции/модели;
-- **Порядок выполнения тестов** → каждый тест изолирован, без shared mutable state.
+- **Android API в unit-тестах** → вынос логики в чистые функции/модели;
+- **Порядок выполнения тестов** → каждый тест изолирован, без shared mutable state;
+- **Падения Espresso из-за async/UI** → добавлять IdlingResource/ожидание состояния, а не sleep.
 
 ---
 
@@ -195,6 +193,7 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 - [ ] Есть проверки на edge cases;
 - [ ] Нет скрытых внешних зависимостей;
 - [ ] Проверены success + error ветки (где применимо);
+- [ ] UI-сценарии проверены Espresso (если затронут интерфейс);
 - [ ] Результат прогона приложен в PR;
 - [ ] При падении теста понятно, где и почему проблема.
 
@@ -202,14 +201,15 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 
 ## 11. Пример рабочего цикла
 
-1. Изменили бизнес-логику;
-2. Добавили/обновили тесты в `app/src/test/java`;
+1. Изменили бизнес-логику/UI;
+2. Добавили/обновили тесты в `app/src/test/java` и/или `app/src/androidTest/java`;
 3. Запустили `./gradlew :app:testDebugUnitTest`;
-4. Изучили HTML-отчёт при падениях;
-5. Повторили до зелёного прогона;
-6. Добавили в PR раздел `Testing` с командами и статусом.
+4. Запустили `./gradlew :app:connectedDebugAndroidTest`;
+5. Изучили HTML-отчёты при падениях;
+6. Повторили до зелёного прогона;
+7. Добавили в PR раздел `Testing` с командами и статусом.
 
-## 12. Быстрая финальная QA-сводка 
+## 12. Быстрая финальная QA-сводка
 
 Реализация фичи вынесена из `app/build.gradle.kts` в отдельный build-script:
 `gradle/qa-summary.gradle.kts` и подключается через `apply(from = ...)`.
