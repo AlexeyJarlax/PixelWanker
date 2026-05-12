@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -66,11 +67,14 @@ class MainActivityEspressoTest {
         composeRule.onNodeWithText(dialogText, substring = true)
             .assertIsDisplayed()
 
-        composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_dialog_dismiss), useUnmergedTree = true)
-            .performClick()
+        composeRule.onNodeWithContentDescription(
+            composeRule.activity.getString(R.string.about_dialog_dismiss),
+            useUnmergedTree = true
+        ).performClick()
 
-        composeRule.onAllNodesWithText(dialogText, substring = true)
-            .assertCountEquals(0)
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodesWithText(dialogText, substring = true).fetchSemanticsNodes().isEmpty()
+        }
 
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_button))
             .assertIsDisplayed()
