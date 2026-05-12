@@ -1,7 +1,12 @@
 package com.pavlovalexey.pavlovAlexeySandbox.ui
 
+import androidx.compose.ui.test.assertAny
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodes
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,7 +24,11 @@ class MainActivityEspressoTest {
 
     @Test
     fun launchMainActivity_displaysGridPageContent() {
-        composeRule.onNodeWithText(composeRule.activity.getString(R.string.start_grid))
+        val startGridText = composeRule.activity.getString(R.string.start_grid)
+
+        composeRule.onAllNodes(hasText(startGridText) and hasClickAction(), useUnmergedTree = true)
+            .assertCountEquals(1)
+            .onFirst()
             .assertIsDisplayed()
     }
 
@@ -46,11 +55,14 @@ class MainActivityEspressoTest {
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_button))
             .performClick()
 
-        composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_dialog_confirm))
+        composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_text))
             .assertIsDisplayed()
 
-        composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_dialog_dismiss))
+        composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_dialog_dismiss), useUnmergedTree = true)
             .performClick()
+
+        composeRule.onAllNodes(hasText(composeRule.activity.getString(R.string.about_privacy_policy_text)))
+            .assertAny { !it.layoutInfo.isPlaced }
 
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_button))
             .assertIsDisplayed()
