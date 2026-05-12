@@ -45,3 +45,14 @@ https://play.google.com/store/apps/details?id=com.pavlovalexey.pavlovAlexeySandb
 - Jenkins: в репозиторий `Jenkinsfile` с базовыми Android/Gradle проверками.
 - Базовый пайплайн публикует JUnit XML и отчёты из `build/reports` как артефакты.
 - Jenkins проверяет то же самое, что и локальный JUnit
+
+
+## Тестирование
+
+- Unit-тесты (JUnit): `app/src/test/java/...`
+- Instrumented UI-тесты (Espresso + Compose UI Test): `app/src/androidTest/java/...`
+- Критический smoke-набор UI покрывает:
+  - запуск `MainActivity` и отображение основного действия (`Start grid`);
+  - навигацию нижнего бара между вкладками `Apps` и `About`;
+  - открытие/закрытие диалога Privacy Policy на вкладке About.
+- Гайд по запуску и интерпретации отчётов: `docs/junit_espresso_guide.md`.

@@ -9,7 +9,7 @@
 3. **Форматтеры** (преобразование чисел, байтов, дат и т.д.);
 4. **Мапперы** (UI ↔ domain/persistence);
 5. **Prefs/хранилище настроек** (SharedPreferences, default/fallback behavior);
-6. **UI smoke-checks через Espresso** (запуск экрана, базовая интеракция, проверки root/view).
+6. **UI smoke-checks через Espresso/Compose UI Test** (запуск экрана, навигация между вкладками, открытие/закрытие диалогов).
 
 ---
 
@@ -26,11 +26,13 @@
 
 - **JUnit 4** (unit-тесты);
 - **kotlinx-coroutines-test** — контроль корутин и `Dispatchers.Main`;
-- **AndroidX Test + Espresso** (instrumented UI-тесты);
+- **AndroidX Test + Espresso + Compose UI Test** (instrumented UI-тесты);
   - `androidx.test.ext:junit`
   - `androidx.test:runner`
   - `androidx.test:rules`
   - `androidx.test.espresso:espresso-core`
+  - `androidx.compose.ui:ui-test-junit4`
+  - `androidx.compose.ui:ui-test-manifest` (debug)
 
 Для Android-ресурсов в unit-тестах включено:
 
@@ -49,9 +51,9 @@ testOptions {
 - Espresso-тесты запускаются **на устройстве или эмуляторе** (не на локальной JVM).
 - Инструментальный раннер задаётся в `defaultConfig`:
   - `testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"`
-- Базовый smoke-тест: `MainActivityEspressoTest`.
-  - Сценарий запускает `MainActivity` через `ActivityScenario`.
-  - Далее Espresso проверяет, что root view отображается (`onView(isRoot()).check(matches(isDisplayed()))`).
+- Базовый smoke/critical UI-тест: `MainActivityEspressoTest`.
+  - Сценарий использует `createAndroidComposeRule<MainActivity>()`.
+  - Проверяются ключевые пользовательские ветки: стартовый экран Grid, переходы по нижнему бару (Apps/About), и открытие/закрытие privacy policy диалога.
 - Назначение smoke-теста:
   - быстро валидировать, что приложение стартует и UI-дерево поднимается корректно;
   - дать точку расширения для следующих UI-кейсов (клики, текст, навигация, проверки экранов).
