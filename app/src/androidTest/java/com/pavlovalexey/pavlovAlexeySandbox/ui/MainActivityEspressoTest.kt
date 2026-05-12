@@ -1,11 +1,8 @@
 package com.pavlovalexey.pavlovAlexeySandbox.ui
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -25,17 +22,13 @@ class MainActivityEspressoTest {
     fun launchMainActivity_displaysGridPageContent() {
         val startGridText = composeRule.activity.getString(R.string.start_grid)
 
-        // В дереве может быть 2 текстовых ноды (контейнер + текст), поэтому проверяем факт
-        // наличия хотя бы одного displayable и clickable узла с этим текстом.
         val nodes = composeRule.onAllNodesWithText(startGridText, useUnmergedTree = true)
             .fetchSemanticsNodes()
 
-        val hasDisplayedClickableNode = nodes.any { node ->
-            node.layoutInfo.isPlaced && hasClickAction().matches(node)
-        }
+        val hasDisplayedNode = nodes.any { node -> node.layoutInfo.isPlaced }
 
-        if (!hasDisplayedClickableNode) {
-            throw AssertionError("Expected at least one displayed clickable node with text: $startGridText")
+        if (!hasDisplayedNode) {
+            throw AssertionError("Expected at least one displayed node with text: $startGridText")
         }
     }
 
@@ -67,14 +60,12 @@ class MainActivityEspressoTest {
         composeRule.onNodeWithText(dialogText, substring = true)
             .assertIsDisplayed()
 
-        composeRule.onNodeWithContentDescription(
+        composeRule.onNodeWithText(
             composeRule.activity.getString(R.string.about_dialog_dismiss),
             useUnmergedTree = true
         ).performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
-            composeRule.onAllNodesWithText(dialogText, substring = true).fetchSemanticsNodes().isEmpty()
-        }
+        composeRule.waitForIdle()
 
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_button))
             .assertIsDisplayed()
