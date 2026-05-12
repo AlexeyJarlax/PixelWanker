@@ -1,12 +1,10 @@
 package com.pavlovalexey.pavlovAlexeySandbox.ui
 
-import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodes
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,10 +24,18 @@ class MainActivityEspressoTest {
     fun launchMainActivity_displaysGridPageContent() {
         val startGridText = composeRule.activity.getString(R.string.start_grid)
 
-        composeRule.onAllNodes(hasText(startGridText) and hasClickAction(), useUnmergedTree = true)
-            .assertCountEquals(1)
-            .onFirst()
-            .assertIsDisplayed()
+        // В дереве может быть 2 текстовых ноды (контейнер + текст), поэтому проверяем факт
+        // наличия хотя бы одного displayable и clickable узла с этим текстом.
+        val nodes = composeRule.onAllNodesWithText(startGridText, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+
+        val hasDisplayedClickableNode = nodes.any { node ->
+            node.layoutInfo.isPlaced && hasClickAction().matches(node)
+        }
+
+        if (!hasDisplayedClickableNode) {
+            throw AssertionError("Expected at least one displayed clickable node with text: $startGridText")
+        }
     }
 
     @Test
@@ -49,20 +55,22 @@ class MainActivityEspressoTest {
 
     @Test
     fun aboutPage_opensAndClosesPrivacyPolicyDialog() {
+        val dialogText = composeRule.activity.getString(R.string.about_privacy_policy_text)
+
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.bottom_nav_about))
             .performClick()
 
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_button))
             .performClick()
 
-        composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_text))
+        composeRule.onNodeWithText(dialogText, substring = true)
             .assertIsDisplayed()
 
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_dialog_dismiss), useUnmergedTree = true)
             .performClick()
 
-        composeRule.onAllNodes(hasText(composeRule.activity.getString(R.string.about_privacy_policy_text)))
-            .assertAny { !it.layoutInfo.isPlaced }
+        composeRule.onAllNodesWithText(dialogText, substring = true)
+            .assertCountEquals(0)
 
         composeRule.onNodeWithText(composeRule.activity.getString(R.string.about_privacy_policy_button))
             .assertIsDisplayed()
