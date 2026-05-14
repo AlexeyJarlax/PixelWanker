@@ -66,9 +66,6 @@ testOptions {
 
 ```bash
 ./gradlew :app:testDebugUnitTest
-
-# запуск с итоговой QA-сводкой в конце
-./gradlew :app:qaTestSummary
 ```
 
 ### UI instrumented (Espresso)
@@ -216,15 +213,11 @@ Unit-тест проверяет бизнес-логику; UI-поведени�
 Реализация фичи вынесена из `app/build.gradle.kts` в отдельный build-script:
 `gradle/qa-summary.gradle.kts` и подключается через `apply(from = ...)`.
 
-Для запуска unit-тестов с короткой итоговой строкой используем:
+
+Для запуска всех тестов с короткой итоговой строкой используем:
 
 ```bash
 ./gradlew :app:qaTestSummary
-```
-
-Для UI-тестов (Espresso) добавлена аналогичная команда:
-
-```bash
 ./gradlew :app:uiTestSummary
 ```
 
