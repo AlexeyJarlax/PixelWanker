@@ -49,6 +49,11 @@ testOptions {
 ## 4. Как работает Espresso в этом проекте
 
 - Espresso-тесты запускаются **на устройстве или эмуляторе** (не на локальной JVM).
+- В CI (GitHub Actions) они запускаются на `ubuntu-latest` через `reactivecircus/android-emulator-runner@v2` с Android Emulator (`api-level: 34`, `arch: x86_64`, `profile: pixel_6`).
+- Для CI-стабильности в пайплайне:
+  - включается KVM на раннере;
+  - используется `emulator-boot-timeout: 900`;
+  - включён `disable-animations: true`.
 - Инструментальный раннер задаётся в `defaultConfig`:
   - `testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"`
 - Базовый smoke/critical UI-тест: `MainActivityEspressoTest`.
@@ -79,6 +84,7 @@ testOptions {
 ```
 
 > Важно: для `connectedDebugAndroidTest` должен быть поднят эмулятор или подключено Android-устройство (`adb devices`).
+> В CI эмулятор поднимается автоматически шагом `android-emulator-runner`.
 
 ## Полезные варианты
 
