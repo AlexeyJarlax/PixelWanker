@@ -45,8 +45,9 @@ https://play.google.com/store/apps/details?id=com.pavlovalexey.pavlovAlexeySandb
 - GitHub Actions: workflow `.github/workflows/android-ci.yml` с базовыми Android/Gradle проверками.
 - CI публикует JUnit XML и отчёты из `build/reports` как артефакты.
 - Workflow проверяет то же самое, что и локальный JUnit: `clean testDebugUnitTest lintDebug`.
-- После базовых проверок запускается Espresso smoke-тест `MainActivityEspressoTest` в Android Emulator (API 34), с публикацией `androidTest` отчётов как артефактов.
--
+- После базовых проверок запускается Espresso smoke-тест `MainActivityEspressoTest` в Android Emulator (API 34, `x86_64`) на `ubuntu-latest`.
+- Для стабильной загрузки эмулятора в CI перед запуском включается KVM, а также используются `emulator-boot-timeout: 900` и `disable-animations: true`.
+- Отдельная документация по пайплайну: `docs/github_actions_pipeline.md`.
 
 ## Тестирование
 
